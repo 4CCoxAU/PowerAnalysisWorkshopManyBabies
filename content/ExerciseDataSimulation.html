@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.551">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>ManyBabies Power Analysis - Exercise Sheet 1, Data Simulation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../content/SimulatingEffectSizes.html" rel="next">
+<link href="../index.html" rel="prev">
+<link href="../images/favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../content/ExerciseDataSimulation.html">Introduction to Data Simulation</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-center sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">ManyBabies Power Analysis</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://manybabies.org/" title="ManyBabies Power Analysis Workshop" class="quarto-navigation-tool px-1" aria-label="ManyBabies Power Analysis Workshop"><i class="bi bi-globe"></i></a>
+    <a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies" title="ManyBabies Github" class="quarto-navigation-tool px-1" aria-label="ManyBabies Github"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/ExerciseDataSimulation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Introduction to Data Simulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/SimulatingEffectSizes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Simulating Effect Sizes</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#a-description-of-the-example" id="toc-a-description-of-the-example" class="nav-link active" data-scroll-target="#a-description-of-the-example">A Description of the Example</a></li>
+  <li><a href="#establishing-the-data-generating-parameters" id="toc-establishing-the-data-generating-parameters" class="nav-link" data-scroll-target="#establishing-the-data-generating-parameters">Establishing the data-generating parameters</a></li>
+  <li><a href="#define-parameters-for-observations" id="toc-define-parameters-for-observations" class="nav-link" data-scroll-target="#define-parameters-for-observations">Define parameters for observations</a></li>
+  <li><a href="#simulate-the-sampling-of-stimulus-items" id="toc-simulate-the-sampling-of-stimulus-items" class="nav-link" data-scroll-target="#simulate-the-sampling-of-stimulus-items">Simulate the sampling of stimulus items</a></li>
+  <li><a href="#simulate-the-sampling-of-subjects" id="toc-simulate-the-sampling-of-subjects" class="nav-link" data-scroll-target="#simulate-the-sampling-of-subjects">Simulate the sampling of subjects</a></li>
+  <li><a href="#simulate-trials-encounters" id="toc-simulate-trials-encounters" class="nav-link" data-scroll-target="#simulate-trials-encounters">Simulate trials (encounters)</a></li>
+  <li><a href="#adding-it-all-together" id="toc-adding-it-all-together" class="nav-link" data-scroll-target="#adding-it-all-together">Adding it all together</a></li>
+  <li><a href="#modelling-the-simulated-data" id="toc-modelling-the-simulated-data" class="nav-link" data-scroll-target="#modelling-the-simulated-data">Modelling the Simulated Data</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exercise Sheet 1, Data Simulation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="a-description-of-the-example" class="level2">
+<h2 class="anchored" data-anchor-id="a-description-of-the-example">A Description of the Example</h2>
+<p>Let’s start with a straightforward example based on MB1. We are interested in the following question: To what extent do infants demonstrate longer looking times to infant-directed speech as opposed to adult-directed speech? We know that a linear mixed-effects model is an appropriate modelling strategy, so we want to conduct a power analysis with this in mind.</p>
+<p>To give an overview of the simulation task, we will simulate data from a design with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data. In this study, infant participants are exposed to recordings of infant-directed and adult-directed speech, and we use their looking times as the primary dependent variable. The key question is whether there is any behavioural differences within each participant according to the type of stimulus.</p>
+<p>Let’s start by loading the required packages:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#if you don't have the pacman package loaded on your computer, uncomment the next line, install pacman, and load in the required packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repos =</span> <span class="st">"https://cran.r-project.org/"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">'pacman'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+The downloaded binary packages are in
+    /var/folders/58/tggzh74d3qv8vr4k29xsnp28n39xzy/T//RtmpBtUSCo/downloaded_packages</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#load the required packages:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(knitr, <span class="co"># rendering of .Rmd file</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>               lme4, <span class="co"># model specification / estimation</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>               afex, <span class="co"># anova and deriving p-values from lmer</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>               broom.mixed, <span class="co"># extracting data from model fits</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>               faux, <span class="co"># generate correlated values</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>               tidyverse, <span class="co"># data wrangling and visualisation</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>               ggridges, <span class="co">#visualisation</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>               viridis, <span class="co"># color schemes for visualisation</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>               kableExtra, <span class="co">#helps with knitting the .Rmd file</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>               cowplot, <span class="co">#visualisation tool to include multiple plots</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>               ggrain, <span class="co">#visualisation tool for raincloud plots</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>               dplyr,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>               here</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>               )</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">tidy.opts=</span><span class="fu">list</span>(<span class="at">width.cutoff=</span><span class="dv">60</span>),<span class="at">tidy=</span><span class="cn">TRUE</span>, <span class="at">fig.width=</span><span class="dv">12</span>, <span class="at">fig.height=</span><span class="dv">11</span>, <span class="at">fig.fullwidth=</span><span class="cn">TRUE</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>plot_theme <span class="ot">&lt;-</span> </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">18</span>), </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"none"</span>, </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>), </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>), </span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>), </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="establishing-the-data-generating-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="establishing-the-data-generating-parameters">Establishing the data-generating parameters</h2>
+<p>The first thing to do is to set up the parameters that govern the process we assume to give rise to the data: the data-generating process. Let’s start by defining the number of stimulus items that each infant participant will be exposed to. Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of IDS and 8 recordings of ADS. Let’s say that a realistic sample size for our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). This is a within-subjects, between-items study; that is, each and every subject receives both IDS and ADS stimuli (within-subject), but each stimulus is either IDS or ADS (between-items).</p>
+<p>Now that we have an overview of a dataset that would make sense for our experimental design, let’s start to make some realistic and informed choices for parameters that would make sense to build a statistical model. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:</p>
+<p>DV = β₀ + β₁ * SpeechStyle + u₀ⱼ^(item) + u₀ᵢ^(subj) + (u₁ᵢ^(subj) * SpeechStyle) + ε</p>
+<p>According to this formula, the dependent variable for each subject and item is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference ADS and IDS stimuli, plus random noise. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean IDS minus the mean ADS RT, we will code the SpeechStyle category variable -0.5 for ADS and +0.5 for IDS.</p>
+<p>The parameters 𝛽0 and 𝛽1 are fixed effects: they characterize the population of events in which a typical subject encounters a typical stimulus. Thus, we set the mean RT for a “typical” infant participant encountering a “typical” stimulus to 800 ms, and assume that looking times are typically 2000ms longer for IDS as opposed to ADS.</p>
+<p>To summarize, we established a reasonable statistical model underlying the data having the form:</p>
+<p>The response time for subject 𝑠on item 𝑖, 𝑅𝑇𝑠𝑖, is decomposed into a population grand mean 𝛽0, a by-subject random intercept 𝑇0𝑠, a by-item random intercept 𝑂0𝑖, a fixed slope 𝛽1, a by-subject random slope 𝑇1𝑠, and a trial-level residual 𝑒𝑠𝑖. Our data-generating process is fully determined by seven population parameters, all denoted by Greek letters: 𝛽0, 𝛽1, 𝜏0, 𝜏1, 𝜌, 𝜔0, and 𝜎. In the next section we will apply this data-generating process to simulate the sampling of subjects, items, and trials (encounters).</p>
+<p>The output of the above function tells us that we now have three sources of variation in the model:</p>
+<ul>
+<li>the usual standard deviation of the residuals (i.e., ‘sigma’),</li>
+<li>the standard deviation of the population of by-subject varying intercepts (i.e., ‘Intercept’), and</li>
+<li>the standard deviation of the population of by-subject varying slopes (i.e., ‘RegisterIDS’).</li>
+</ul>
+<p>The latter two sources of variation provide one of the most essential features of multi-level models: partial pooling, as we discussed in the lecture.</p>
+<p>According to the formula, response 𝑅𝑇𝑠𝑖for subject 𝑠 and item 𝑖 is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference between ingroup and outgroup stimuli, plus random noise 𝑒𝑠𝑖. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean outgroup minus the mean ingroup RT, we will code the item category variable 𝑋𝑖as -.5 for the ingroup category and +.5 for the outgroup category.</p>
+<p>Now that we have an appropriate structure for our simulated dataset, we need to generate the RT values. For this, we need to establish an underlying statistical model. In this and the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for parameters. For convenience, Table <span class="citation" data-cites="ref">@ref</span>(tab:paramdef) lists all of the variables in the statistical model and their associated variable names in the code.</p>
+<p>Let us start with a basic model and build up from there. We want a model of RT for subject 𝑠 and item 𝑖that looks something like:</p>
+<p>In the model formula, we use Greek letters (𝛽0, 𝛽1) to represent population parameters that are being directly estimated by the model. In contrast, Roman letters represent the remaining variables: observed variables whose values are determined by sampling (e.g., 𝑅𝑇𝑠𝑖, 𝑇0𝑠, 𝑒𝑠𝑖) or fixed by the experiment design (𝑋𝑖).</p>
+<p>Although this model is incomplete, we can go ahead and choose parameters for 𝛽0 and 𝛽1. For this example, we set a grand mean of 800 ms and a mean difference of 50 ms. You will need to use disciplinary expertise and/or pilot data to choose these parameters; by the end of this tutorial you will understand how to extract those parameters from an analysis.</p>
+<p>Let’s start by setting the fixed-effects parameters; that is, the overall intercept (ADS) and the effect of speech style (IDS). We can be informed about these choices from what we know about looking times in infant expperiments. We could imagine a looking time of around 9 seconds (i.e., 9000ms) for ADS stimuli and for infants to exhibit longer looking times towards IDS stimuli, maybe around 11 seconds (i.e., 11000 ms), or 2000 ms longer looking times than that to ADS. Let’s code this explicitly as parameter values in for our simulation:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set fixed effect parameters</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>beta_0 <span class="ot">&lt;-</span> <span class="dv">9000</span>  <span class="co"># intercept; i.e., the grand mean, ADS </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>beta_1 <span class="ot">&lt;-</span> <span class="dv">2000</span>  <span class="co"># slope; i.e, effect of IDS </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We also need to add some variability around these values, as we can’t expect each and every infant in the experiment to have exactly the same baseline reaction to the ADS stimuli, and we can’t expect each stimulus to have exactly the same effect. We would expect variability in both subject reactions and item effects. Let’s code this as standard deviation of by-subject random intercept and by-item random intercept sd.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set random effect parameters</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>tau_0 <span class="ot">&lt;-</span> <span class="dv">3000</span>  <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>omega_0 <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># by-item random intercept sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We also can’t expect the effect of IDS stimuli to be the same for every infant; that is, some infants’ attention may be more grabbed by IDS stimuli than others, and we therefore need to add subject-specific variability for the effect of IDS on looking times. Let’s code this as the tau_1 parameter. Here we can also add a crucial component of multi-level models, which is the correlation matrix. There may be patterns in the data between those infants who have a high looking time baseline in ADS and the effects of IDS, and we therefore have to add a correlation matrix to account for these patterns. Here, we specify that there is a weak correlation between the varying intercepts and varying slopes of infant participants. We also need a residual error term to capture unexplained sources of variability:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set more random effect and error parameters</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tau_1 <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># by-subject random slope sd</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.2</span>  <span class="co"># correlation between intercept and slope</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># residual (error) sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="define-parameters-for-observations" class="level2">
+<h2 class="anchored" data-anchor-id="define-parameters-for-observations">Define parameters for observations</h2>
+<p>Now that we have our initial parameters in place, it’s time to start defining parameters related to the number of observations. In this example, we will simulate data from a typical IDS preference experiment, with 24 infants responding to 8</p>
+<p>20 subjects responding to 25 ingroup faces and 25 outgroup faces. There are no between-subject factors, so we can set n_subj to 100. We set n_ingroup and n_outgroup to the number of stimulus items in each condition.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set number of subjects and items</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>n_subj <span class="ot">&lt;-</span> <span class="dv">24</span>  <span class="co"># number of subjects</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>n_ADS <span class="ot">&lt;-</span> <span class="dv">8</span>  <span class="co"># number of ADS stimuli</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>n_IDS <span class="ot">&lt;-</span> <span class="dv">8</span>  <span class="co"># number of IDS stimuli</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="simulate-the-sampling-of-stimulus-items" class="level2">
+<h2 class="anchored" data-anchor-id="simulate-the-sampling-of-stimulus-items">Simulate the sampling of stimulus items</h2>
+<p>Now it’s time to create a dataset that lists each item, which speech style it is in and its varying properties. Note that the code refers back to the omega_0 parameter that we specified above for the varying item intercept. For the varying item variable, we are going to use the faux package to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We sample the values of 𝑂0𝑖 from a normal distribution using the rnorm() function, with a mean of 0 and SD of 𝜔0.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate a sample of items</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># total number of items = n_ADS + n_IDS</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> omega_0)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="sc">+</span><span class="fl">0.5</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#let's have a look at what this has produced:</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(items)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 16
+Columns: 4
+$ Register    &lt;chr&gt; "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "A…
+$ O_0i        &lt;dbl&gt; -1207.06575, 277.42924, 1084.44118, -2345.69770, 429.12469…
+$ item_id     &lt;chr&gt; "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I…
+$ SpeechStyle &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, …</code></pre>
+</div>
+</div>
+<p>Let us introduce a numeric predictor to represent what category each stimulus item 𝑖 appears in (i.e., for the 𝑋𝑖 in our model). Since we predict that looking times to ADS stimuli will be shorter than IDS stimuli, we set ADS to be -0.5 and IDS to be +0.5. This is what is known as contrast coding, and we will later multiply this effect-coded factor by the fixed effect of category to simulate data where the ADS stimuli on average generate looking times of -1000 ms different from the grand mean, while the IDS stimuli are on average 1000 ms different from the grand mean.</p>
+<p>In R, most regression procedures can handle two-level factors like category as predictor variables. By default, the procedure will create a new numeric predictor that codes one level of the factor as zero and the other as one. Why not just use the defaults? The short explanation is that the default of 0, 1 coding is not well-suited to the kinds of factorial experimental designs often found in psychology and related fields. For the current example, using the default coding for the 𝑋 predictor would change the interpretation of 𝛽0: instead of the grand mean, it would reflect the mean for the group coded as zero. One could change the default, but we feel it is better to be explicit in the code about what values are being used.</p>
+</section>
+<section id="simulate-the-sampling-of-subjects" class="level2">
+<h2 class="anchored" data-anchor-id="simulate-the-sampling-of-subjects">Simulate the sampling of subjects</h2>
+<p>Now we will simulate the sampling of individual subjects, resulting in a table listing each subject and their two correlated varying effects (i.e., intercepts and slopes). This will be slightly more complicated that what we just did, because we cannot simply sample the 𝑇0𝑠 values from a univariate distribution using rnorm() independently from the 𝑇1𝑠 values. Instead, we must sample ⟨𝑇0𝑠,𝑇1𝑠⟩ pairs — one pair for each subject—from a bivariate normal distribution. One way to sample from a bivariate distribution would be to use the function rnorm_multi() from the faux package (DeBruine 2020), which generates a table of n simulated values from a multivariate normal distribution by specifying the means (mu) and standard deviations (sd) of each variable, plus the correlations (r), which can be either a single value (applied to all pairs), a correlation matrix, or a vector of the values in the upper right triangle of the correlation matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate a sample of subjects</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1), <span class="co"># set SDs</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="simulate-trials-encounters" class="level2">
+<h2 class="anchored" data-anchor-id="simulate-trials-encounters">Simulate trials (encounters)</h2>
+<p>Since all subjects respond to all items, we can set up a table of trials by making a table with every possible combination of the rows in the subject and item tables using the tidyverse function crossing(). Each trial has random error associated with it, reflecting fluctuations in trial-by-trial performance due to unknown factors; we simulate this by sampling values from a normal distribution with a mean of 0 and SD of sigma.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cross subject and item IDs; add an error term nrow(.) is</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the number of rows in the table</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, <span class="fu">everything</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="adding-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="adding-it-all-together">Adding it all together</h2>
+<p>Now we have specified the parameters in ParameterValues, we are ready to add up everything together to create the response variable (i.e., infant looking times in milliseconds). To be more specific, we calculate the response variable, looking time, by adding together:</p>
+<ul>
+<li>the grand intercept (beta_0),</li>
+<li>each subject-specific random intercept (T_0s),</li>
+<li>each item-specific random intercept (O_0i),</li>
+<li>each sum of the category effect (beta_1) and the random slope (T_1s), multiplied by the numeric predictor (SpeechStyle), and</li>
+<li>each residual error (e_si).</li>
+</ul>
+<p>After this we will use dplyr::select() to keep the columns we need. This will create the structure that we set as our goal at the start of this exercise, with the additional column SpeechStyle, which we will keep to use in the estimation process, described in the next section.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the response variable</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>dat_sim <span class="ot">&lt;-</span> ParameterValues <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        e_si) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> LT <span class="sc">+</span> <span class="fu">rexp</span>(<span class="fu">nrow</span>(.), <span class="at">rate =</span> <span class="fl">3e-04</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, LT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s have a look at what the data we have generated looks like:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dat_sim <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">x =</span> LT, <span class="at">fill =</span> <span class="fu">as.factor</span>(SpeechStyle)),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span> <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">5000</span>, <span class="dv">40000</span>)) <span class="sc">+</span> plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ExerciseDataSimulation_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dat_sim_plot <span class="ot">&lt;-</span> dat_sim <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subj_id, Register) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">medLT =</span> <span class="fu">mean</span>(LT))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'subj_id'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Register, <span class="at">y =</span> medLT, <span class="at">fill =</span> Register), <span class="at">data =</span> dat_sim_plot) <span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_rain</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>, <span class="at">rain.side =</span> <span class="st">"f1x1"</span>, <span class="at">id.long.var =</span> <span class="st">"subj_id"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">point.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>)), <span class="at">line.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>))) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#FC4E07"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"steelblue"</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Looking Time Differences across Speech Styles"</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Speech Style"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Looking Time (ms)"</span>) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Duplicated aesthetics after name standardisation: alpha</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using the `size` aesthetic with geom_polygon was deprecated in ggplot2 3.4.0.
+ℹ Please use the `linewidth` aesthetic instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ExerciseDataSimulation_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Wonderful, so now we have simulated the dataset with relevant properties that we can use to in sophisticated linear mixed effects models! To make it easier to try out different parameters or to generate many datasets for the purpose of power analysis, we can put all of the code above into a custom function. Set up the function to take all of the parameters we set above as arguments. We’ll set the defaults to the values we used, but you can choose your own defaults. The code below is just all of the code above, condensed a bit. It returns one dataset with the parameters we specified.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>SimulateData <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">8</span>,   <span class="co"># number of ingroup stimuli</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">8</span>,   <span class="co"># number of outgroup stimuli</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_0 =</span> <span class="dv">9000</span>,   <span class="co"># grand mean</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_1 =</span>  <span class="dv">3000</span>,   <span class="co"># effect of category</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">omega_0 =</span>  <span class="dv">1000</span>,   <span class="co"># by-item random intercept sd</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_0 =</span> <span class="dv">2000</span>,   <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_1 =</span>  <span class="dv">2500</span>,   <span class="co"># by-subject random slope sd</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.5</span>,   <span class="co"># correlation between intercept and slope</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="dv">200</span>) { <span class="co"># residual (standard deviation)</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> omega_0)) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="sc">+</span><span class="fl">0.5</span>))</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate a sample of subjects</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1), <span class="co"># set SDs</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>)</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>))</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, <span class="fu">everything</span>())</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>  dat_sim <span class="ot">&lt;-</span> ParameterValues <span class="sc">%&gt;%</span></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> LT <span class="sc">+</span> <span class="fu">rexp</span>(<span class="fu">nrow</span>(.), <span class="at">rate =</span> <span class="fl">0.0003</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, LT)</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we can generate a dataset with the default parameters using my_sim_data() or, for example, a dataset with 500 subjects and no effect of category using my_sim_data(n_subj = 500, beta_1 = 0).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">SimulateData</span>(<span class="at">n_subj =</span> <span class="dv">500</span>, <span class="at">beta_1 =</span> <span class="dv">2000</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>dat_sim_plot <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subj_id, Register) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">medLT =</span> <span class="fu">mean</span>(LT))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'subj_id'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Register, <span class="at">y =</span> medLT, <span class="at">fill =</span> Register), <span class="at">data =</span> dat_sim_plot) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_rain</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>, <span class="at">rain.side =</span> <span class="st">"f1x1"</span>, <span class="at">id.long.var =</span> <span class="st">"subj_id"</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">point.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>)), <span class="at">line.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>))) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#FC4E07"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"steelblue"</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Looking Time Differences across Speech Styles"</span>) <span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Speech Style"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Looking Time (ms)"</span>) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Duplicated aesthetics after name standardisation: alpha</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ExerciseDataSimulation_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="modelling-the-simulated-data" class="level2">
+<h2 class="anchored" data-anchor-id="modelling-the-simulated-data">Modelling the Simulated Data</h2>
+<p>Let’s think about how we want to run a generalised linear mixed-effects model of the data. For a varying intercepts, varying slopes model for each subject, we could run the following model with the lmer syntax as follows:</p>
+<ul>
+<li>LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id)</li>
+</ul>
+<p>In this model, LT is the response variable; 1 corresponds to the grand intercept (beta_0); SpeechStyle is the predictor for the ADS/IDS manipulation for item i; (1 | item_id) specifies a by-subject random intercept (O_0i); (1 + SpeechStyle | subj_id) specifies a subject-specific random intercept (T_0s) plus the subject-specific random slope of SpeechStyle (T_1s). The error term (e_si) is automatically included in all models, so is left implicit.</p>
+<p>The terms in parentheses with the “pipe” separator (|) define the random effects structure. For each of these bracketed terms, the left-hand side of the pipe names the effects you wish to allow to vary and the right hand side names the variable identifying the levels of the random factor over which the terms vary (e.g., subjects or items). The first term, (1 | item_id) allows the intercept (1) to vary over the random factor of items (item_id). This is an instruction to estimate the parameter underlying the O_0i values, namely omega_0. The second term, (1 + X_i | subj_id), allows both the intercept and the effect of category (coded by X_i) to vary over the random factor of subjects (subj_id). It is an instruction to estimate the three parameters that underlie the T_0s and T_1s values, namely tau_0, tau_1, and rho.</p>
+<p>Given that looking time data tends to be right-skewed, we can model the data using a logarithmic link function to take this into account. The GLMM would look as follows. We will use the summary() function to view the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateData</span>()</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glmer</span>(LT <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    subj_id), <span class="at">data =</span> dataSimulated, <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>))</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: Gamma  ( log )
+Formula: LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id)
+   Data: dataSimulated
+
+     AIC      BIC   logLik deviance df.resid 
+  7357.5   7385.2  -3671.8   7343.5      377 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.6789 -0.6401 -0.1412  0.4258  3.9262 
+
+Random effects:
+ Groups   Name        Variance Std.Dev. Corr
+ subj_id  (Intercept) 0.009583 0.09789      
+          SpeechStyle 0.039367 0.19841  0.24
+ item_id  (Intercept) 0.007222 0.08498      
+ Residual             0.083845 0.28956      
+Number of obs: 384, groups:  subj_id, 24; item_id, 16
+
+Fixed effects:
+            Estimate Std. Error t value Pr(&gt;|z|)    
+(Intercept)  9.38583    0.05888 159.406   &lt;2e-16 ***
+SpeechStyle  0.22297    0.11876   1.877   0.0605 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Correlation of Fixed Effects:
+            (Intr)
+SpeechStyle 0.155 </code></pre>
+</div>
+</div>
+<p>Great, so now we have a way of generating data for our research question, and we have a clear idea of how we want to model the data. Now it’s time to run the actual power analysis. The way we do this is to specify an effect, run a model and count how many of the models show significant effects (i.e., the ground truth).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>single_run <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ... is a shortcut that forwards any arguments to</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># my_sim_data(), the function created above</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateData</span>()</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(LT <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># family = gaussian(link = 'log'))</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="fu">single_run</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 8
+  effect   group    term            estimate std.error statistic    df   p.value
+  &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;
+1 fixed    &lt;NA&gt;     (Intercept)      1.31e+4      607.     21.6   28.0  5.53e-19
+2 fixed    &lt;NA&gt;     SpeechStyle      4.27e+3      912.      4.68  27.2  7.06e- 5
+3 ran_pars subj_id  sd__(Intercept)  2.59e+3       NA      NA     NA   NA       
+4 ran_pars subj_id  cor__(Intercep…  5.84e-1       NA      NA     NA   NA       
+5 ran_pars subj_id  sd__SpeechStyle  3.38e+3       NA      NA     NA   NA       
+6 ran_pars item_id  sd__(Intercept)  9.32e+2       NA      NA     NA   NA       
+7 ran_pars Residual sd__Observation  3.63e+3       NA      NA     NA   NA       </code></pre>
+</div>
+</div>
+<p>Now we have a function to generate data, run our model and spit out the results! Now it’s time to repeat a few hundred times, so that we can calculate how much power we have with our given parameters!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="co"># use at least 100 to get stable estimates</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span> <span class="fu">single_run</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(sims, <span class="st">"sims.csv"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"sims.csv"</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># makes sure plots display in this order</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">col_factor</span>(<span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="fu">col_factor</span>(<span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(effect <span class="sc">==</span> <span class="st">"fixed"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, p.value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 200 × 3
+   term        estimate  p.value
+   &lt;fct&gt;          &lt;dbl&gt;    &lt;dbl&gt;
+ 1 (Intercept)   12665. 8.49e-21
+ 2 SpeechStyle    3050. 1.01e- 4
+ 3 (Intercept)   12491. 5.50e-21
+ 4 SpeechStyle    2612. 2.00e- 3
+ 5 (Intercept)   12362. 6.28e-19
+ 6 SpeechStyle    3138. 4.83e- 5
+ 7 (Intercept)   11495. 1.03e-20
+ 8 SpeechStyle    2145. 6.67e- 3
+ 9 (Intercept)   12797. 1.84e-21
+10 SpeechStyle    5282. 1.48e- 7
+# ℹ 190 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate mean estimates and power for specified alpha</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(effect <span class="sc">==</span> <span class="st">"fixed"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate),</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> alpha),</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  term        mean_estimate mean_se power
+  &lt;fct&gt;               &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+1 (Intercept)        12440.    502.  1   
+2 SpeechStyle         3053.    793.  0.94</code></pre>
+</div>
+</div>
+<p>After running this model a couple of hundred times, we can converge on values for power that are &gt; .80 - perfect for our little study on the IDS preference effect. However, we should note the limitations in this approach. There are a bunch of assumptions that went into specifying the different parameters, and we need a way to grid search through values to put the power results into perspective. We turn to this problem in the second exercise sheet, but first, let’s make sure that we’ve understood the principles behind data simulation and power analysis.</p>
+<p>Exercise 1: Let’s explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items and another power analysis with each subject receiving 15 items. What happens to the estimate of statistical power?</p>
+<p>Write your answer here:</p>
+<hr>
+<p>Exercise 2: We might expect the IDS preference effect to change with infant age, such that older infants listen longer to IDS over ADS than younger infants. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)?</p>
+<hr>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/github\.com\/4CCoxAU\/PowerAnalysisWorkshopManyBabies");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link" aria-label="Home">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Home</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../content/SimulatingEffectSizes.html" class="pagination-link" aria-label="Simulating Effect Sizes">
+        <span class="nav-page-text">Simulating Effect Sizes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
