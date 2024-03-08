@@ -27,7 +27,8 @@ pacman::p_load(knitr, # rendering of .Rmd file
                viridis, # color schemes for visualisation
                kableExtra, #helps with knitting the .Rmd file
                cowplot, #visualisation tool to include multiple plots
-               ggrain #visualisation tool for raincloud plots
+               ggrain, #visualisation tool for raincloud plots
+               dplyr
                )
 
 set.seed(1234)
@@ -203,7 +204,7 @@ dat_sim_plot <- dat_sim %>%
   group_by(subj_id, Register) %>%
   dplyr::summarise(medLT = mean(LT))
 
-ggplot(aes(x = Register, y = LT, fill = Register), data = dat_sim) + 
+ggplot(aes(x = Register, y = medLT, fill = Register), data = dat_sim) + 
   geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
   scale_fill_manual(values = c("#FC4E07", "steelblue")) + 
   ggtitle('Looking Time Differences across Speech Styles') + 
@@ -263,13 +264,13 @@ SimulateData <- function(
 Now we can generate a dataset with the default parameters using my_sim_data() or, for example, a dataset with 500 subjects and no effect of category using my_sim_data(n_subj = 500, beta_1 = 0).
 
 ```{r}
-data <- SimulateData(n_subj = 500, beta_1 = 0)
+data <- SimulateData(n_subj = 500, beta_1 = 2000)
 
 dat_sim_plot <- data %>%
   group_by(subj_id, Register) %>%
   dplyr::summarise(medLT = mean(LT))
 
-ggplot(aes(x = Register, y = LT, fill = Register), data = dat_sim) + 
+ggplot(aes(x = Register, y = medLT, fill = Register), data = dat_sim_plot) + 
   geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
   scale_fill_manual(values = c("#FC4E07", "steelblue")) + 
   ggtitle('Looking Time Differences across Speech Styles') + 

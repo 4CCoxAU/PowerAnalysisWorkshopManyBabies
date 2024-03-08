@@ -35,8 +35,8 @@ website:
         text: Home
       - href: content/ExerciseDataSimulation.qmd
         text: Introduction to Data Simulation
-      - href: content/customizing.qmd
-        text: Customizing
+      - href: content/SimulatingEffectSizes.qmd
+        text: Simulating Effect Sizes
       - href: content/rendering.qmd
         text: Rendering
       - href: content/rmarkdown.Rmd
