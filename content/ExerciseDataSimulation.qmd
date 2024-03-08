@@ -14,7 +14,8 @@ Let's start by loading the required packages:
 
 ```{r setup, include=TRUE}
 #if you don't have the pacman package loaded on your computer, uncomment the next line, install pacman, and load in the required packages
-#install.packages('pacman')
+options(repos = "https://cran.r-project.org/")
+install.packages('pacman')
 #load the required packages:
 pacman::p_load(knitr, # rendering of .Rmd file
                lme4, # model specification / estimation
