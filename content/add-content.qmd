@@ -1,5 +1,5 @@
 ---
-title: Exercise Sheet 1: Data Simulation
+title: Exercise Sheet, Data Simulation
 editor_options: 
   chunk_output_type: console
 ---
@@ -277,3 +277,6 @@ ggplot(aes(x = Register, y = LT, fill = Register), data = dat_sim) +
   scale_color_manual(values = viridis(n = 27)) +
   plot_theme
 ```
+
+
+
