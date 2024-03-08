@@ -1,6 +1,6 @@
 ---
-title: "NOAA quarto simple with R"
-subtitle: "A simple Quarto webpage with a book layout"
+title: "Workshop on Data Simulation & Power Analysis"
+subtitle: ""
 page-layout: full
 ---
 
