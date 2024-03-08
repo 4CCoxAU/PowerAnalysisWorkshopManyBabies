@@ -3,29 +3,29 @@ project:
 
 website: 
   page-navigation: true
-  title: "NOAA quarto simple" 
-  site-url: "https://nmfs-opensci.github.io/NOAA-quarto-simple" 
-  repo-url: "https://github.com/nmfs-opensci/NOAA-quarto-simple"
+  title: "ManyBabies Power Analysis" 
+  site-url: "https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies" 
+  repo-url: "https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies"
   repo-actions: [edit, source, issue]
   favicon: images/favicon.ico
   
   page-footer:
-    right: "This page is built with [Quarto](https://quarto.org/)."
-    left: "&copy; CC-1.0"
+    right: ""
+    left: ""
   
   sidebar:
     background: "#D9E3E4"
-    logo: "https://raw.githubusercontent.com/nmfs-opensci/assets/main/logo/nmfs-opensci-logo3.png"
-    favicon: images/favicon.ico
+    logo: ""
+    favicon:
     pinned: true
     align: center
     tools: 
       - icon: globe
-        href: https://nmfs-opensci.github.io
-        text: "NMFS Open Science"
+        href: https://manybabies.org/
+        text: "ManyBabies Power Analysis Workshop"
       - icon: github
-        href: https://github.com/nmfs-opensci
-        text: "NMFS OpenSci"
+        href: https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies
+        text: "ManyBabies Github"
 
     style: "docked"
     search: true
