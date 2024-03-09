@@ -10,7 +10,9 @@ Let's take inspiration from ManyBabies1 (https://doi.org/10.1177/251524591990080
 
 To give an overview of this first simulation task, we will simulate data from a design with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data.
 
-## Establishing the data-generating parameters
+## What are the data-generating parameters?
+
+To make 
 
 The first thing to do is to set up the parameters that govern the process we assume to give rise to the data: the data-generating process. Let's start by defining the number of stimulus items that each infant participant will be exposed to. Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of IDS and 8 recordings of ADS. Let's say that a realistic sample size for our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). This is a within-subjects, between-items study; that is, each and every subject receives both IDS and ADS stimuli (within-subject), but each stimulus is either IDS or ADS (between-items).
 
