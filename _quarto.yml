@@ -37,15 +37,7 @@ website:
         text: Introduction to Data Simulation
       - href: content/SimulatingEffectSizes.qmd
         text: Simulating Effect Sizes
-      - href: content/rendering.qmd
-        text: Rendering
-      - href: content/rmarkdown.Rmd
-        text: R Markdown files
-      - href: content/code.qmd
-        text: Code in your files
-      - href: content/acknowledgements.qmd
-        text: Acknowledgements
-
+        
 format:
   html:
     theme:

@@ -4,11 +4,48 @@ editor_options:
   chunk_output_type: console
 ---
 
-## A Description of the Example
+## A Description of the Example and Aim of the Simulation
 
-Let's start with a straightforward example based on MB1. We are interested in the following question: To what extent do infants demonstrate longer looking times to infant-directed speech as opposed to adult-directed speech? We know that a linear mixed-effects model is an appropriate modelling strategy, so we want to conduct a power analysis with this in mind.
+Let's take inspiration from ManyBabies1 (https://doi.org/10.1177/2515245919900809) and think about how we would simulate data for a new experimmental study on the IDS preference effect. In this study, infant participants are exposed to recordings of adult-directed speech (ADS) and infant-directed speech (IDS), and we use infants' looking times as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli within each participant. To gain fammiliarity with the simulation process in an intuitive way, we will simulate data on the scale of looking times (i.e., 0-20,000ms). In later sections, we will extend the process to simulate data on the scale of effect sizes.
 
-To give an overview of the simulation task, we will simulate data from a design with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data. In this study, infant participants are exposed to recordings of infant-directed and adult-directed speech, and we use their looking times as the primary dependent variable. The key question is whether there is any behavioural differences within each participant according to the type of stimulus.
+To give an overview of this first simulation task, we will simulate data from a design with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data.
+
+## Establishing the data-generating parameters
+
+The first thing to do is to set up the parameters that govern the process we assume to give rise to the data: the data-generating process. Let's start by defining the number of stimulus items that each infant participant will be exposed to. Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of IDS and 8 recordings of ADS. Let's say that a realistic sample size for our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). This is a within-subjects, between-items study; that is, each and every subject receives both IDS and ADS stimuli (within-subject), but each stimulus is either IDS or ADS (between-items).
+
+Now that we have an overview of a dataset that would make sense for our experimental design, let's start to make some realistic and informed choices for parameters that would make sense to build a statistical model. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:
+
+DV = β₀ + β₁ * SpeechStyle + u₀ⱼ^{(item)} + u₀ᵢ^{(subj)} + (u₁ᵢ^{(subj)} * SpeechStyle) + ε
+
+According to this formula, the dependent variable for each subject and item is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference ADS and IDS stimuli, plus random noise. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean IDS minus the mean ADS RT, we will code the SpeechStyle category variable -0.5 for ADS and +0.5 for IDS.
+
+The parameters 𝛽0 and 𝛽1 are fixed effects: they characterize the population of events in which a typical subject encounters a typical stimulus. Thus, we set the mean RT for a “typical” infant participant encountering a “typical” stimulus to 800 ms, and assume that looking times are typically 2000ms longer for IDS as opposed to ADS.
+
+To summarize, we established a reasonable statistical model underlying the data having the form:
+
+The response time for subject 𝑠on item 𝑖, 𝑅𝑇𝑠𝑖, is decomposed into a population grand mean 𝛽0, a by-subject random intercept 𝑇0𝑠, a by-item random intercept 𝑂0𝑖, a fixed slope 𝛽1, a by-subject random slope 𝑇1𝑠, and a trial-level residual 𝑒𝑠𝑖. Our data-generating process is fully determined by seven population parameters, all denoted by Greek letters: 𝛽0, 𝛽1, 𝜏0, 𝜏1, 𝜌, 𝜔0, and 𝜎. In the next section we will apply this data-generating process to simulate the sampling of subjects, items, and trials (encounters).
+
+The output of the above function tells us that we now have three sources of variation in the model:
+
+* the usual standard deviation of the residuals (i.e., ‘sigma’),
+* the standard deviation of the population of by-subject varying intercepts (i.e., ‘Intercept’), and
+* the standard deviation of the population of by-subject varying slopes (i.e., ‘RegisterIDS’).
+
+The latter two sources of variation provide one of the most essential features of multi-level models: partial pooling, as we discussed in the lecture. 
+
+According to the formula, response 𝑅𝑇𝑠𝑖for subject 𝑠 and item 𝑖 is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference between ingroup and outgroup stimuli, plus random noise 𝑒𝑠𝑖. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean outgroup minus the mean ingroup RT, we will code the item category variable 𝑋𝑖as -.5 for the ingroup category and +.5 for the outgroup category.
+
+Now that we have an appropriate structure for our simulated dataset, we need to generate the RT values. For this, we need to establish an underlying statistical model. In this and the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for parameters. For convenience, Table @ref(tab:paramdef) lists all of the variables in the statistical model and their associated variable names in the code.
+
+Let us start with a basic model and build up from there. We want a model of RT for subject 𝑠 and item 𝑖that looks something like:
+
+In the model formula, we use Greek letters (𝛽0, 𝛽1) to represent population parameters that are being directly estimated by the model. In contrast, Roman letters represent the remaining variables: observed variables whose values are determined by sampling (e.g., 𝑅𝑇𝑠𝑖, 𝑇0𝑠, 𝑒𝑠𝑖) or fixed by the experiment design (𝑋𝑖).
+
+Although this model is incomplete, we can go ahead and choose parameters for 𝛽0 and 𝛽1. For this example, we set a grand mean of 800 ms and a mean difference of 50 ms. You will need to use disciplinary expertise and/or pilot data to choose these parameters; by the end of this tutorial you will understand how to extract those parameters from an analysis.
+
+
+
 
 Let's start by loading the required packages:
 
@@ -45,39 +82,7 @@ plot_theme <-
         axis.title.y = element_text(size = 13))
 ```
 
-## Establishing the data-generating parameters
 
-The first thing to do is to set up the parameters that govern the process we assume to give rise to the data: the data-generating process. Let's start by defining the number of stimulus items that each infant participant will be exposed to. Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of IDS and 8 recordings of ADS. Let's say that a realistic sample size for our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). This is a within-subjects, between-items study; that is, each and every subject receives both IDS and ADS stimuli (within-subject), but each stimulus is either IDS or ADS (between-items).
-
-Now that we have an overview of a dataset that would make sense for our experimental design, let's start to make some realistic and informed choices for parameters that would make sense to build a statistical model. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:
-
-DV = β₀ + β₁ * SpeechStyle + u₀ⱼ^(item) + u₀ᵢ^(subj) + (u₁ᵢ^(subj) * SpeechStyle) + ε 
-
-According to this formula, the dependent variable for each subject and item is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference ADS and IDS stimuli, plus random noise. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean IDS minus the mean ADS RT, we will code the SpeechStyle category variable -0.5 for ADS and +0.5 for IDS.
-
-The parameters 𝛽0 and 𝛽1 are fixed effects: they characterize the population of events in which a typical subject encounters a typical stimulus. Thus, we set the mean RT for a “typical” infant participant encountering a “typical” stimulus to 800 ms, and assume that looking times are typically 2000ms longer for IDS as opposed to ADS.
-
-To summarize, we established a reasonable statistical model underlying the data having the form:
-
-The response time for subject 𝑠on item 𝑖, 𝑅𝑇𝑠𝑖, is decomposed into a population grand mean 𝛽0, a by-subject random intercept 𝑇0𝑠, a by-item random intercept 𝑂0𝑖, a fixed slope 𝛽1, a by-subject random slope 𝑇1𝑠, and a trial-level residual 𝑒𝑠𝑖. Our data-generating process is fully determined by seven population parameters, all denoted by Greek letters: 𝛽0, 𝛽1, 𝜏0, 𝜏1, 𝜌, 𝜔0, and 𝜎. In the next section we will apply this data-generating process to simulate the sampling of subjects, items, and trials (encounters).
-
-The output of the above function tells us that we now have three sources of variation in the model:
-
-* the usual standard deviation of the residuals (i.e., ‘sigma’),
-* the standard deviation of the population of by-subject varying intercepts (i.e., ‘Intercept’), and
-* the standard deviation of the population of by-subject varying slopes (i.e., ‘RegisterIDS’).
-
-The latter two sources of variation provide one of the most essential features of multi-level models: partial pooling, as we discussed in the lecture. 
-
-According to the formula, response 𝑅𝑇𝑠𝑖for subject 𝑠 and item 𝑖 is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference between ingroup and outgroup stimuli, plus random noise 𝑒𝑠𝑖. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean outgroup minus the mean ingroup RT, we will code the item category variable 𝑋𝑖as -.5 for the ingroup category and +.5 for the outgroup category.
-
-Now that we have an appropriate structure for our simulated dataset, we need to generate the RT values. For this, we need to establish an underlying statistical model. In this and the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for parameters. For convenience, Table @ref(tab:paramdef) lists all of the variables in the statistical model and their associated variable names in the code.
-
-Let us start with a basic model and build up from there. We want a model of RT for subject 𝑠 and item 𝑖that looks something like:
-
-In the model formula, we use Greek letters (𝛽0, 𝛽1) to represent population parameters that are being directly estimated by the model. In contrast, Roman letters represent the remaining variables: observed variables whose values are determined by sampling (e.g., 𝑅𝑇𝑠𝑖, 𝑇0𝑠, 𝑒𝑠𝑖) or fixed by the experiment design (𝑋𝑖).
-
-Although this model is incomplete, we can go ahead and choose parameters for 𝛽0 and 𝛽1. For this example, we set a grand mean of 800 ms and a mean difference of 50 ms. You will need to use disciplinary expertise and/or pilot data to choose these parameters; by the end of this tutorial you will understand how to extract those parameters from an analysis.
 
 Let's start by setting the fixed-effects parameters; that is, the overall intercept (ADS) and the effect of speech style (IDS). We can be informed about these choices from what we know about looking times in infant expperiments. We could imagine a looking time of around 9 seconds (i.e., 9000ms) for ADS stimuli and for infants to exhibit longer looking times towards IDS stimuli, maybe around 11 seconds (i.e., 11000 ms), or 2000 ms longer looking times than that to ADS. Let's code this explicitly as parameter values in for our simulation:
 
