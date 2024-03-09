@@ -8,50 +8,34 @@ editor_options:
 
 Let's take inspiration from ManyBabies1 (https://doi.org/10.1177/2515245919900809) and think about how we would simulate data for a new experimmental study on the IDS preference effect. In this study, infant participants are exposed to recordings of adult-directed speech (ADS) and infant-directed speech (IDS), and we use infants' looking times as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli within each participant. To gain fammiliarity with the simulation process in an intuitive way, we will simulate data on the scale of looking times (i.e., 0-20,000ms). In later sections, we will extend the process to simulate data on the scale of effect sizes.
 
-To give an overview of this first simulation task, we will simulate data from a design with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data.
+To give an overview of this first simulation task, we will simulate data with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data.
 
-## What are the data-generating parameters?
+## Setting the Experimental Parameters?
 
-To make 
+Before we can start to simulate data, we need to be very clear about the study design. This clarity is important because we need to define the parameters that govern the process we assume can give rise to the data. If we are building on ManyBabies1, then we are dealing with a within-subjects, between-items study; that is, each and every subject receives both ADS and IDS stimuli (within-subject), but each stimulus is either ADS or IDS (between-items).
 
-The first thing to do is to set up the parameters that govern the process we assume to give rise to the data: the data-generating process. Let's start by defining the number of stimulus items that each infant participant will be exposed to. Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of IDS and 8 recordings of ADS. Let's say that a realistic sample size for our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). This is a within-subjects, between-items study; that is, each and every subject receives both IDS and ADS stimuli (within-subject), but each stimulus is either IDS or ADS (between-items).
+Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of ADS and 8 recordings of IDS. And let's say that a realistic sample size our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). Let's set these experimental parameters now already
 
-Now that we have an overview of a dataset that would make sense for our experimental design, let's start to make some realistic and informed choices for parameters that would make sense to build a statistical model. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:
+```{r}
+# set number of subjects and items
+n_subj     <- 25 # number of subjects
+n_ADS  <-  8 # number of ADS stimuli
+n_IDS <-  8 # number of IDS stimuli
+```
 
-DV = β₀ + β₁ * SpeechStyle + u₀ⱼ^{(item)} + u₀ᵢ^{(subj)} + (u₁ᵢ^{(subj)} * SpeechStyle) + ε
+## Data Generating Parameters
 
-According to this formula, the dependent variable for each subject and item is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference ADS and IDS stimuli, plus random noise. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean IDS minus the mean ADS RT, we will code the SpeechStyle category variable -0.5 for ADS and +0.5 for IDS.
+Now that we have an overview of the experimental design, we can start to consider a reasonable statistical model of the data. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:
 
-The parameters 𝛽0 and 𝛽1 are fixed effects: they characterize the population of events in which a typical subject encounters a typical stimulus. Thus, we set the mean RT for a “typical” infant participant encountering a “typical” stimulus to 800 ms, and assume that looking times are typically 2000ms longer for IDS as opposed to ADS.
+Looking Time = β₀ + β₁ * SpeechStyle + u₀ⱼ^{(item)} + u₀ᵢ^{(subj)} + (u₁ᵢ^{(subj)} * SpeechStyle) + ε
 
-To summarize, we established a reasonable statistical model underlying the data having the form:
+According to this formula, the looking time for subject, s, on item, i, is decomposed into linear combination of fixed effects (i.e., the population grand mean, β₀, and the effect of SpeechStyle, β₁) and a variety of random effects, such as a by-subject random intercept, u₀ᵢ^{(subj)}, a by-item random intercept u₀ⱼ^{(item)}, a by-subject random slope, (u₁ᵢ^{(subj)} * SpeechStyle), and a trial-level residual error, ε.
 
-The response time for subject 𝑠on item 𝑖, 𝑅𝑇𝑠𝑖, is decomposed into a population grand mean 𝛽0, a by-subject random intercept 𝑇0𝑠, a by-item random intercept 𝑂0𝑖, a fixed slope 𝛽1, a by-subject random slope 𝑇1𝑠, and a trial-level residual 𝑒𝑠𝑖. Our data-generating process is fully determined by seven population parameters, all denoted by Greek letters: 𝛽0, 𝛽1, 𝜏0, 𝜏1, 𝜌, 𝜔0, and 𝜎. In the next section we will apply this data-generating process to simulate the sampling of subjects, items, and trials (encounters).
+This formula paves a clear way forward for our data simulation. In the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for parameters.
 
-The output of the above function tells us that we now have three sources of variation in the model:
+## Choosing Values for Fixed Effect Parameters
 
-* the usual standard deviation of the residuals (i.e., ‘sigma’),
-* the standard deviation of the population of by-subject varying intercepts (i.e., ‘Intercept’), and
-* the standard deviation of the population of by-subject varying slopes (i.e., ‘RegisterIDS’).
-
-The latter two sources of variation provide one of the most essential features of multi-level models: partial pooling, as we discussed in the lecture. 
-
-According to the formula, response 𝑅𝑇𝑠𝑖for subject 𝑠 and item 𝑖 is defined as sum of an intercept term 𝛽0, which in this example is the grand mean reaction time for the population of stimuli, plus 𝛽1, the mean RT difference between ingroup and outgroup stimuli, plus random noise 𝑒𝑠𝑖. To make 𝛽0 equal the grand mean and 𝛽1 equal the mean outgroup minus the mean ingroup RT, we will code the item category variable 𝑋𝑖as -.5 for the ingroup category and +.5 for the outgroup category.
-
-Now that we have an appropriate structure for our simulated dataset, we need to generate the RT values. For this, we need to establish an underlying statistical model. In this and the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for parameters. For convenience, Table @ref(tab:paramdef) lists all of the variables in the statistical model and their associated variable names in the code.
-
-Let us start with a basic model and build up from there. We want a model of RT for subject 𝑠 and item 𝑖that looks something like:
-
-In the model formula, we use Greek letters (𝛽0, 𝛽1) to represent population parameters that are being directly estimated by the model. In contrast, Roman letters represent the remaining variables: observed variables whose values are determined by sampling (e.g., 𝑅𝑇𝑠𝑖, 𝑇0𝑠, 𝑒𝑠𝑖) or fixed by the experiment design (𝑋𝑖).
-
-Although this model is incomplete, we can go ahead and choose parameters for 𝛽0 and 𝛽1. For this example, we set a grand mean of 800 ms and a mean difference of 50 ms. You will need to use disciplinary expertise and/or pilot data to choose these parameters; by the end of this tutorial you will understand how to extract those parameters from an analysis.
-
-
-
-
-Let's start by loading the required packages:
-
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 #if you don't have the pacman package loaded on your computer, uncomment the next line, install pacman, and load in the required packages
 options(repos = "https://cran.r-project.org/")
 install.packages('pacman')
@@ -77,32 +61,34 @@ opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.width=12, fig.heig
 plot_theme <- 
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5, size = 18), 
-        legend.position = "none", 
         axis.text.x = element_text(size = 13), 
         axis.title.x = element_text(size = 13), 
         axis.text.y = element_text(size = 12), 
-        axis.title.y = element_text(size = 13))
+        axis.title.y = element_text(size = 13),
+        strip.background = element_rect(color="white", fill="white", size=1.5, linetype="solid"))
+
 ```
 
-
-
-Let's start by setting the fixed-effects parameters; that is, the overall intercept (ADS) and the effect of speech style (IDS). We can be informed about these choices from what we know about looking times in infant expperiments. We could imagine a looking time of around 9 seconds (i.e., 9000ms) for ADS stimuli and for infants to exhibit longer looking times towards IDS stimuli, maybe around 11 seconds (i.e., 11000 ms), or 2000 ms longer looking times than that to ADS. Let's code this explicitly as parameter values in for our simulation:
+Let's start by setting the fixed-effect parameter of SpeechStyle (β₀ + β₁*SpeechStyle). How should we set these parameters? First of all, we can be guided by what we know about looking time distributions in infant experiments. For example, we could imagine average infant looking times to be around 7 seconds (i.e., 7000ms), and from ManyBabies1, we know that infants exhibit around X seconds (i.e., 2000ms) longer looking times to IDS stimuli than to ADS stimuli. Let's go ahead and code these values explicitly as parameter values in our simulation.
 
 ```{r}
 # set fixed effect parameters
-beta_0 <- 9000 # intercept; i.e., the grand mean, ADS 
-beta_1 <- 2000 # slope; i.e, effect of IDS 
+beta_0 <- 7000 # intercept; i.e., the grand mean, β₀
+beta_1 <- 2000 # slope; i.e, effect of IDS, β₁
 ```
 
-We also need to add some variability around these values, as we can't expect each and every infant in the experiment to have exactly the same baseline reaction to the ADS stimuli, and we can't expect each stimulus to have exactly the same effect. We would expect variability in both subject reactions and item effects. Let's code this as standard deviation of by-subject random intercept and by-item random intercept sd.
+When we're modelling data from experiments involving individuals (like infants in this case), it's essential to account for the fact that each individual may have a unique baseline reaction to the stimuli, which we can't anticipate or control for entirely. Similarly, the effect of the stimuli itself might vary across different instances of the stimulus. In other words, we expect variability both in how subjects react and in the impact of each stimulus. To address this, we introduce random intercept values for subjects and items. This means we allow for each subject and each stimulus item to have its own intercept value, capturing their individual baseline reactions and effects. To quantify the variability around these values, we introduce the standard deviation of the random intercepts, reflecting the range of differences we might observe among subjects' reactions and the effects of different stimulus items. Let's code this as standard deviation of by-subject random intercept and by-item random intercept sd.
 
+## Choosing Values for Varying Effect Parameters
 ```{r}
 # set random effect parameters
 tau_0   <- 3000 # by-subject random intercept sd
 omega_0 <- 1000   # by-item random intercept sd
 ```
 
-We also can't expect the effect of IDS stimuli to be the same for every infant; that is, some infants' attention may be more grabbed by IDS stimuli than others, and we therefore need to add subject-specific variability for the effect of IDS on looking times. Let's code this as the tau_1 parameter. Here we can also add a crucial component of multi-level models, which is the correlation matrix. There may be patterns in the data between those infants who have a high looking time baseline in ADS and the effects of IDS, and we therefore have to add a correlation matrix to account for these patterns. Here, we specify that there is a weak correlation between the varying intercepts and varying slopes of infant participants. We also need a residual error term to capture unexplained sources of variability:
+In modeling the effect of IDS stimuli on infant looking times, it's also important to acknowledge that this effect may vary across different infants. Some infants might be more responsive to IDS stimuli than others, leading to differences in their looking times. Therefore, we need to introduce subject-specific variability to account for how the effect of IDS varies among infants. In statistical modeling, when we include random slopes, we're essentially allowing the effect of certain variables to vary not only across different individuals (random intercepts) but also across different levels of another variable (random slopes). 
+
+When we introduce random slopes, we need to consider potential correlations between these varying slopes and the varying intercepts. This is because if there's a correlation between the way individuals (infants, in this case) respond to the IDS stimuli (reflected in the random slopes) and their baseline behaviors (reflected in the random intercepts), it can affect our model's predictions. For instance, if infants who naturally have longer attention spans (reflected in higher random intercepts) also tend to show stronger responses to IDS stimuli (reflected in steeper random slopes), ignoring this correlation might lead to biased estimates or inaccurate predictions. Including a correlation matrix allows us to explicitly account for these potential correlations, ensuring that our model accurately captures the relationships between different sources of variability in the data and produces more reliable results. To capture these patterns, we include a correlation matrix, specifying a weak correlation between the varying intercepts and varying slopes of infant participants. Lastly, we incorporate a residual error term to account for any unexplained sources of variability in the model. This helps ensure that our model accurately captures the complexities of infants' responses to different stimuli while also acknowledging inherent variations and correlations within the data.
 
 ```{r}
 # set more random effect and error parameters
@@ -111,42 +97,38 @@ rho    <-  0.2 # correlation between intercept and slope
 sigma  <- 500 # residual (error) sd
 ```
 
-## Define parameters for observations
-
-Now that we have our initial parameters in place, it's time to start defining parameters related to the number of observations. In this example, we will simulate data from a typical IDS preference experiment, with 24 infants responding to 8 
-
-20 subjects responding to 25 ingroup faces and 25 outgroup faces. There are no between-subject factors, so we can set n_subj to 100. We set n_ingroup and n_outgroup to the number of stimulus items in each condition.
-
-```{r}
-# set number of subjects and items
-n_subj     <- 24 # number of subjects
-n_ADS  <-  8 # number of ADS stimuli
-n_IDS <-  8 # number of IDS stimuli
-```
-
-
 ## Simulate the sampling of stimulus items
 
-Now it's time to create a dataset that lists each item, which speech style it is in and its varying properties. Note that the code refers back to the omega_0 parameter that we specified above for the varying item intercept. For the varying item variable, we are going to use the faux package to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We sample the values of 𝑂0𝑖 from a normal distribution using the rnorm() function, with a mean of 0 and SD of 𝜔0.
+Now it's time to create a dataset that lists, for each stimulus item, the speech style it is in and its varying properties on infants' looking times. This captures the intuition that we would expect different speech recordings to exhibit variation in infants' average looking times. Here, we model items only with varying intercepts. To set the parameter for varying item intercept, we are going to specify the standard deviation that we expect items to exhibit in the parameter, item_sd, in the below code. That is, we sample values from a normal distribution using the rnorm() function, with a meaan of 0 and standard deviation of item_sd. For the varying item variable, we also need to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We are going to use the faux package to carry this out. Lastly, we will carry out contrast coding, and we will later multiply this effect-coded factor by the fixed effect of category to simulate data where the ADS stimuli on average generate looking times of -500 ms different from the grand mean, while the IDS stimuli are on average 1000 ms different from the grand mean.
 
 ```{r}
 # simulate a sample of items
 # total number of items = n_ADS + n_IDS
+item_sd <- 200
 items <- data.frame(
   #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = omega_0)
+  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)
 ) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I")) %>%
-  mutate(SpeechStyle = recode(Register, "ADS" = -0.5, "IDS" = +0.5))
+  mutate(SpeechStyle = recode(Register, "ADS" = -0.5, "IDS" = +0.5)) #introduce a numeric predictor to represent what category each stimulus item, we set ADS to be -0.5 and IDS to be +0.5. This is what is known as contrast coding.
 
 #let's have a look at what this has produced:
 glimpse(items)
+
+ggplot(items, aes(1, O_0i, fill = Register, color = Register)) +
+  geom_rain(alpha = .8,
+            boxplot.args = list(color = "black", outlier.shape = NA)) +
+  ggtitle('Varying Intercept Terms for Stimulus Item') +
+  ylab('SD of Item Intercept (ms)') +
+  facet_wrap(~Register) +
+  scale_fill_brewer(palette = 'Dark2') +
+  scale_color_brewer(palette = 'Dark2') +
+  plot_theme +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
-
-Let us introduce a numeric predictor to represent what category each stimulus item 𝑖 appears in (i.e., for the 𝑋𝑖 in our model). Since we predict that looking times to ADS stimuli will be shorter than IDS stimuli, we set ADS to be -0.5 and IDS to be +0.5. This is what is known as contrast coding, and we will later multiply this effect-coded factor by the fixed effect of category to simulate data where the ADS stimuli on average generate looking times of -1000 ms different from the grand mean, while the IDS stimuli are on average 1000 ms different from the grand mean.
-
-In R, most regression procedures can handle two-level factors like category as predictor variables. By default, the procedure will create a new numeric predictor that codes one level of the factor as zero and the other as one. Why not just use the defaults? The short explanation is that the default of 0, 1 coding is not well-suited to the kinds of factorial experimental designs often found in psychology and related fields. For the current example, using the default coding for the 𝑋 predictor would change the interpretation of 𝛽0: instead of the grand mean, it would reflect the mean for the group coded as zero. One could change the default, but we feel it is better to be explicit in the code about what values are being used. 
 
 ## Simulate the sampling of subjects
 
@@ -233,7 +215,7 @@ SimulateData <- function(
   n_IDS =  8,   # number of outgroup stimuli
   beta_0 = 9000,   # grand mean
   beta_1 =  3000,   # effect of category
-  omega_0 =  1000,   # by-item random intercept sd
+  item_sd =  1000,   # by-item random intercept sd
   tau_0 = 2000,   # by-subject random intercept sd
   tau_1 =  2500,   # by-subject random slope sd
   rho = 0.5,   # correlation between intercept and slope

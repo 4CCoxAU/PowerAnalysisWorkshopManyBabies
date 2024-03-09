@@ -55,3 +55,17 @@ ran_pars,subj_id,cor__(Intercept).SpeechStyle,1,NA,NA,NA,NA
 ran_pars,subj_id,sd__SpeechStyle,0.007841302805173804,NA,NA,NA,NA
 ran_pars,item_id,sd__(Intercept),0,NA,NA,NA,NA
 ran_pars,Residual,sd__Observation,0.49738638020328046,NA,NA,NA,NA
+fixed,NA,(Intercept),-0.02762920335660134,0.040771770231978886,-0.6776552305528957,35.00059702596551,0.5024456206814543
+fixed,NA,SpeechStyle,0.407752753739435,0.0844937564298966,4.82583294870719,35.00002284657757,2.712003514286139e-5
+ran_pars,subj_id,sd__(Intercept),0.07973326347068146,NA,NA,NA,NA
+ran_pars,subj_id,cor__(Intercept).SpeechStyle,0.1352114740628336,NA,NA,NA,NA
+ran_pars,subj_id,sd__SpeechStyle,0.20751873420800618,NA,NA,NA,NA
+ran_pars,item_id,sd__(Intercept),0,NA,NA,NA,NA
+ran_pars,Residual,sd__Observation,0.46254404166041946,NA,NA,NA,NA
+fixed,NA,(Intercept),-0.013499392630117037,0.05693407434989566,-0.23710568379762859,35.00079417986482,0.8139571530067662
+fixed,NA,SpeechStyle,0.32329543012125633,0.08290803091401353,3.8994464897683554,106.79456072982524,1.6876065239188783e-4
+ran_pars,subj_id,sd__(Intercept),0.23419072311244415,NA,NA,NA,NA
+ran_pars,subj_id,cor__(Intercept).SpeechStyle,1,NA,NA,NA,NA
+ran_pars,subj_id,sd__SpeechStyle,0.007841302805173804,NA,NA,NA,NA
+ran_pars,item_id,sd__(Intercept),0,NA,NA,NA,NA
+ran_pars,Residual,sd__Observation,0.49738638020328046,NA,NA,NA,NA
