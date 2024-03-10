@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ManyBabies Power Analysis - Modelling Simulated Effect Size Data</title>
+<title>ManyBabies Data Simulation and Power Analysis - Modelling Simulated Effect Size Data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -63,9 +63,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../content/FurtherResources.html" rel="next">
+<link href="../content/SolutionToExercises.html" rel="next">
 <link href="../content/ModellingTheData.html" rel="prev">
-<link href="../images/favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -132,7 +131,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-center sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="../">ManyBabies Power Analysis</a> 
+      <a href="../">ManyBabies Data Simulation and Power Analysis</a> 
         <div class="sidebar-tools-main tools-wide">
     <a href="https://manybabies.org/" title="ManyBabies Power Analysis Workshop" class="quarto-navigation-tool px-1" aria-label="ManyBabies Power Analysis Workshop"><i class="bi bi-globe"></i></a>
     <a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies" title="ManyBabies Github" class="quarto-navigation-tool px-1" aria-label="ManyBabies Github"><i class="bi bi-github"></i></a>
@@ -161,12 +160,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../content/LevelTwo/SolutionToExercise1.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Solution to Exercise I</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../content/ModellingTheData.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Part II, ModellingTheData</span></a>
   </div>
@@ -175,6 +168,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../content/SimulatingEffectSizes.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Part III, Simulating Effect Sizes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/SolutionToExercises.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exercise Solutions</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -198,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#time-to-power-up-the-analysis" id="toc-time-to-power-up-the-analysis" class="nav-link" data-scroll-target="#time-to-power-up-the-analysis"><span class="header-section-number">3</span> Time to Power-Up the Analysis</a></li>
   <li><a href="#using-grid-searches-to-explore-the-multiverse-of-experimenter-choices" id="toc-using-grid-searches-to-explore-the-multiverse-of-experimenter-choices" class="nav-link" data-scroll-target="#using-grid-searches-to-explore-the-multiverse-of-experimenter-choices"><span class="header-section-number">4</span> Using Grid Searches to Explore the Multiverse of Experimenter Choices</a></li>
   </ul>
-<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -474,7 +473,7 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 1 Time elapsed: 0.2717829 </code></pre>
+<pre><code>Simulation 1 Time elapsed: 1.161242 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
@@ -483,14 +482,14 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.2e+00</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 2 Time elapsed: 0.2457759 </code></pre>
+<pre><code>Simulation 2 Time elapsed: 1.225213 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 3 Time elapsed: 0.2665231 </code></pre>
+<pre><code>Simulation 3 Time elapsed: 1.113626 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
@@ -500,7 +499,7 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.4e+00</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 4 Time elapsed: 0.2938499 </code></pre>
+<pre><code>Simulation 4 Time elapsed: 1.014334 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
@@ -510,7 +509,7 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.6e+01</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 5 Time elapsed: 0.2922461 </code></pre>
+<pre><code>Simulation 5 Time elapsed: 1.028305 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
@@ -520,14 +519,14 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.0e+02</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 6 Time elapsed: 0.2825689 </code></pre>
+<pre><code>Simulation 6 Time elapsed: 1.483256 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 7 Time elapsed: 0.276298 </code></pre>
+<pre><code>Simulation 7 Time elapsed: 1.095819 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
@@ -542,14 +541,14 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -8.4e+01</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 8 Time elapsed: 0.2878881 </code></pre>
+<pre><code>Simulation 8 Time elapsed: 1.120769 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 9 Time elapsed: 0.3117719 </code></pre>
+<pre><code>Simulation 9 Time elapsed: 1.247081 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
@@ -559,19 +558,19 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.3e+00</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 10 Time elapsed: 0.28282 </code></pre>
+<pre><code>Simulation 10 Time elapsed: 1.043408 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 11 Time elapsed: 0.3570728 </code></pre>
+<pre><code>Simulation 11 Time elapsed: 1.205888 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 12 Time elapsed: 0.3347061 </code></pre>
+<pre><code>Simulation 12 Time elapsed: 1.230725 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">here</span>(<span class="st">"sims_grid_search"</span>))</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>file_names <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"*.csv"</span>)</span>
@@ -1213,8 +1212,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../content/FurtherResources.html" class="pagination-link" aria-label="Further Resources">
-        <span class="nav-page-text">Further Resources</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../content/SolutionToExercises.html" class="pagination-link" aria-label="Exercise Solutions">
+        <span class="nav-page-text">Exercise Solutions</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1223,4 +1222,4 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></div></div></footer></body></html>
