@@ -22,7 +22,8 @@ pacman::p_load(knitr, # rendering of .Rmd file
                ggrain, #visualisation tool for raincloud plots
                dplyr,
                here,
-               tidyr
+               tidyr,
+               readr
                )
 
 set.seed(1234)

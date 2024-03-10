@@ -34,8 +34,8 @@ website:
         text: Introduction
       - href: content/ExerciseDataSimulation.qmd
         text: Part I, Data Simulation
-      - href: content/SolutionToExercise1.qmd
-        text: Part I, Solution to Exercise I
+      - href: content/LevelTwo/SolutionToExercise1.qmd
+        text: Solution to Exercise I
       - href: content/ModellingTheData.qmd
         text: Part II, ModellingTheData
       - href: content/SimulatingEffectSizes.qmd
@@ -51,6 +51,9 @@ format:
     code-copy: true
     code-overflow: wrap
     toc: true
+    toc-depth: 2
+    toc-expand: 2
+    number-sections: true
 
 
 filters:

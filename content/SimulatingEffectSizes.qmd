@@ -22,7 +22,8 @@ pacman::p_load(knitr, # rendering of .Rmd file
                ggrain,
                dplyr,
                here,
-               tidyr)
+               tidyr,
+               readr)
 set.seed(1234)
 opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.width=12, fig.height=11, fig.fullwidth=TRUE)
 
