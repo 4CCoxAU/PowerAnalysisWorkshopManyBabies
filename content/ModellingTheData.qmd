@@ -1,5 +1,7 @@
 ---
 title: Part II, Modelling the Simulated Data
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Modelling the Simulated Data
@@ -15,7 +17,7 @@ The terms in parentheses with the “pipe” separator (|) define the random eff
 Given that looking time data tends to be right-skewed, we can model the data using a logarithmic link function to take this into account. The GLMM would look as follows. We will use the summary() function to view the results.
 
 ```{r}
-dataSimulated <- SimulateData()
+dataSimulated <- SimulateLTData()
 
 model <- glmer(LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id), 
                data = dataSimulated,
