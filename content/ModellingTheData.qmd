@@ -4,6 +4,86 @@ editor_options:
   chunk_output_type: console
 ---
 
+## Choosing Values for Fixed Effect Parameters
+
+```{r setup, include=FALSE}
+#if you don't have the pacman package loaded on your computer, uncomment the next line, install pacman, and load in the required packages
+options(repos = "https://cran.r-project.org/")
+install.packages('pacman')
+#load the required packages:
+pacman::p_load(knitr, # rendering of .Rmd file
+               lme4, # model specification / estimation
+               afex, # anova and deriving p-values from lmer
+               broom.mixed, # extracting data from model fits
+               faux, # generate correlated values
+               tidyverse, # data wrangling and visualisation
+               ggridges, #visualisation
+               viridis, # color schemes for visualisation
+               kableExtra, #helps with knitting the .Rmd file
+               cowplot, #visualisation tool to include multiple plots
+               ggrain, #visualisation tool for raincloud plots
+               dplyr,
+               here
+               )
+
+set.seed(1234)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.width=12, fig.height=11, fig.fullwidth=TRUE)
+
+plot_theme <- 
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5, size = 18), 
+        axis.text.x = element_text(size = 13), 
+        axis.title.x = element_text(size = 13), 
+        axis.text.y = element_text(size = 12), 
+        axis.title.y = element_text(size = 13),
+        strip.background = element_rect(color="white", fill="white", size=1.5, linetype="solid"))
+
+```
+
+```{r}
+# set up the custom data simulation function
+SimulateLTData <- function(
+  n_subj = 24,   # number of subjects
+  n_ADS  = 8,   # number of ingroup stimuli
+  n_IDS =  8,   # number of outgroup stimuli
+  beta_0 = 7000,   # grand mean
+  beta_1 =  2000,   # effect of category
+  item_sd =  200,   # by-item random intercept sd
+  tau_0 = 2000,   # by-subject random intercept sd
+  tau_1 =  1000,   # by-subject random slope sd
+  rho = 0.2,   # correlation between intercept and slope
+  sigma = 500) { # residual (standard deviation)
+
+  items <- data.frame(
+  #item_id = seq_len(n_ADS + n_IDS),
+  Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
+  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)) %>% 
+  mutate(item_id = faux::make_id(nrow(.), "I")) %>%
+  mutate(SpeechStyle = recode(Register, "ADS" = -0.5, "IDS" = +0.5))
+
+  # simulate a sample of subjects
+
+# sample from a multivariate random distribution 
+  subjects <- faux::rnorm_multi(
+  n = n_subj, 
+  mu = 0, # means for random effects are always 0
+  sd = c(tau_0, tau_1), # set SDs
+  r = rho, # set correlation, see ?faux::rnorm_multi
+  varnames = c("T_0s", "T_1s")
+) %>%
+  mutate(subj_id = faux::make_id(nrow(.), "S"))
+
+  ParameterValues <- crossing(subjects, items)  %>%
+    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, everything())
+  
+  dat_sim <- ParameterValues %>%
+    mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + e_si) %>%
+    mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
+}
+```
+
 ## Modelling the Simulated Data
 
 Let's think about how we want to run a generalised linear mixed-effects model of the data. For a varying intercepts, varying slopes model for each subject, we could run the following model with the lmer syntax as follows:
@@ -33,7 +113,7 @@ Great, so now we have a way of generating data for our research question, and we
 single_run <- function(...) {
   # ... is a shortcut that forwards any arguments to 
   # my_sim_data(), the function created above
-  dataSimulated <- SimulateData()
+  dataSimulated <- SimulateLTData()
   
   model <- lmer(LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id),
                 data = dataSimulated) 
