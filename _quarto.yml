@@ -32,13 +32,17 @@ website:
     collapse-level: 1
     contents:
       - href: index.qmd
-        text: Home
+        text: Introduction
       - href: content/ExerciseDataSimulation.qmd
         text: Part I, Data Simulation
+      - href: content/SolutionToExercise1.qmd
+        text: Part I, Solution to Exercise I
       - href: content/ModellingTheData.qmd
         text: Part II, ModellingTheData
       - href: content/SimulatingEffectSizes.qmd
         text: Part III, Simulating Effect Sizes
+      - href: content/FurtherResources.qmd
+        text: Further Resources
         
 format:
   html:

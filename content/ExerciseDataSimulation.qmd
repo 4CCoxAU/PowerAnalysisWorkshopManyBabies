@@ -74,17 +74,17 @@ Let's start by setting the fixed-effect parameter of SpeechStyle (β₀ + β₁*
 
 ```{r}
 # set fixed effect parameters
-beta_0 <- 7000 # intercept; i.e., the grand mean, β₀
-beta_1 <- 2000 # slope; i.e, effect of IDS, β₁
+mean_intercept <- 7000 # intercept; i.e., the grand mean, β₀
+mean_slope <- 2000 # slope; i.e, effect of IDS, β₁
 ```
 
 When we're modelling data from experiments involving individuals (like infants in this case), it's essential to account for the fact that each individual may have a unique baseline reaction to the stimuli, which we can't anticipate or control for entirely. Similarly, the effect of the stimuli itself might vary across different instances of the stimulus. In other words, we expect variability both in how subjects react and in the impact of each stimulus. To address this, we introduce random intercept values for subjects and items. This means we allow for each subject and each stimulus item to have its own intercept value, capturing their individual baseline reactions and effects. To quantify the variability around these values, we introduce the standard deviation of the random intercepts, reflecting the range of differences we might observe among subjects' reactions and the effects of different stimulus items. Let's code this as standard deviation of by-subject random intercept and by-item random intercept sd.
 
-## Choosing Values for Varying Effect Parameters
+## Choosing Values for Varying Slope Parameters
 ```{r}
 # set random effect parameters
-tau_0   <- 2000 # by-subject random intercept sd
-omega_0 <- 1000   # by-item random intercept sd
+subject_varyingintercept   <- 2000 # by-subject random intercept sd
+item_varyingintercept <- 1000   # by-item random intercept sd
 ```
 
 In modeling the effect of IDS stimuli on infant looking times, it's also important to acknowledge that this effect may vary across different infants. Some infants might be more responsive to IDS stimuli than others, leading to differences in their looking times. Therefore, we need to introduce subject-specific variability to account for how the effect of IDS varies among infants. In statistical modeling, when we include random slopes, we're essentially allowing the effect of certain variables to vary not only across different individuals (random intercepts) but also across different levels of another variable (random slopes). 
@@ -93,23 +93,22 @@ When we introduce random slopes, we need to consider potential correlations betw
 
 ```{r}
 # set more random effect and error parameters
-tau_1  <-  1000 # by-subject random slope sd
+subject_varyingslope  <-  1000 # by-subject random slope sd
 rho    <-  0.2 # correlation between intercept and slope
 sigma  <- 500 # residual (error) sd
 ```
 
 ## Simulate the sampling of stimulus items
 
-Now it's time to create a dataset that lists, for each stimulus item, the speech style it is in and its varying properties on infants' looking times. This captures the intuition that we would expect different speech recordings to exhibit variation in infants' average looking times. Here, we model items only with varying intercepts. To set the parameter for varying item intercept, we are going to specify the standard deviation that we expect items to exhibit in the parameter, item_sd, in the below code. That is, we sample values from a normal distribution using the rnorm() function, with a meaan of 0 and standard deviation of item_sd. For the varying item variable, we also need to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We are going to use the faux package to carry this out. Lastly, we will carry out contrast coding, and we will later multiply this effect-coded factor by the fixed effect of category to simulate data where the ADS stimuli on average generate looking times of -500 ms different from the grand mean, while the IDS stimuli are on average 1000 ms different from the grand mean.
+Now it's time to create a dataset that lists, for each stimulus item, the speech style it is in and its varying properties on infants' looking times. This captures the intuition that we would expect different speech recordings to exhibit variation in infants' average looking times. Here, we model items only with varying intercepts. To set the parameter for varying item intercept, we are going to specify the standard deviation that we expect items to exhibit in the parameter, item_varyingintercept, in the below code. That is, we sample values from a normal distribution using the rnorm() function, with a meaan of 0 and standard deviation of item_varyingintercept. For the varying item variable, we also need to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We are going to use the faux package to carry this out. Lastly, we will carry out contrast coding, and we will later multiply this effect-coded factor by the fixed effect of category to simulate data where the ADS stimuli on average generate looking times of -500 ms different from the grand mean, while the IDS stimuli are on average 1000 ms different from the grand mean.
 
 ```{r}
 # simulate a sample of items
 # total number of items = n_ADS + n_IDS
-item_sd <- 200
 items <- data.frame(
   #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)
+  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)
 ) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I")) %>%
   mutate(SpeechStyle = recode(Register, "ADS" = -0.5, "IDS" = +0.5)) #introduce a numeric predictor to represent what category each stimulus item, we set ADS to be -0.5 and IDS to be +0.5. This is what is known as contrast coding.
@@ -144,7 +143,7 @@ Now, we will simulate the sampling of individual subjects to create a table that
 subjects <- faux::rnorm_multi(
   n = n_subj, 
   mu = 0, # means for random effects are always 0
-  sd = c(tau_0, tau_1), # note that we set the SDs further up in the code when specifying varying intercepts and sloeps.
+  sd = c(subject_varyingintercept, subject_varyingslope), # note that we set the SDs further up in the code when specifying varying intercepts and sloeps.
   r = rho, # set correlation, see ?faux::rnorm_multi
   varnames = c("T_0s", "T_1s")
 ) %>%
@@ -162,7 +161,7 @@ subjects %>%
                values_to = "value") %>%
   ggplot() + 
   geom_density(aes(value, fill = T_variable), alpha = 0.8) +
-  xlim(c(-4*tau_0, 4*tau_0)) +
+  xlim(c(-4*subject_varyingintercept, 4*subject_varyingintercept)) +
   facet_wrap(~T_variable) +
   ggtitle('Varying Intercept and Slope Terms for Subjects') +
   plot_theme +
@@ -187,16 +186,16 @@ glimpse(ParameterValues)
 
 Now we have specified the parameters in ParameterValues, we are ready to add up everything together to create the response variable (i.e., infant looking times in milliseconds). To be more specific, we calculate the response variable, looking time, by adding together:
 
-* the grand intercept (beta_0),
+* the grand intercept (mean_intercept),
 * each subject-specific random intercept (T_0s),
 * each item-specific random intercept (O_0i),
-* each sum of the category effect (beta_1) and the random slope (T_1s), multiplied by the numeric predictor (SpeechStyle), and
+* each sum of the speech style effect (mean_slope) and the random slope (T_1s), multiplied by the numeric predictor (SpeechStyle), and
 * each residual error (e_si).
 
 ```{r}
 # calculate the response variable
 SimulatedRT <- ParameterValues %>%
-  mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
+  mutate(LT = mean_intercept + T_0s + O_0i + (mean_slope + T_1s) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
   mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
   dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
 ```
@@ -238,18 +237,18 @@ SimulateLTData <- function(
   n_subj = 24,   # number of subjects
   n_ADS  = 8,   # number of ingroup stimuli
   n_IDS =  8,   # number of outgroup stimuli
-  beta_0 = 7000,   # grand mean
-  beta_1 =  2000,   # effect of category
-  item_sd =  200,   # by-item random intercept sd
-  tau_0 = 2000,   # by-subject random intercept sd
-  tau_1 =  1000,   # by-subject random slope sd
+  mean_intercept = 7000,   # grand mean
+  mean_slope =  2000,   # effect of category
+  item_varyingintercept =  200,   # by-item random intercept sd
+  subject_varyingintercept = 2000,   # by-subject random intercept sd
+  subject_varyingslope =  1000,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
   sigma = 500) { # residual (standard deviation)
 
   items <- data.frame(
   #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)) %>% 
+  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I")) %>%
   mutate(SpeechStyle = recode(Register, "ADS" = -0.5, "IDS" = +0.5))
 
@@ -259,7 +258,7 @@ SimulateLTData <- function(
   subjects <- faux::rnorm_multi(
   n = n_subj, 
   mu = 0, # means for random effects are always 0
-  sd = c(tau_0, tau_1), # set SDs
+  sd = c(subject_varyingintercept, subject_varyingslope), # set SDs
   r = rho, # set correlation, see ?faux::rnorm_multi
   varnames = c("T_0s", "T_1s")
 ) %>%
@@ -269,41 +268,34 @@ SimulateLTData <- function(
     mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
     dplyr::select(subj_id, item_id, Register, SpeechStyle, everything())
   
-  dat_sim <- ParameterValues %>%
-    mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + e_si) %>%
+  ParameterValues %>%
+    mutate(LT = mean_intercept + T_0s + O_0i + (mean_slope + T_1s) * SpeechStyle + e_si) %>%
     mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>%
     dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
 }
 ```
 
-Now we can generate a dataset with the default parameters using SimulateLTData() or, for example, a dataset with 500 subjects and no effect of category using my_sim_data(n_subj = 500, beta_1 = 0).
+
+
+## Exercises to Check Understanding
+
+Exercise Ia:
+
+* How would you adapt our code to generate a dataset with 500 participants and no effect of SpeechStyle?
 
 ```{r}
-LTDataSimulated <- SimulateLTData(n_subj = 500, beta_1 = 5000)
 
-LTDataSimulated %>%
-  group_by(subj_id, Register) %>%
-  dplyr::summarise(medLT = mean(LT)) %>%
-  ggplot(aes(x = Register, y = medLT, fill = Register)) + 
-  geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
-  scale_fill_manual(values = c("#FC4E07", "steelblue")) + 
-  ggtitle('Looking Time Differences across Speech Styles') + 
-  xlab("Speech Style") + 
-  ylab('Looking Time (ms)') + 
-  scale_color_manual(values = viridis(n = 27)) +
-  plot_theme
 ```
 
-Exercise 1: Let's explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items and another power analysis with each subject receiving 15 items. What happens to the estimate of statistical power?
 
-Write your answer here:
+Exercise Ib: We might expect the IDS preference effect to change with infant age, such that older infants listen longer to IDS over ADS than younger infants. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)?
 
-______________________________________________________________________________________________________________
+Write some code here (the solution is on the next page):
+
+```{r}
 
 
-Exercise 2: We might expect the IDS preference effect to change with infant age, such that older infants listen longer to IDS over ADS than younger infants. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)?
-
-_______________________________________________________________________________________________________________
+```
 
 
 
