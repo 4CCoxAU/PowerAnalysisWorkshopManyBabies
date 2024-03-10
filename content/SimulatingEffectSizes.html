@@ -63,6 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../content/FurtherResources.html" rel="next">
 <link href="../content/ModellingTheData.html" rel="prev">
 <link href="../images/favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
@@ -149,13 +150,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Home</span></a>
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../content/ExerciseDataSimulation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Part I, Data Simulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/SolutionToExercise1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Solution to Exercise I</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -170,19 +177,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Part III, Simulating Effect Sizes</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/FurtherResources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Further Resources</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2">
     <h2 id="toc-title">On this page</h2>
    
-  <ul>
-  <li><a href="#cumulative-science-perspective" id="toc-cumulative-science-perspective" class="nav-link active" data-scroll-target="#cumulative-science-perspective">Cumulative Science Perspective</a></li>
+  <ul class="collapse">
+  <li><a href="#cumulative-science-perspective" id="toc-cumulative-science-perspective" class="nav-link active" data-scroll-target="#cumulative-science-perspective"><span class="header-section-number">1</span> Cumulative Science Perspective</a></li>
+  <li><a href="#simulating-effect-size-data-and-making-informed-choices" id="toc-simulating-effect-size-data-and-making-informed-choices" class="nav-link" data-scroll-target="#simulating-effect-size-data-and-making-informed-choices"><span class="header-section-number">2</span> Simulating Effect Size Data and Making Informed Choices</a></li>
+  <li><a href="#time-to-power-up-the-analysis" id="toc-time-to-power-up-the-analysis" class="nav-link" data-scroll-target="#time-to-power-up-the-analysis"><span class="header-section-number">3</span> Time to Power-Up the Analysis</a></li>
+  <li><a href="#using-grid-searches-to-explore-the-multiverse-of-experimenter-choices" id="toc-using-grid-searches-to-explore-the-multiverse-of-experimenter-choices" class="nav-link" data-scroll-target="#using-grid-searches-to-explore-the-multiverse-of-experimenter-choices"><span class="header-section-number">4</span> Using Grid Searches to Explore the Multiverse of Experimenter Choices</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/SimulatingEffectSizes.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -206,119 +222,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Let’s start by loading the required packages:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#if you don't have the pacman package loaded on your computer, uncomment the next line, install pacman, and load in the required packages</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages('pacman')</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#load the required packages:</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(knitr, <span class="co"># rendering of .Rmd file</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>               lme4, <span class="co"># model specification / estimation</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>               afex, <span class="co"># anova and deriving p-values from lmer</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>               broom.mixed, <span class="co"># extracting data from model fits</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>               faux, <span class="co"># generate correlated values</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>               tidyverse, <span class="co"># data wrangling and visualisation</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>               ggridges, <span class="co">#visualisation</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>               viridis, <span class="co"># color schemes for visualisation</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>               kableExtra, <span class="co">#helps with knitting the .Rmd file</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>               cowplot, <span class="co">#visualisation tool to include multiple plots</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>               ggrain,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>               dplyr,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>               here)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">tidy.opts=</span><span class="fu">list</span>(<span class="at">width.cutoff=</span><span class="dv">60</span>),<span class="at">tidy=</span><span class="cn">TRUE</span>, <span class="at">fig.width=</span><span class="dv">12</span>, <span class="at">fig.height=</span><span class="dv">11</span>, <span class="at">fig.fullwidth=</span><span class="cn">TRUE</span>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plot_theme <span class="ot">&lt;-</span> </span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">18</span>), </span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"none"</span>, </span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>), </span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>), </span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>), </span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="cumulative-science-perspective" class="level2">
-<h2 class="anchored" data-anchor-id="cumulative-science-perspective">Cumulative Science Perspective</h2>
-<p>Science stands on the shoulders of – not giants – but normal human beings who are as susceptible to confirmation and selection biases as everyone else. The limitations of relying on single studies have motivated a push towards methods of synthesising quantitative evidence in the form of meta- and mega-analyses (Koile &amp; Cristia, 2021; Liu &amp; Almeida, 2023; Zettersten et al., 2023). To counter selection biases and obtain an objective picture of a given field, there exist detailed procedures restricting researcher degrees of freedom in the process (Moher et al., 2009; Page et al., 2021). Synthesising evidence from studies in a cumulative approach offers insights to the generalisability and heterogeneity of the construct across a wide variety of experimental designs, participants and stimuli (Cristia et al., 2022; Cruz Blandón et al., 2023; Koile &amp; Cristia, 2021; Tsuji et al., 2014). There are limitations to this process of estimation across studies, such as issues in transparency and reproducibility (Lakens et al., 2016, 2017; Nuijten et al., 2020), considerable errors of extraction (Zettersten, Cox, et al., 2023), reliance on published literature and concomitant bias (Moher et al., 2009; Page et al., 2021), as well as substantial between-study heterogeneity threatening practical interpretation of results (Mathur &amp; VanderWeele, 2019). There are statistical approaches that attempt to correct for publication bias and to account for heterogeneity; however, major concerns about the validity of meta-analytic estimates remain (cf., Kvarven et al., 2020). These concerns primarily revolve around the reliability of meta-analytic estimates rather than the synthesis of insights and exploration of the sampling space of individual studies (Mathur &amp; VanderWeele, 2020; Zettersten, Cox, et al., 2023). A related cumulative method that synthesises findings across multiple individual experiments involves multi-lab replication studies. In such designs, multiple labs conduct replications of original studies by implementing a common experimental protocol to test a research question across sites (ManyBabies Consortium, 2020). By varying experimenter identity and increasing sample diversity, these large-scale studies contribute to a greater likelihood of generalisability and precision (Byers-Heinlein et al., 2021; ManyBabies Consortium, 2020). However, the high degree of uniformity in methodological and analytic implementation can lead to less generalisability across other conditions than a meta-analysis.</p>
-<p>In a recent study (Zettersten, Cox, et al., 2023), we attempted to reconcile the results from a multi-lab replication study (ManyBabies Consortium, 2020) and a community-augmented metaanalysis on infants’ preference to attend to IDS over ADS. The findings from each source individually provided an incomplete picture of moderators of the IDS preference effect; for example, the two studies differed with respect to their findings on the effect of infant age, with a linear increase in the multi-lab replication study and a finding of stability across infant ages in the meta-analysis. As we suggest in the paper, this conflict may originate in factors beyond the underlying construct. Investigators in the meta-analysis had the freedom to tailor their stimuli and methods to the particular infant age investigated, which may in turn mask age-related changes in the strength of the IDS preference effect. In contrast, the speech stimuli in the multi-lab replication study were held uniform across participating laboratories and may have been better suited for children in older age ranges (ManyBabies Consortium, 2020). The synthesis of these results underscores the value of being able to generalise across various populations, experimental methodologies and infant ages, but also highlights the importance of acknowledging the inferential limitations of evidence synthesis methods (Lakens et al., 2017). Seeing scientific advancement as an iterative procedure involving data accumulation and theory development empowers us to map out the diversity of samples in earlier research, scrutinise the possibilities for generalisability, and point to future directions of research (Fusaroli et al., 2022; Zettersten, Cox, et al., 2023).</p>
-<p>In the lecture, we introduced the importance of a cumulative science perspective on scientific enquiry and argued that our explorations need to reflect the systematic exploration of the methodological space. Heterogeneity here plays a key role in the evidence that we have available to us.</p>
+<section id="cumulative-science-perspective" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="cumulative-science-perspective"><span class="header-section-number">1</span> Cumulative Science Perspective</h2>
+<p>Now it’s time to consider the realm of cumulative science efforts, such as what the ManyBabies Consortium deals with. We know that science stands on the shoulder of – not giants – but normal human beings who are as susceptible to confirmation and selection biases as everyone else. Up until now, we have relied on our intuitions about infant looking times based solely on our experience with conducting infant experiments. In this section, we consider how we can make informed choices about setting parameters and how we can capitalise on cumulativec science efforts such as multi-lab replication studies and meta-analyses. Synthesising evidence from studies in a cumulative approach offers insights to the generalisability and heterogeneity of the construct across a wide variety of experimental designs, participants and stimuli. By varying experimenter identity and increasing sample diversity, these large-scale studies contribute to a greater likelihood of generalisability and precision. However, the high degree of uniformity in methodological and analytic implementation can lead to less generalisability across other conditions than a meta-analysis.</p>
+<p>Seeing scientific advancement as an iterative procedure involving data accumulation and theory development empowers us to map out the diversity of samples in earlier research, scrutinise the possibilities for generalisability, and point to future directions of research. For the IDS preference effect, we luckily don’t just have to rely on our individual knowledge about infant looking time experiments. We have both a multi-lab replication study and a community-augmented metaanalysis on infants’ preference to attend to IDS over ADS (ManyBabies Consortium, 2020; Zettersten, Cox, et al., 2023). We can leverage these estimates in calculating statistical power, but how do we specifially implement these effect size estimates in our apriori power analysis?</p>
+</section>
+<section id="simulating-effect-size-data-and-making-informed-choices" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="simulating-effect-size-data-and-making-informed-choices"><span class="header-section-number">2</span> Simulating Effect Size Data and Making Informed Choices</h2>
 <p>Let’s imagine a scenario where a synthesis of evidence has produced an effect size estimate of 0.35 [XX; XX], just as in Zettersten, Cox, Bergmann et al.&nbsp;(2024). How can we use this to guide our study of IDS preference?</p>
-<p>Let’s start by taking the simulation function we made in the previous exercise and adapt it to the new scale of effect sizes:</p>
+<p>Let’s adapt our simulation function from previous pages to the new scale of effect sizes; here, we consider an effect size of 0 to denote no preference for either speech style. That is, infants prefer to attend to ADS just as much as they do to IDS.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>SimulateEffectSizeData <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">8</span>,   <span class="co"># number of ingroup stimuli</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">8</span>,   <span class="co"># number of outgroup stimuli</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_0 =</span> <span class="dv">0</span>,   <span class="co"># grand mean</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_1 =</span>  <span class="fl">0.35</span>,   <span class="co"># effect of category</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">omega_0 =</span>  <span class="fl">0.05</span>,   <span class="co"># by-item random intercept sd</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_0 =</span> <span class="fl">0.1</span>,   <span class="co"># by-subject random intercept sd</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_1 =</span>  <span class="fl">0.1</span>,   <span class="co"># by-subject random slope sd</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.4</span>,   <span class="co"># correlation between intercept and slope</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fl">0.5</span>) { <span class="co"># residual (standard deviation)</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> omega_0)) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="sc">+</span><span class="fl">0.5</span>))</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate a sample of subjects</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1), <span class="co"># set SDs</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>))</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, <span class="fu">everything</span>())</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  EffectSizeDataSimulated <span class="ot">&lt;-</span> ParameterValues <span class="sc">%&gt;%</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, LT)</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>SimulateEffectSizeData <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">8</span>,   <span class="co"># number of ingroup stimuli</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">8</span>,   <span class="co"># number of outgroup stimuli</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_0 =</span> <span class="dv">0</span>,   <span class="co"># grand mean</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_1 =</span>  <span class="fl">0.35</span>,   <span class="co"># effect of category</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">omega_0 =</span>  <span class="fl">0.05</span>,   <span class="co"># by-item random intercept sd</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_0 =</span> <span class="fl">0.1</span>,   <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_1 =</span>  <span class="fl">0.1</span>,   <span class="co"># by-subject random slope sd</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.4</span>,   <span class="co"># correlation between intercept and slope</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fl">0.5</span>) { <span class="co"># residual (standard deviation)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> omega_0)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="dv">1</span>))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate a sample of subjects</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1), <span class="co"># set SDs</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>))</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, <span class="fu">everything</span>())</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  EffectSizeDataSimulated <span class="ot">&lt;-</span> ParameterValues <span class="sc">%&gt;%</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, LT)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s again plot this data and see if it looks correct:</p>
+<p>Let’s again plot this data to see if it looks correct:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>meanADSRT <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">filter</span>(EffectSizeDataSimulated, Register <span class="sc">==</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ADS"</span>)<span class="sc">$</span>LT)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="ot">&lt;-</span> EffectSizeDataSimulated <span class="sc">%&gt;%</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> LT <span class="sc">-</span> meanADSRT)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>dat_sim_plot <span class="ot">&lt;-</span> EffectSizeDataSimulated <span class="sc">%&gt;%</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subj_id, Register) <span class="sc">%&gt;%</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">medLT =</span> <span class="fu">mean</span>(LT))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dat_sim_plot <span class="ot">&lt;-</span> EffectSizeDataSimulated <span class="sc">%&gt;%</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subj_id, Register) <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">medLT =</span> <span class="fu">mean</span>(LT))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'subj_id'. You can override using the
 `.groups` argument.</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Register, <span class="at">y =</span> medLT, <span class="at">fill =</span> Register), <span class="at">data =</span> dat_sim_plot) <span class="sc">+</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_rain</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>, <span class="at">rain.side =</span> <span class="st">"f1x1"</span>, <span class="at">id.long.var =</span> <span class="st">"subj_id"</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">point.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>)), <span class="at">line.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>))) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#FC4E07"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"steelblue"</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Effect Size Differences across Speech Styles"</span>) <span class="sc">+</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Speech Style"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Effect Size"</span>) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Duplicated aesthetics after name standardisation: alpha</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using the `size` aesthetic with geom_polygon was deprecated in ggplot2 3.4.0.
-ℹ Please use the `linewidth` aesthetic instead.</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Register, <span class="at">y =</span> medLT, <span class="at">fill =</span> Register), <span class="at">data =</span> dat_sim_plot) <span class="sc">+</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_rain</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>, <span class="at">rain.side =</span> <span class="st">"f1x1"</span>, <span class="at">id.long.var =</span> <span class="st">"subj_id"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">point.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>)), <span class="at">line.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>))) <span class="sc">+</span> <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Effect Size Differences across Speech Styles"</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Speech Style"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Effect Size"</span>) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -327,193 +302,348 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Wonderful, this looks correct! As we saw in the previous exercise sheet, however, our experimental design choices really matter for statistical power. For example, the number of stimulus items (i.e., number of repeated measures per participant) matter hugely, as does number of participants. How can we efficiently explore the multiverse of choices that govern our experimental design?</p>
-<p>What if we set up a grid search and allow models to be fit with different parameter values?</p>
+</section>
+<section id="time-to-power-up-the-analysis" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="time-to-power-up-the-analysis"><span class="header-section-number">3</span> Time to Power-Up the Analysis</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>run_sims_grid_point <span class="ot">&lt;-</span> <span class="cf">function</span>(filename_full, trial_n, subj_n) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    ADS_n <span class="ot">=</span> trial_n<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    IDS_n <span class="ot">=</span> trial_n<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    n_subj <span class="ot">=</span> subj_n</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>(<span class="at">n_subj =</span> n_subj,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_ADS =</span> ADS_n, <span class="at">n_IDS =</span> IDS_n)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(LT <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    sim_results <span class="ot">&lt;-</span> broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># append the results to a file</span></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    append <span class="ot">&lt;-</span> <span class="fu">file.exists</span>(filename_full)</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write_csv</span>(sim_results, filename_full, <span class="at">append =</span> append)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># return the tidy table</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    sim_results</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>reps <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>subj_n <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">12</span>, <span class="dv">36</span>, <span class="at">by =</span> <span class="dv">12</span>)</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>trial_n <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">16</span>, <span class="at">by =</span> <span class="dv">4</span>)</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>param_combinations <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">subj_n =</span> subj_n, <span class="at">trial_n =</span> trial_n)</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(param_combinations))) {</span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    sim_params <span class="ot">&lt;-</span> param_combinations[i, ]</span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    filename_full <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">here</span>(<span class="st">"sims_grid_search/test_grid_search_"</span>),</span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        sim_params<span class="sc">$</span>subj_n, <span class="st">"_"</span>, sim_params<span class="sc">$</span>trial_n, <span class="st">".csv"</span>)</span>
-<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()  <span class="co"># Start time</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    sims <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>reps, <span class="sc">~</span><span class="fu">run_sims_grid_point</span>(<span class="at">filename_full =</span> filename_full,</span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">subj_n =</span> sim_params<span class="sc">$</span>subj_n, <span class="at">trial_n =</span> sim_params<span class="sc">$</span>trial_n))</span>
-<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    end_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()  <span class="co"># End time</span></span>
-<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Simulation"</span>, i, <span class="st">"Time elapsed:"</span>, end_time <span class="sc">-</span> start_time,</span>
-<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(LT <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># family = gaussian(link = 'log'))</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># use at least 100 to get stable estimates</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFData</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="st">"EFsimulations.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulations.csv"</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># makes sure plots display in this order</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> <span class="fu">col_factor</span>(<span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">term =</span> <span class="fu">col_factor</span>(<span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(effect <span class="sc">==</span> <span class="st">"fixed"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate mean estimates and power for specified alpha</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span> </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate),</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> alpha),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  term        mean_estimate mean_se power
+  &lt;fct&gt;               &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+1 (Intercept)     -0.000564  0.0460  0.04
+2 SpeechStyle      0.352     0.0648  1   </code></pre>
+</div>
+</div>
+<p>This looks wonderful. If we were designing a study that perfectly emulated the average experiment included in the ManyBabies multi-lab replication study or that in the meta-analysis, we would have enough power with 24 participants and 8 stimulus items. As we saw in the previous exercise sheet, however, our experimental design choices really matter for statistical power. For example, the number of stimulus items (i.e., number of repeated measures per participant) matter hugely, as does number of participants. How can we efficiently explore the multiverse of choices that govern our experimental design and get a better grasp on which parameters matter?</p>
+</section>
+<section id="using-grid-searches-to-explore-the-multiverse-of-experimenter-choices" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="using-grid-searches-to-explore-the-multiverse-of-experimenter-choices"><span class="header-section-number">4</span> Using Grid Searches to Explore the Multiverse of Experimenter Choices</h2>
+<p>Let’s set up a grid search and allow models to be fit with different parameter values. To do this, we will wrap our Simulation and Modelling function with a higher-level function that inputs a series of parameter combinations that we are interested in exploring further. Here is a suggestion for a function of this type:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>run_sims_grid_point <span class="ot">&lt;-</span> <span class="cf">function</span>(filename_full, trial_n, subj_n) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    ADS_n <span class="ot">=</span> trial_n<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    IDS_n <span class="ot">=</span> trial_n<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    n_subj <span class="ot">=</span> subj_n</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>(<span class="at">n_subj =</span> n_subj,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_ADS =</span> ADS_n, <span class="at">n_IDS =</span> IDS_n)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(LT <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    sim_results <span class="ot">&lt;-</span> broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># append the results to a file</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    append <span class="ot">&lt;-</span> <span class="fu">file.exists</span>(filename_full)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write_csv</span>(sim_results, filename_full, <span class="at">append =</span> append)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># return the tidy table</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    sim_results</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>reps <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>subj_n <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">12</span>, <span class="dv">36</span>, <span class="at">by =</span> <span class="dv">12</span>)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>trial_n <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">4</span>, <span class="dv">16</span>, <span class="at">by =</span> <span class="dv">4</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>param_combinations <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">subj_n =</span> subj_n, <span class="at">trial_n =</span> trial_n)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(param_combinations))) {</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    sim_params <span class="ot">&lt;-</span> param_combinations[i, ]</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    filename_full <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">here</span>(<span class="st">"sims_grid_search/test_grid_search_"</span>),</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        sim_params<span class="sc">$</span>subj_n, <span class="st">"_"</span>, sim_params<span class="sc">$</span>trial_n, <span class="st">".csv"</span>)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()  <span class="co"># Start time</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    sims <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>reps, <span class="sc">~</span><span class="fu">run_sims_grid_point</span>(<span class="at">filename_full =</span> filename_full,</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">subj_n =</span> sim_params<span class="sc">$</span>subj_n, <span class="at">trial_n =</span> sim_params<span class="sc">$</span>trial_n))</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    end_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()  <span class="co"># End time</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">"Simulation"</span>, i, <span class="st">"Time elapsed:"</span>, end_time <span class="sc">-</span> start_time,</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>        <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 1 Time elapsed: 0.6658931 </code></pre>
+<pre><code>Simulation 1 Time elapsed: 0.3320899 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.2e+00</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulation 2 Time elapsed: 0.27264 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 2 Time elapsed: 0.347543 </code></pre>
+<pre><code>Simulation 3 Time elapsed: 0.7034311 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.4e+00</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulation 4 Time elapsed: 0.435689 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.6e+01</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulation 5 Time elapsed: 0.520781 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.0e+02</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulation 6 Time elapsed: 0.3846068 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 3 Time elapsed: 0.2622821 </code></pre>
+<pre><code>Simulation 7 Time elapsed: 0.495791 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.3e+00</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -8.4e+01</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulation 8 Time elapsed: 0.8742528 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulation 9 Time elapsed: 0.518152 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>boundary (singular) fit: see help('isSingular')
+boundary (singular) fit: see help('isSingular')</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.3e+00</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simulation 10 Time elapsed: 0.4593689 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 4 Time elapsed: 0.2484231 
-Simulation 5 Time elapsed: 0.2851021 </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simulation 6 Time elapsed: 0.3307791 </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simulation 7 Time elapsed: 0.2463448 </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simulation 8 Time elapsed: 0.3069422 </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simulation 9 Time elapsed: 0.2788382 </code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simulation 10 Time elapsed: 0.2484009 </code></pre>
+<pre><code>Simulation 11 Time elapsed: 0.9199018 </code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Simulation 11 Time elapsed: 0.2812738 </code></pre>
+<pre><code>Simulation 12 Time elapsed: 0.544369 </code></pre>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Simulation 12 Time elapsed: 0.3295181 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">here</span>(<span class="st">"sims_grid_search"</span>))</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>file_names <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"*.csv"</span>)</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read in all CSV files into a list of dataframes</span></span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>df_list <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(file_names, <span class="sc">~</span>{</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(.x)</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>filename <span class="ot">&lt;-</span> .x</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    df</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">reduce</span>(df_list, dplyr<span class="sc">::</span>bind_rows)</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>df_per_sim <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(effect <span class="sc">==</span> <span class="st">"fixed"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"SpeechStyle"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(filename) <span class="sc">%&gt;%</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">median_estimate =</span> <span class="fu">median</span>(estimate), <span class="at">median_se =</span> <span class="fu">median</span>(std.error),</span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>))</span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>PowerGridData <span class="ot">&lt;-</span> df_per_sim <span class="sc">%&gt;%</span></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">n_subj =</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(filename, <span class="st">"_"</span>), <span class="st">`</span><span class="at">[</span><span class="st">`</span>, <span class="dv">4</span>),</span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_trial =</span> <span class="fu">as.numeric</span>(<span class="fu">str_replace</span>(<span class="fu">sapply</span>(<span class="fu">strsplit</span>(filename,</span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">"_"</span>), <span class="st">`</span><span class="at">[</span><span class="st">`</span>, <span class="dv">5</span>), <span class="at">pattern =</span> <span class="st">".csv"</span>, <span class="st">""</span>)))</span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(PowerGridData) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> n_subj, <span class="at">y =</span> power)) <span class="sc">+</span></span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>    plot_theme <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>n_trial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">here</span>(<span class="st">"sims_grid_search"</span>))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>file_names <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"*.csv"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read in all CSV files into a list of dataframes</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>df_list <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(file_names, <span class="sc">~</span>{</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(.x)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>filename <span class="ot">&lt;-</span> .x</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    df</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">reduce</span>(df_list, dplyr<span class="sc">::</span>bind_rows)</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>df_per_sim <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(effect <span class="sc">==</span> <span class="st">"fixed"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(term <span class="sc">==</span> <span class="st">"SpeechStyle"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(filename) <span class="sc">%&gt;%</span></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">median_estimate =</span> <span class="fu">median</span>(estimate), <span class="at">median_se =</span> <span class="fu">median</span>(std.error),</span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>))</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>PowerGridData <span class="ot">&lt;-</span> df_per_sim <span class="sc">%&gt;%</span></span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">n_subj =</span> <span class="fu">sapply</span>(<span class="fu">strsplit</span>(filename, <span class="st">"_"</span>), <span class="st">`</span><span class="at">[</span><span class="st">`</span>, <span class="dv">4</span>),</span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">n_trial =</span> <span class="fu">as.numeric</span>(<span class="fu">str_replace</span>(<span class="fu">sapply</span>(<span class="fu">strsplit</span>(filename,</span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">"_"</span>), <span class="st">`</span><span class="at">[</span><span class="st">`</span>, <span class="dv">5</span>), <span class="at">pattern =</span> <span class="st">".csv"</span>, <span class="st">""</span>)))</span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(PowerGridData) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> n_subj, <span class="at">y =</span> power)) <span class="sc">+</span></span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a>    plot_theme <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>n_trial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="SimulatingEffectSizes_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="1152"></p>
+<p><img src="SimulatingEffectSizes_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="1152"></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>mod_sim <span class="ot">&lt;-</span> <span class="fu">lmer</span>(LT <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    subj_id), <span class="at">data =</span> EffectSizeDataSimulated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>mod_sim <span class="ot">&lt;-</span> <span class="fu">lmer</span>(LT <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    subj_id), <span class="at">data =</span> EffectSizeDataSimulated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
 Formula: LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id)
    Data: EffectSizeDataSimulated
 
-REML criterion at convergence: 548.5
+REML criterion at convergence: 555.3
 
 Scaled residuals: 
      Min       1Q   Median       3Q      Max 
--2.93634 -0.63868 -0.02949  0.69246  2.75595 
+-2.94648 -0.64247 -0.03434  0.70657  2.80209 
 
 Random effects:
- Groups   Name        Variance Std.Dev. Corr
- subj_id  (Intercept) 0.0218   0.1476       
-          SpeechStyle 0.0138   0.1175   0.83
- item_id  (Intercept) 0.0000   0.0000       
- Residual             0.2245   0.4738       
+ Groups   Name        Variance  Std.Dev.  Corr
+ subj_id  (Intercept) 1.828e-02 0.1351933     
+          SpeechStyle 1.443e-02 0.1201233 1.00
+ item_id  (Intercept) 5.544e-08 0.0002355     
+ Residual             2.243e-01 0.4735943     
 Number of obs: 384, groups:  subj_id, 24; item_id, 16
 
 Fixed effects:
             Estimate Std. Error       df t value Pr(&gt;|t|)    
-(Intercept)  0.19428    0.03864 23.00004   5.028 4.35e-05 ***
-SpeechStyle  0.38856    0.05397 23.00004   7.199 2.49e-07 ***
+(Intercept) -0.06540    0.04393 29.10355  -1.489    0.147    
+SpeechStyle  0.38856    0.05420 45.38530   7.169 5.47e-09 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 Correlation of Fixed Effects:
             (Intr)
-SpeechStyle 0.287 
+SpeechStyle -0.206
 optimizer (nloptwrap) convergence code: 0 (OK)
 boundary (singular) fit: see help('isSingular')</code></pre>
 </div>
@@ -1083,6 +1213,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../content/FurtherResources.html" class="pagination-link" aria-label="Further Resources">
+        <span class="nav-page-text">Further Resources</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

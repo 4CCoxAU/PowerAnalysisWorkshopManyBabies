@@ -116,13 +116,19 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Home</span></a>
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../content/ExerciseDataSimulation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Part I, Data Simulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/SolutionToExercise1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Solution to Exercise I</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -137,21 +143,27 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Part III, Simulating Effect Sizes</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/FurtherResources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Further Resources</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2">
     <h2 id="toc-title">On this page</h2>
    
-  <ul>
-  <li><a href="#turn-on-github-pages-for-your-repo" id="toc-turn-on-github-pages-for-your-repo" class="nav-link active" data-scroll-target="#turn-on-github-pages-for-your-repo">Turn on GitHub Pages for your repo</a></li>
-  <li><a href="#do-your-first-publish-to-gh-pages" id="toc-do-your-first-publish-to-gh-pages" class="nav-link" data-scroll-target="#do-your-first-publish-to-gh-pages">Do your first publish to <code>gh-pages</code></a></li>
-  <li><a href="#dont-like-using-gh-pages" id="toc-dont-like-using-gh-pages" class="nav-link" data-scroll-target="#dont-like-using-gh-pages">Don’t like using <code>gh-pages</code>?</a></li>
+  <ul class="collapse">
+  <li><a href="#turn-on-github-pages-for-your-repo" id="toc-turn-on-github-pages-for-your-repo" class="nav-link active" data-scroll-target="#turn-on-github-pages-for-your-repo"><span class="header-section-number">1</span> Turn on GitHub Pages for your repo</a></li>
+  <li><a href="#do-your-first-publish-to-gh-pages" id="toc-do-your-first-publish-to-gh-pages" class="nav-link" data-scroll-target="#do-your-first-publish-to-gh-pages"><span class="header-section-number">2</span> Do your first publish to <code>gh-pages</code></a></li>
+  <li><a href="#dont-like-using-gh-pages" id="toc-dont-like-using-gh-pages" class="nav-link" data-scroll-target="#dont-like-using-gh-pages"><span class="header-section-number">3</span> Don’t like using <code>gh-pages</code>?</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/publishing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/publishing.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/publishing.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/publishing.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -178,16 +190,16 @@ ul.task-list li input[type="checkbox"] {
 <p>To get your Quarto webpage to show up with the url</p>
 <pre><code>yourname.github.io/yourrepo</code></pre>
 <p>you have a few steps.</p>
-<section id="turn-on-github-pages-for-your-repo" class="level2">
-<h2 class="anchored" data-anchor-id="turn-on-github-pages-for-your-repo">Turn on GitHub Pages for your repo</h2>
+<section id="turn-on-github-pages-for-your-repo" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="turn-on-github-pages-for-your-repo"><span class="header-section-number">1</span> Turn on GitHub Pages for your repo</h2>
 <ul>
 <li>Turn on GitHub Pages under Settings &gt; Pages . You will set pages to be made from the gh-pages branch and the root directory.</li>
 <li>Turn on GitHub Actions under Settings &gt; Actions &gt; General</li>
 </ul>
 <p>The GitHub Action will automatically recreate your website when you push to GitHub <strong>after</strong> you do the initial <code>gh-pages</code> set-up</p>
 </section>
-<section id="do-your-first-publish-to-gh-pages" class="level2">
-<h2 class="anchored" data-anchor-id="do-your-first-publish-to-gh-pages">Do your first publish to <code>gh-pages</code></h2>
+<section id="do-your-first-publish-to-gh-pages" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="do-your-first-publish-to-gh-pages"><span class="header-section-number">2</span> Do your first publish to <code>gh-pages</code></h2>
 <p>The first time you publish to <code>gh-pages</code>, you need to do so locally.</p>
 <ul>
 <li>On your local computer, open a terminal window and <code>cd</code> to your repo directory. Here is what that <code>cd</code> command looks like for me. You command will look different because your local repo will be somewhere else on your computer.</li>
@@ -199,8 +211,8 @@ ul.task-list li input[type="checkbox"] {
 <pre><code>quarto publish gh-pages</code></pre>
 <p>This is going to render your webpage and then push the <code>_site</code> contents to the <code>gh-pages</code> branch.</p>
 </section>
-<section id="dont-like-using-gh-pages" class="level2">
-<h2 class="anchored" data-anchor-id="dont-like-using-gh-pages">Don’t like using <code>gh-pages</code>?</h2>
+<section id="dont-like-using-gh-pages" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="dont-like-using-gh-pages"><span class="header-section-number">3</span> Don’t like using <code>gh-pages</code>?</h2>
 <p>In some cases, you don’t want your website on the <code>gh-pages</code> branch. For example, if you are creating releases and you want the website pages archived in that release, then you won’t want your website pages on the <code>gh-pages</code> branch.</p>
 <p>Here are the changes you need to make if you to avoid <code>gh-pages</code> branch.</p>
 <ul>

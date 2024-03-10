@@ -63,7 +63,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../content/ModellingTheData.html" rel="next">
+<link href="../content/SolutionToExercise1.html" rel="next">
 <link href="../index.html" rel="prev">
 <link href="../images/favicon.ico" rel="icon">
 <script src="../site_libs/quarto-html/quarto.js"></script>
@@ -150,13 +150,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Home</span></a>
+ <span class="menu-text">Introduction</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../content/ExerciseDataSimulation.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Part I, Data Simulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/SolutionToExercise1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Solution to Exercise I</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -171,27 +177,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Part III, Simulating Effect Sizes</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/FurtherResources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Further Resources</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2">
     <h2 id="toc-title">On this page</h2>
    
-  <ul>
-  <li><a href="#a-description-of-the-example-and-aim-of-the-simulation" id="toc-a-description-of-the-example-and-aim-of-the-simulation" class="nav-link active" data-scroll-target="#a-description-of-the-example-and-aim-of-the-simulation">A Description of the Example and Aim of the Simulation</a></li>
-  <li><a href="#setting-the-experimental-parameters" id="toc-setting-the-experimental-parameters" class="nav-link" data-scroll-target="#setting-the-experimental-parameters">Setting the Experimental Parameters?</a></li>
-  <li><a href="#data-generating-parameters" id="toc-data-generating-parameters" class="nav-link" data-scroll-target="#data-generating-parameters">Data Generating Parameters</a></li>
-  <li><a href="#choosing-values-for-fixed-effect-parameters" id="toc-choosing-values-for-fixed-effect-parameters" class="nav-link" data-scroll-target="#choosing-values-for-fixed-effect-parameters">Choosing Values for Fixed Effect Parameters</a></li>
-  <li><a href="#choosing-values-for-varying-effect-parameters" id="toc-choosing-values-for-varying-effect-parameters" class="nav-link" data-scroll-target="#choosing-values-for-varying-effect-parameters">Choosing Values for Varying Effect Parameters</a></li>
-  <li><a href="#simulate-the-sampling-of-stimulus-items" id="toc-simulate-the-sampling-of-stimulus-items" class="nav-link" data-scroll-target="#simulate-the-sampling-of-stimulus-items">Simulate the sampling of stimulus items</a></li>
-  <li><a href="#simulate-the-sampling-of-subjects" id="toc-simulate-the-sampling-of-subjects" class="nav-link" data-scroll-target="#simulate-the-sampling-of-subjects">Simulate the sampling of subjects</a></li>
-  <li><a href="#time-to-put-it-all-together" id="toc-time-to-put-it-all-together" class="nav-link" data-scroll-target="#time-to-put-it-all-together">Time to Put It All Together</a></li>
-  <li><a href="#with-the-initial-setup-done-lets-automatise" id="toc-with-the-initial-setup-done-lets-automatise" class="nav-link" data-scroll-target="#with-the-initial-setup-done-lets-automatise">With the Initial Setup Done, Let’s Automatise!</a></li>
+  <ul class="collapse">
+  <li><a href="#a-description-of-the-example-and-aim-of-the-simulation" id="toc-a-description-of-the-example-and-aim-of-the-simulation" class="nav-link active" data-scroll-target="#a-description-of-the-example-and-aim-of-the-simulation"><span class="header-section-number">1</span> A Description of the Example and Aim of the Simulation</a></li>
+  <li><a href="#setting-the-experimental-parameters" id="toc-setting-the-experimental-parameters" class="nav-link" data-scroll-target="#setting-the-experimental-parameters"><span class="header-section-number">2</span> Setting the Experimental Parameters?</a></li>
+  <li><a href="#data-generating-parameters" id="toc-data-generating-parameters" class="nav-link" data-scroll-target="#data-generating-parameters"><span class="header-section-number">3</span> Data Generating Parameters</a></li>
+  <li><a href="#choosing-values-for-fixed-effect-parameters" id="toc-choosing-values-for-fixed-effect-parameters" class="nav-link" data-scroll-target="#choosing-values-for-fixed-effect-parameters"><span class="header-section-number">4</span> Choosing Values for Fixed Effect Parameters</a></li>
+  <li><a href="#choosing-values-for-varying-slope-parameters" id="toc-choosing-values-for-varying-slope-parameters" class="nav-link" data-scroll-target="#choosing-values-for-varying-slope-parameters"><span class="header-section-number">5</span> Choosing Values for Varying Slope Parameters</a></li>
+  <li><a href="#simulate-the-sampling-of-stimulus-items" id="toc-simulate-the-sampling-of-stimulus-items" class="nav-link" data-scroll-target="#simulate-the-sampling-of-stimulus-items"><span class="header-section-number">6</span> Simulate the sampling of stimulus items</a></li>
+  <li><a href="#simulate-the-sampling-of-subjects" id="toc-simulate-the-sampling-of-subjects" class="nav-link" data-scroll-target="#simulate-the-sampling-of-subjects"><span class="header-section-number">7</span> Simulate the sampling of subjects</a></li>
+  <li><a href="#time-to-put-it-all-together" id="toc-time-to-put-it-all-together" class="nav-link" data-scroll-target="#time-to-put-it-all-together"><span class="header-section-number">8</span> Time to Put It All Together</a></li>
+  <li><a href="#with-the-initial-setup-done-lets-automatise" id="toc-with-the-initial-setup-done-lets-automatise" class="nav-link" data-scroll-target="#with-the-initial-setup-done-lets-automatise"><span class="header-section-number">9</span> With the Initial Setup Done, Let’s Automatise!</a></li>
+  <li><a href="#exercises-to-check-understanding" id="toc-exercises-to-check-understanding" class="nav-link" data-scroll-target="#exercises-to-check-understanding"><span class="header-section-number">10</span> Exercises to Check Understanding</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/edit/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/ExerciseDataSimulation.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -215,13 +228,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="a-description-of-the-example-and-aim-of-the-simulation" class="level2">
-<h2 class="anchored" data-anchor-id="a-description-of-the-example-and-aim-of-the-simulation">A Description of the Example and Aim of the Simulation</h2>
+<section id="a-description-of-the-example-and-aim-of-the-simulation" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="a-description-of-the-example-and-aim-of-the-simulation"><span class="header-section-number">1</span> A Description of the Example and Aim of the Simulation</h2>
 <p>Let’s take inspiration from ManyBabies1 (https://doi.org/10.1177/2515245919900809) and think about how we would simulate data for a new experimmental study on the IDS preference effect. In this study, infant participants are exposed to recordings of adult-directed speech (ADS) and infant-directed speech (IDS), and we use infants’ looking times as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli within each participant. To gain fammiliarity with the simulation process in an intuitive way, we will simulate data on the scale of looking times (i.e., 0-20,000ms). In later sections, we will extend the process to simulate data on the scale of effect sizes.</p>
 <p>To give an overview of this first simulation task, we will simulate data with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data.</p>
 </section>
-<section id="setting-the-experimental-parameters" class="level2">
-<h2 class="anchored" data-anchor-id="setting-the-experimental-parameters">Setting the Experimental Parameters?</h2>
+<section id="setting-the-experimental-parameters" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="setting-the-experimental-parameters"><span class="header-section-number">2</span> Setting the Experimental Parameters?</h2>
 <p>Before we can start to simulate data, we need to be very clear about the study design. This clarity is important because we need to define the parameters that govern the process we assume can give rise to the data. If we are building on ManyBabies1, then we are dealing with a within-subjects, between-items study; that is, each and every subject receives both ADS and IDS stimuli (within-subject), but each stimulus is either ADS or IDS (between-items).</p>
 <p>Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of ADS and 8 recordings of IDS. And let’s say that a realistic sample size our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). Let’s set these experimental parameters now already</p>
 <div class="cell">
@@ -231,53 +244,52 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n_IDS <span class="ot">&lt;-</span>  <span class="dv">8</span> <span class="co"># number of IDS stimuli</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="data-generating-parameters" class="level2">
-<h2 class="anchored" data-anchor-id="data-generating-parameters">Data Generating Parameters</h2>
+<section id="data-generating-parameters" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="data-generating-parameters"><span class="header-section-number">3</span> Data Generating Parameters</h2>
 <p>Now that we have an overview of the experimental design, we can start to consider a reasonable statistical model of the data. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:</p>
 <p>Looking Time = β₀ + β₁ * SpeechStyle + u₀ⱼ^{(item)} + u₀ᵢ^{(subj)} + (u₁ᵢ^{(subj)} * SpeechStyle) + ε</p>
 <p>According to this formula, the looking time for subject, s, on item, i, is decomposed into linear combination of fixed effects (i.e., the population grand mean, β₀, and the effect of SpeechStyle, β₁) and a variety of random effects, such as a by-subject random intercept, u₀ᵢ^{(subj)}, a by-item random intercept u₀ⱼ^{(item)}, a by-subject random slope, (u₁ᵢ^{(subj)} * SpeechStyle), and a trial-level residual error, ε.</p>
 <p>This formula paves a clear way forward for our data simulation. In the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for parameters.</p>
 </section>
-<section id="choosing-values-for-fixed-effect-parameters" class="level2">
-<h2 class="anchored" data-anchor-id="choosing-values-for-fixed-effect-parameters">Choosing Values for Fixed Effect Parameters</h2>
+<section id="choosing-values-for-fixed-effect-parameters" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="choosing-values-for-fixed-effect-parameters"><span class="header-section-number">4</span> Choosing Values for Fixed Effect Parameters</h2>
 <p>Let’s start by setting the fixed-effect parameter of SpeechStyle (β₀ + β₁*SpeechStyle). How should we set these parameters? First of all, we can be guided by what we know about looking time distributions in infant experiments. For example, we could imagine average infant looking times to be around 7 seconds (i.e., 7000ms), and from ManyBabies1, we know that infants exhibit around X seconds (i.e., 2000ms) longer looking times to IDS stimuli than to ADS stimuli. Let’s go ahead and code these values explicitly as parameter values in our simulation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set fixed effect parameters</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>beta_0 <span class="ot">&lt;-</span> <span class="dv">7000</span>  <span class="co"># intercept; i.e., the grand mean, β₀</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>beta_1 <span class="ot">&lt;-</span> <span class="dv">2000</span>  <span class="co"># slope; i.e, effect of IDS, β₁</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mean_intercept <span class="ot">&lt;-</span> <span class="dv">7000</span>  <span class="co"># intercept; i.e., the grand mean, β₀</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mean_slope <span class="ot">&lt;-</span> <span class="dv">2000</span>  <span class="co"># slope; i.e, effect of IDS, β₁</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>When we’re modelling data from experiments involving individuals (like infants in this case), it’s essential to account for the fact that each individual may have a unique baseline reaction to the stimuli, which we can’t anticipate or control for entirely. Similarly, the effect of the stimuli itself might vary across different instances of the stimulus. In other words, we expect variability both in how subjects react and in the impact of each stimulus. To address this, we introduce random intercept values for subjects and items. This means we allow for each subject and each stimulus item to have its own intercept value, capturing their individual baseline reactions and effects. To quantify the variability around these values, we introduce the standard deviation of the random intercepts, reflecting the range of differences we might observe among subjects’ reactions and the effects of different stimulus items. Let’s code this as standard deviation of by-subject random intercept and by-item random intercept sd.</p>
 </section>
-<section id="choosing-values-for-varying-effect-parameters" class="level2">
-<h2 class="anchored" data-anchor-id="choosing-values-for-varying-effect-parameters">Choosing Values for Varying Effect Parameters</h2>
+<section id="choosing-values-for-varying-slope-parameters" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="choosing-values-for-varying-slope-parameters"><span class="header-section-number">5</span> Choosing Values for Varying Slope Parameters</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set random effect parameters</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tau_0 <span class="ot">&lt;-</span> <span class="dv">2000</span>  <span class="co"># by-subject random intercept sd</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>omega_0 <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># by-item random intercept sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>subject_varyingintercept <span class="ot">&lt;-</span> <span class="dv">2000</span>  <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>item_varyingintercept <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># by-item random intercept sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In modeling the effect of IDS stimuli on infant looking times, it’s also important to acknowledge that this effect may vary across different infants. Some infants might be more responsive to IDS stimuli than others, leading to differences in their looking times. Therefore, we need to introduce subject-specific variability to account for how the effect of IDS varies among infants. In statistical modeling, when we include random slopes, we’re essentially allowing the effect of certain variables to vary not only across different individuals (random intercepts) but also across different levels of another variable (random slopes).</p>
 <p>When we introduce random slopes, we need to consider potential correlations between these varying slopes and the varying intercepts. This is because if there’s a correlation between the way individuals (infants, in this case) respond to the IDS stimuli (reflected in the random slopes) and their baseline behaviors (reflected in the random intercepts), it can affect our model’s predictions. For instance, if infants who naturally have longer attention spans (reflected in higher random intercepts) also tend to show stronger responses to IDS stimuli (reflected in steeper random slopes), ignoring this correlation might lead to biased estimates or inaccurate predictions. Including a correlation matrix allows us to explicitly account for these potential correlations, ensuring that our model accurately captures the relationships between different sources of variability in the data and produces more reliable results. To capture these patterns, we include a correlation matrix, specifying a weak correlation between the varying intercepts and varying slopes of infant participants. Lastly, we incorporate a residual error term to account for any unexplained sources of variability in the model. This helps ensure that our model accurately captures the complexities of infants’ responses to different stimuli while also acknowledging inherent variations and correlations within the data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set more random effect and error parameters</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>tau_1 <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># by-subject random slope sd</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>subject_varyingslope <span class="ot">&lt;-</span> <span class="dv">1000</span>  <span class="co"># by-subject random slope sd</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.2</span>  <span class="co"># correlation between intercept and slope</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># residual (error) sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="simulate-the-sampling-of-stimulus-items" class="level2">
-<h2 class="anchored" data-anchor-id="simulate-the-sampling-of-stimulus-items">Simulate the sampling of stimulus items</h2>
-<p>Now it’s time to create a dataset that lists, for each stimulus item, the speech style it is in and its varying properties on infants’ looking times. This captures the intuition that we would expect different speech recordings to exhibit variation in infants’ average looking times. Here, we model items only with varying intercepts. To set the parameter for varying item intercept, we are going to specify the standard deviation that we expect items to exhibit in the parameter, item_sd, in the below code. That is, we sample values from a normal distribution using the rnorm() function, with a meaan of 0 and standard deviation of item_sd. For the varying item variable, we also need to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We are going to use the faux package to carry this out. Lastly, we will carry out contrast coding, and we will later multiply this effect-coded factor by the fixed effect of category to simulate data where the ADS stimuli on average generate looking times of -500 ms different from the grand mean, while the IDS stimuli are on average 1000 ms different from the grand mean.</p>
+<section id="simulate-the-sampling-of-stimulus-items" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="simulate-the-sampling-of-stimulus-items"><span class="header-section-number">6</span> Simulate the sampling of stimulus items</h2>
+<p>Now it’s time to create a dataset that lists, for each stimulus item, the speech style it is in and its varying properties on infants’ looking times. This captures the intuition that we would expect different speech recordings to exhibit variation in infants’ average looking times. Here, we model items only with varying intercepts. To set the parameter for varying item intercept, we are going to specify the standard deviation that we expect items to exhibit in the parameter, item_varyingintercept, in the below code. That is, we sample values from a normal distribution using the rnorm() function, with a meaan of 0 and standard deviation of item_varyingintercept. For the varying item variable, we also need to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We are going to use the faux package to carry this out. Lastly, we will carry out contrast coding, and we will later multiply this effect-coded factor by the fixed effect of category to simulate data where the ADS stimuli on average generate looking times of -500 ms different from the grand mean, while the IDS stimuli are on average 1000 ms different from the grand mean.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate a sample of items</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># total number of items = n_ADS + n_IDS</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>item_sd <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_sd)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="sc">+</span><span class="fl">0.5</span>)) <span class="co">#introduce a numeric predictor to represent what category each stimulus item, we set ADS to be -0.5 and IDS to be +0.5. This is what is known as contrast coding.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_varyingintercept)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="sc">+</span><span class="fl">0.5</span>)) <span class="co">#introduce a numeric predictor to represent what category each stimulus item, we set ADS to be -0.5 and IDS to be +0.5. This is what is known as contrast coding.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>To get to better grips with the simuation process, let’s the data visualise and take a look at what we have produced:</p>
 <div class="cell">
@@ -286,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Rows: 16
 Columns: 4
 $ Register    &lt;chr&gt; "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "A…
-$ O_0i        &lt;dbl&gt; -241.41315, 55.48585, 216.88824, -469.13954, 85.82494, 101…
+$ O_0i        &lt;dbl&gt; -1207.06575, 277.42924, 1084.44118, -2345.69770, 429.12469…
 $ item_id     &lt;chr&gt; "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I…
 $ SpeechStyle &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, …</code></pre>
 </div>
@@ -306,8 +318,8 @@ $ SpeechStyle &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0
 </div>
 </div>
 </section>
-<section id="simulate-the-sampling-of-subjects" class="level2">
-<h2 class="anchored" data-anchor-id="simulate-the-sampling-of-subjects">Simulate the sampling of subjects</h2>
+<section id="simulate-the-sampling-of-subjects" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="simulate-the-sampling-of-subjects"><span class="header-section-number">7</span> Simulate the sampling of subjects</h2>
 <p>Now, we will simulate the sampling of individual subjects to create a table that lists each subject along with their two correlated varying effects, namely intercepts and slopes. This process is slightly more complex than before because we cannot simply sample the intercept values (𝑇0𝑠) independently from the slope values (𝑇1𝑠) using rnorm(). Instead, we need to sample pairs of ⟨𝑇0𝑠,𝑇1𝑠⟩ values for each subject from a bivariate normal distribution. We will use the rnorm_multi() function from the faux package (DeBruine 2020) to carry this out. This function generates a table of simulated values from a multivariate normal distribution, allowing us to specify the means (mu) and standard deviations (sd) for each variable, along with the correlations (r), which can be a single value applied to all pairs, a correlation matrix, or a vector of values representing the upper right triangle of the correlation matrix.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate a sample of subjects</span></span>
@@ -315,7 +327,7 @@ $ SpeechStyle &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1), <span class="co"># note that we set the SDs further up in the code when specifying varying intercepts and sloeps.</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(subject_varyingintercept, subject_varyingslope), <span class="co"># note that we set the SDs further up in the code when specifying varying intercepts and sloeps.</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>)</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
@@ -335,8 +347,8 @@ $ subj_id &lt;chr&gt; "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"T"</span>), <span class="at">names_to =</span> <span class="st">"T_variable"</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(value, <span class="at">fill =</span> T_variable), <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span> <span class="sc">*</span> tau_0, <span class="dv">4</span> <span class="sc">*</span> tau_0)) <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>T_variable) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Varying Intercept and Slope Terms for Subjects"</span>) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span> <span class="sc">*</span> subject_varyingintercept, <span class="dv">4</span> <span class="sc">*</span> subject_varyingintercept)) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>T_variable) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Varying Intercept and Slope Terms for Subjects"</span>) <span class="sc">+</span></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    plot_theme <span class="sc">+</span> <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -348,8 +360,8 @@ $ subj_id &lt;chr&gt; "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S
 </div>
 </div>
 </section>
-<section id="time-to-put-it-all-together" class="level2">
-<h2 class="anchored" data-anchor-id="time-to-put-it-all-together">Time to Put It All Together</h2>
+<section id="time-to-put-it-all-together" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="time-to-put-it-all-together"><span class="header-section-number">8</span> Time to Put It All Together</h2>
 <p>Because all subjects respond to all items, we can set up a table of trials by making a table with every possible combination of the rows in the subject and item tables using the tidyverse function crossing(). This function generates every possible combination of rows from the subject and item tables, ensuring that each subject’s responses to each item are included in the dataset. To introduce variability reflecting the inherent fluctuations in trial-by-trial performance, we incorporate random error into each trial. This randomness is simulated by sampling values from a normal distribution with a mean of 0 and a standard deviation of sigma. This approach ensures that our dataset captures the full range of subject-item interactions while accounting for unpredictable variations in individual performance across trials.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cross subject and item IDs; add an error term nrow(.) is</span></span>
@@ -365,7 +377,7 @@ $ T_0s        &lt;dbl&gt; -4947.764, -4947.764, -4947.764, -4947.764, -4947.764,
 $ T_1s        &lt;dbl&gt; 327.8312, 327.8312, 327.8312, 327.8312, 327.8312, 327.8312…
 $ subj_id     &lt;chr&gt; "S04", "S04", "S04", "S04", "S04", "S04", "S04", "S04", "S…
 $ Register    &lt;chr&gt; "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "I…
-$ O_0i        &lt;dbl&gt; -199.67729, -178.00757, -155.25078, -112.89040, -95.43854,…
+$ O_0i        &lt;dbl&gt; -998.38644, -890.03783, -776.25389, -564.45200, -477.19270…
 $ item_id     &lt;chr&gt; "I12", "I10", "I13", "I09", "I11", "I16", "I14", "I15", "I…
 $ SpeechStyle &lt;dbl&gt; -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, …
 $ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446419,…</code></pre>
@@ -373,16 +385,16 @@ $ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446
 </div>
 <p>Now we have specified the parameters in ParameterValues, we are ready to add up everything together to create the response variable (i.e., infant looking times in milliseconds). To be more specific, we calculate the response variable, looking time, by adding together:</p>
 <ul>
-<li>the grand intercept (beta_0),</li>
+<li>the grand intercept (mean_intercept),</li>
 <li>each subject-specific random intercept (T_0s),</li>
 <li>each item-specific random intercept (O_0i),</li>
-<li>each sum of the category effect (beta_1) and the random slope (T_1s), multiplied by the numeric predictor (SpeechStyle), and</li>
+<li>each sum of the speech style effect (mean_slope) and the random slope (T_1s), multiplied by the numeric predictor (SpeechStyle), and</li>
 <li>each residual error (e_si).</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># calculate the response variable</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>SimulatedRT <span class="ot">&lt;-</span> ParameterValues <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">LT =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span> <span class="co">#sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">LT =</span> mean_intercept <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (mean_slope <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span> <span class="co">#sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">LT =</span> LT <span class="sc">+</span> <span class="fu">rexp</span>(<span class="fu">nrow</span>(.), <span class="at">rate =</span> <span class="fl">0.0003</span>)) <span class="sc">%&gt;%</span> <span class="co">#add a long tail to the distribution to simulate exgaussian distribution of looking times</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, LT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -434,8 +446,8 @@ $ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446
 </div>
 </div>
 </section>
-<section id="with-the-initial-setup-done-lets-automatise" class="level2">
-<h2 class="anchored" data-anchor-id="with-the-initial-setup-done-lets-automatise">With the Initial Setup Done, Let’s Automatise!</h2>
+<section id="with-the-initial-setup-done-lets-automatise" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="with-the-initial-setup-done-lets-automatise"><span class="header-section-number">9</span> With the Initial Setup Done, Let’s Automatise!</h2>
 <p>Now that we’ve simulated a dataset with the necessary properties, suitable for sophisticated linear mixed effects models, we can streamline the process by encapsulating all the preceding code into a custom function. This function will accept the parameters we defined earlier as arguments, with default values set to our chosen parameters. By doing so, we are empowered to effortlessly experiment with different parameters or generate multiple datasets for power analysis purposes. The following code condenses all the preceding steps into a single function, returning a dataset with the specified parameters.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
@@ -443,18 +455,18 @@ $ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
 <span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">8</span>,   <span class="co"># number of ingroup stimuli</span></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">8</span>,   <span class="co"># number of outgroup stimuli</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_0 =</span> <span class="dv">7000</span>,   <span class="co"># grand mean</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_1 =</span>  <span class="dv">2000</span>,   <span class="co"># effect of category</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_sd =</span>  <span class="dv">200</span>,   <span class="co"># by-item random intercept sd</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_0 =</span> <span class="dv">2000</span>,   <span class="co"># by-subject random intercept sd</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_1 =</span>  <span class="dv">1000</span>,   <span class="co"># by-subject random slope sd</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_intercept =</span> <span class="dv">7000</span>,   <span class="co"># grand mean</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_slope =</span>  <span class="dv">2000</span>,   <span class="co"># effect of category</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_varyingintercept =</span>  <span class="dv">200</span>,   <span class="co"># by-item random intercept sd</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingintercept =</span> <span class="dv">2000</span>,   <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingslope =</span>  <span class="dv">1000</span>,   <span class="co"># by-subject random slope sd</span></span>
 <span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.2</span>,   <span class="co"># correlation between intercept and slope</span></span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="dv">500</span>) { <span class="co"># residual (standard deviation)</span></span>
 <span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
 <span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_sd)) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_varyingintercept)) <span class="sc">%&gt;%</span> </span>
 <span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="sc">+</span><span class="fl">0.5</span>))</span>
 <span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
@@ -464,7 +476,7 @@ $ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446
 <span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
 <span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
 <span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1), <span class="co"># set SDs</span></span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(subject_varyingintercept, subject_varyingslope), <span class="co"># set SDs</span></span>
 <span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
 <span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>)</span>
 <span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
@@ -474,46 +486,21 @@ $ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446
 <span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span></span>
 <span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, <span class="fu">everything</span>())</span>
 <span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>  dat_sim <span class="ot">&lt;-</span> ParameterValues <span class="sc">%&gt;%</span></span>
-<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="sc">%&gt;%</span></span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> mean_intercept <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (mean_slope <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
 <span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">LT =</span> LT <span class="sc">+</span> <span class="fu">rexp</span>(<span class="fu">nrow</span>(.), <span class="at">rate =</span> <span class="fl">0.0003</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, LT)</span>
 <span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now we can generate a dataset with the default parameters using SimulateLTData() or, for example, a dataset with 500 subjects and no effect of category using my_sim_data(n_subj = 500, beta_1 = 0).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>LTDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateLTData</span>(<span class="at">n_subj =</span> <span class="dv">500</span>, <span class="at">beta_1 =</span> <span class="dv">5000</span>)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>LTDataSimulated <span class="sc">%&gt;%</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subj_id, Register) <span class="sc">%&gt;%</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">medLT =</span> <span class="fu">mean</span>(LT)) <span class="sc">%&gt;%</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Register, <span class="at">y =</span> medLT, <span class="at">fill =</span> Register)) <span class="sc">+</span> <span class="fu">geom_rain</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">rain.side =</span> <span class="st">"f1x1"</span>, <span class="at">id.long.var =</span> <span class="st">"subj_id"</span>, <span class="at">point.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>)), <span class="at">line.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>))) <span class="sc">+</span> <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#FC4E07"</span>,</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"steelblue"</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Looking Time Differences across Speech Styles"</span>) <span class="sc">+</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Speech Style"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Looking Time (ms)"</span>) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`summarise()` has grouped output by 'subj_id'. You can override using the
-`.groups` argument.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Duplicated aesthetics after name standardisation: alpha</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="ExerciseDataSimulation_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="1152"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Exercise 1: Let’s explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items and another power analysis with each subject receiving 15 items. What happens to the estimate of statistical power?</p>
-<p>Write your answer here:</p>
-<hr>
-<p>Exercise 2: We might expect the IDS preference effect to change with infant age, such that older infants listen longer to IDS over ADS than younger infants. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)?</p>
-<hr>
+</section>
+<section id="exercises-to-check-understanding" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="exercises-to-check-understanding"><span class="header-section-number">10</span> Exercises to Check Understanding</h2>
+<p>Exercise Ia:</p>
+<ul>
+<li>How would you adapt our code to generate a dataset with 500 participants and no effect of SpeechStyle?</li>
+</ul>
+<p>Exercise Ib: We might expect the IDS preference effect to change with infant age, such that older infants listen longer to IDS over ADS than younger infants. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)?</p>
+<p>Write some code here (the solution is on the next page):</p>
 
 
 </section>
@@ -1074,13 +1061,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../index.html" class="pagination-link" aria-label="Home">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Home</span>
+      <a href="../index.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../content/ModellingTheData.html" class="pagination-link" aria-label="Part II, ModellingTheData">
-        <span class="nav-page-text">Part II, ModellingTheData</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../content/SolutionToExercise1.html" class="pagination-link" aria-label="Solution to Exercise I">
+        <span class="nav-page-text">Solution to Exercise I</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
