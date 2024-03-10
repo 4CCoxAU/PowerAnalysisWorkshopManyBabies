@@ -52,7 +52,8 @@ pacman::p_load(knitr, # rendering of .Rmd file
                cowplot, #visualisation tool to include multiple plots
                ggrain, #visualisation tool for raincloud plots
                dplyr,
-               here
+               here,
+               tidyr
                )
 
 set.seed(1234)
