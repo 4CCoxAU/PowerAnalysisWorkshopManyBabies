@@ -6,6 +6,8 @@ editor_options:
 
 ## A Description of the Example and Aim of the Simulation
 
+In this first task, we will deal with a domain that should be familiar to many developmental science researchers: infant looking times to 
+
 Let's take inspiration from ManyBabies1 (https://doi.org/10.1177/2515245919900809) and think about how we would simulate data for a new experimmental study on the IDS preference effect. In this study, infant participants are exposed to recordings of adult-directed speech (ADS) and infant-directed speech (IDS), and we use infants' looking times as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli within each participant. To gain fammiliarity with the simulation process in an intuitive way, we will simulate data on the scale of looking times (i.e., 0-20,000ms). In later sections, we will extend the process to simulate data on the scale of effect sizes.
 
 To give an overview of this first simulation task, we will simulate data with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data.
@@ -276,29 +278,161 @@ SimulateLTData <- function(
 ```
 
 
-
 ## Exercises to Check Understanding
 
-Exercise Ia:
+## Exercise I
 
-* How would you adapt our code to generate a dataset with 500 participants and no effect of SpeechStyle?
+* How would you adapt the above code to generate a dataset with 500 participants and no effect of SpeechStyle (i.e., distributions similar to the below plot)?
 
-```{r}
+```{r, warning = FALSE}
+#| code-fold: true
+#| code-summary: "Show the code"
 
+#With our new SimulateLTData() function, the answer here is fairly straightforward! We can simply specify that we want to simulate 500 subjects and want a mean slope of 0, like so: SimulateLTData(n_subj = 500, mean_slope = 0).
+
+LTDataSimulated <- SimulateLTData(n_subj = 500, mean_slope = 0)
+
+LTDataSimulated %>%
+  group_by(subj_id, Register) %>%
+  dplyr::summarise(medLT = mean(LT)) %>%
+  ggplot(aes(x = Register, y = medLT, fill = Register)) + 
+  geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
+  scale_fill_brewer(palette = 'Dark2') +
+  ggtitle('Looking Time Differences across Speech Styles') + 
+  xlab("Speech Style") + 
+  ylab('Looking Time (ms)') + 
+  scale_color_manual(values = viridis(n = 27)) +
+  plot_theme
 ```
 
+## Exercise II:
 
-Exercise Ib: We might expect the IDS preference effect to change with infant age, such that older infants listen longer to IDS over ADS than younger infants. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)?
+* We might expect the IDS preference effect to change with infant age, such that older infants display longer looking times to IDS over ADS. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)? Try to think through the problem, get inspiration from the below plot, code up a solution, and only then click on "Show the code" to check how you might approach this.
 
-Write some code here (the solution is on the next page):
+```{r, warning = FALSE}
+#| code-fold: true
+#| code-summary: "Show the code"
 
-```{r}
+#The question here involves adding infant age as an interaction effect with SpeechStyle. We will approach this question by modifying the code that simulates subject-level data. Here, we will sample an age variable and pretend that we have standardised age so that its values fall between -0.5 and 0.5. We thus randomly sample and age to assign one age to each subject. We also need to specify a slope value for the influence of subject ag and place it in the start of the function; we will add subject_age = 200. Lastly, we need to change how we sum the values together, so that age has an effect on looking times, but also that the influence of age exerts different effects across the two speech styles.
 
+# set up the custom data simulation function
+SimulateLTDataWithAge <- function(
+  n_subj = 24,   # number of subjects
+  n_ADS  = 8,   # number of ingroup stimuli
+  n_IDS =  8,   # number of outgroup stimuli
+  beta_0 = 7000,   # grand mean
+  beta_1 =  2000,   # effect of category
+  beta_as = 5000,
+  S_as = 200,
+  item_sd =  200,   # by-item random intercept sd
+  tau_0 = 2000,   # by-subject random intercept sd
+  tau_1 =  1000,   # by-subject random slope sd
+  rho = 0.2,   # correlation between intercept and slope
+  sigma = 500) { # residual (standard deviation)
 
+  items <- data.frame(
+  #item_id = seq_len(n_ADS + n_IDS),
+  Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
+  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)) %>% 
+  mutate(item_id = faux::make_id(nrow(.), "I")) %>%
+  mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
+
+  # simulate a sample of subjects
+
+# sample from a multivariate random distribution 
+  subjects <- faux::rnorm_multi(
+  n = n_subj, 
+  mu = 0, # means for random effects are always 0
+  sd = c(tau_0, tau_1, S_as), # set SDs
+  r = rho, # set correlation, see ?faux::rnorm_multi
+  varnames = c("T_0s", "T_1s", "S_as")
+) %>%
+  mutate(subj_id = faux::make_id(nrow(.), "S")) %>%
+  mutate(age_subj = runif(n_subj, min = -0.5, max = 0.5))
+
+  ParameterValues <- crossing(subjects, items)  %>%
+    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, S_as, everything())
+  
+  ParameterValues %>%
+    mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + ((beta_as + S_as) * age_subj * SpeechStyle) + e_si) %>%
+    mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, LT)
+}
+
+DataWithAgeSimulated <- SimulateLTDataWithAge()
+DataWithAgeSimulated %>%
+ggplot() + 
+  geom_point(aes(y = LT, x = age_subj, color = subj_id), alpha = 0.6, size = 1, show.legend = F) + 
+  geom_smooth(method = "lm", se = TRUE, formula = y ~ x, aes(y = LT, x = age_subj)) +
+  ggtitle("Age as Positive Interaction Effect") +
+  xlab("Age (standardised age)") + 
+  facet_wrap(~Register) +
+  scale_color_manual(values = viridis(n = 27)) +
+  plot_theme
 ```
 
+## Exercise III:
 
+* As mentioned above, we made the simplifying assumption that each and every stimulus item evokes exactly the same response in participants; however, certain items might elicit stronger or weaker responses depending on individual differences or contextual factors, so including varying slopes for stimulus items can help capture this heterogeneity more accurately. How could we modify the above code to include varying slopes according stimulus items? Again, try to think through the problem, get inspiration from the below plot, code up a solution, and only then click on "Show the code" to check how you might approach this.
 
+```{r, warning = FALSE}
+#| code-fold: true
+#| code-summary: "Show the code"
 
+# set up the custom data simulation function
+SimulateLTDataWithAge <- function(
+  n_subj = 24,   # number of subjects
+  n_ADS  = 8,   # number of ingroup stimuli
+  n_IDS =  8,   # number of outgroup stimuli
+  beta_0 = 7000,   # grand mean
+  beta_1 =  2000,   # effect of category
+  beta_as = 5000,
+  S_as = 200,
+  item_sd =  200,   # by-item random intercept sd
+  tau_0 = 2000,   # by-subject random intercept sd
+  tau_1 =  1000,   # by-subject random slope sd
+  rho = 0.2,   # correlation between intercept and slope
+  sigma = 500) { # residual (standard deviation)
 
+  items <- data.frame(
+  #item_id = seq_len(n_ADS + n_IDS),
+  Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
+  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)) %>% 
+  mutate(item_id = faux::make_id(nrow(.), "I")) %>%
+  mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
 
+  # simulate a sample of subjects
+
+# sample from a multivariate random distribution 
+  subjects <- faux::rnorm_multi(
+  n = n_subj, 
+  mu = 0, # means for random effects are always 0
+  sd = c(tau_0, tau_1, S_as), # set SDs
+  r = rho, # set correlation, see ?faux::rnorm_multi
+  varnames = c("T_0s", "T_1s", "S_as")
+) %>%
+  mutate(subj_id = faux::make_id(nrow(.), "S")) %>%
+  mutate(age_subj = runif(n_subj, min = -0.5, max = 0.5))
+
+  ParameterValues <- crossing(subjects, items)  %>%
+    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, S_as, everything())
+  
+  ParameterValues %>%
+    mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + ((beta_as + S_as) * age_subj * SpeechStyle) + e_si) %>%
+    mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, LT)
+}
+
+DataWithAgeSimulated <- SimulateLTDataWithAge()
+DataWithAgeSimulated %>%
+ggplot() + 
+  geom_point(aes(y = LT, x = age_subj, color = subj_id), alpha = 0.6, size = 1, show.legend = F) + 
+  geom_smooth(method = "lm", se = TRUE, formula = y ~ x, aes(y = LT, x = age_subj)) +
+  ggtitle("Age as Positive Interaction Effect") +
+  xlab("Age (standardised age)") + 
+  facet_wrap(~Register) +
+  scale_color_manual(values = viridis(n = 27)) +
+  plot_theme
+```

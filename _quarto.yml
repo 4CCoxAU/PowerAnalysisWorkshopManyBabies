@@ -3,11 +3,10 @@ project:
 
 website: 
   page-navigation: true
-  title: "ManyBabies Power Analysis" 
+  title: "ManyBabies Data Simulation and Power Analysis" 
   site-url: "https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies" 
   repo-url: "https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies"
-  repo-actions: [edit, source, issue]
-  favicon: images/favicon.ico
+  repo-actions: [source]
   
   page-footer:
     right: ""
@@ -34,8 +33,6 @@ website:
         text: Introduction
       - href: content/ExerciseDataSimulation.qmd
         text: Part I, Data Simulation
-      - href: content/LevelTwo/SolutionToExercise1.qmd
-        text: Solution to Exercise I
       - href: content/ModellingTheData.qmd
         text: Part II, ModellingTheData
       - href: content/SimulatingEffectSizes.qmd
