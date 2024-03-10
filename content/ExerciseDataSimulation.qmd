@@ -1,5 +1,5 @@
 ---
-title: Exercise Sheet 1, Data Simulation
+title: Part I, Data Simulation
 editor_options: 
   chunk_output_type: console
 ---
@@ -82,7 +82,7 @@ When we're modelling data from experiments involving individuals (like infants i
 ## Choosing Values for Varying Effect Parameters
 ```{r}
 # set random effect parameters
-tau_0   <- 3000 # by-subject random intercept sd
+tau_0   <- 2000 # by-subject random intercept sd
 omega_0 <- 1000   # by-item random intercept sd
 ```
 
@@ -112,8 +112,11 @@ items <- data.frame(
 ) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I")) %>%
   mutate(SpeechStyle = recode(Register, "ADS" = -0.5, "IDS" = +0.5)) #introduce a numeric predictor to represent what category each stimulus item, we set ADS to be -0.5 and IDS to be +0.5. This is what is known as contrast coding.
+```
 
-#let's have a look at what this has produced:
+To get to better grips with the simuation process, let's the data visualise and take a look at what we have produced:
+
+```{r}
 glimpse(items)
 
 ggplot(items, aes(1, O_0i, fill = Register, color = Register)) +
@@ -132,36 +135,54 @@ ggplot(items, aes(1, O_0i, fill = Register, color = Register)) +
 
 ## Simulate the sampling of subjects
 
-Now we will simulate the sampling of individual subjects, resulting in a table listing each subject and their two correlated varying effects (i.e., intercepts and slopes). This will be slightly more complicated that what we just did, because we cannot simply sample the 𝑇0𝑠 values from a univariate distribution using rnorm() independently from the 𝑇1𝑠 values. Instead, we must sample ⟨𝑇0𝑠,𝑇1𝑠⟩ pairs — one pair for each subject—from a bivariate normal distribution. One way to sample from a bivariate distribution would be to use the function rnorm_multi() from the faux package (DeBruine 2020), which generates a table of n simulated values from a multivariate normal distribution by specifying the means (mu) and standard deviations (sd) of each variable, plus the correlations (r), which can be either a single value (applied to all pairs), a correlation matrix, or a vector of the values in the upper right triangle of the correlation matrix.
+Now, we will simulate the sampling of individual subjects to create a table that lists each subject along with their two correlated varying effects, namely intercepts and slopes. This process is slightly more complex than before because we cannot simply sample the intercept values (𝑇0𝑠) independently from the slope values (𝑇1𝑠) using rnorm(). Instead, we need to sample pairs of ⟨𝑇0𝑠,𝑇1𝑠⟩ values for each subject from a bivariate normal distribution. We will use the rnorm_multi() function from the faux package (DeBruine 2020) to carry this out. This function generates a table of simulated values from a multivariate normal distribution, allowing us to specify the means (mu) and standard deviations (sd) for each variable, along with the correlations (r), which can be a single value applied to all pairs, a correlation matrix, or a vector of values representing the upper right triangle of the correlation matrix.
 
 ```{r}
 # simulate a sample of subjects
-
 # sample from a multivariate random distribution 
 subjects <- faux::rnorm_multi(
   n = n_subj, 
   mu = 0, # means for random effects are always 0
-  sd = c(tau_0, tau_1), # set SDs
+  sd = c(tau_0, tau_1), # note that we set the SDs further up in the code when specifying varying intercepts and sloeps.
   r = rho, # set correlation, see ?faux::rnorm_multi
   varnames = c("T_0s", "T_1s")
 ) %>%
-  mutate(subj_id = faux::make_id(nrow(.), "S"))
-
+  mutate(subj_id = faux::make_id(nrow(.), "S")) # add subject ids that correspond to the number of rows simulated.
 ```
 
-## Simulate trials (encounters)
+Again, let's visualise this process, so that we are sure what is going on:
 
-Since all subjects respond to all items, we can set up a table of trials by making a table with every possible combination of the rows in the subject and item tables using the tidyverse function crossing(). Each trial has random error associated with it, reflecting fluctuations in trial-by-trial performance due to unknown factors; we simulate this by sampling values from a normal distribution with a mean of 0 and SD of sigma.
+```{r}
+glimpse(subjects)
+
+subjects %>%
+  pivot_longer(cols = starts_with("T"),
+               names_to = "T_variable",
+               values_to = "value") %>%
+  ggplot() + 
+  geom_density(aes(value, fill = T_variable), alpha = 0.8) +
+  xlim(c(-4*tau_0, 4*tau_0)) +
+  facet_wrap(~T_variable) +
+  ggtitle('Varying Intercept and Slope Terms for Subjects') +
+  plot_theme +
+  scale_fill_brewer(palette = 'Dark2') +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+```
+
+## Time to Put It All Together
+
+Because all subjects respond to all items, we can set up a table of trials by making a table with every possible combination of the rows in the subject and item tables using the tidyverse function crossing(). This function generates every possible combination of rows from the subject and item tables, ensuring that each subject's responses to each item are included in the dataset. To introduce variability reflecting the inherent fluctuations in trial-by-trial performance, we incorporate random error into each trial. This randomness is simulated by sampling values from a normal distribution with a mean of 0 and a standard deviation of sigma. This approach ensures that our dataset captures the full range of subject-item interactions while accounting for unpredictable variations in individual performance across trials.
 
 ```{r}
 # cross subject and item IDs; add an error term
 # nrow(.) is the number of rows in the table
 ParameterValues <- crossing(subjects, items)  %>%
-  mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
-  dplyr::select(subj_id, item_id, Register, SpeechStyle, everything())
-```
+  mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
 
-## Adding it all together
+glimpse(ParameterValues)
+```
 
 Now we have specified the parameters in ParameterValues, we are ready to add up everything together to create the response variable (i.e., infant looking times in milliseconds). To be more specific, we calculate the response variable, looking time, by adding together:
 
@@ -171,60 +192,63 @@ Now we have specified the parameters in ParameterValues, we are ready to add up 
 * each sum of the category effect (beta_1) and the random slope (T_1s), multiplied by the numeric predictor (SpeechStyle), and
 * each residual error (e_si).
 
-After this we will use dplyr::select() to keep the columns we need. This will create the structure that we set as our goal at the start of this exercise, with the additional column SpeechStyle, which we will keep to use in the estimation process, described in the next section.
-
 ```{r}
 # calculate the response variable
-dat_sim <- ParameterValues %>%
-  mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + e_si) %>%
-  mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>%
+SimulatedRT <- ParameterValues %>%
+  mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
+  mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
   dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
 ```
 
 Let's have a look at what the data we have generated looks like:
 
 ```{r}
-dat_sim %>%
-  ggplot() +
-  geom_density(aes(x = LT, fill = as.factor(SpeechStyle)), alpha = 0.3) +
-  xlim(c(-5000, 40000)) +
-  plot_theme
+# Plot of how overall looking time distributions differ across ADS and IDS
+SimulatedRT %>%
+  ggplot() + 
+  geom_density(aes(LT, fill = Register), alpha = 0.8) +
+  ggtitle('Varying Intercept and Slope Terms for Subjects') +
+  plot_theme +
+  scale_fill_brewer(palette = 'Dark2') +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
 
-dat_sim_plot <- dat_sim %>%
+# Plot of how looking times of indvidual subjects differ across the two speech style
+SimulatedRT %>%
   group_by(subj_id, Register) %>%
-  dplyr::summarise(medLT = mean(LT))
-
-ggplot(aes(x = Register, y = medLT, fill = Register), data = dat_sim_plot) + 
+  dplyr::summarise(medLT = mean(LT)) %>%
+  ggplot(aes(x = Register, y = medLT, fill = Register)) + 
   geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
-  scale_fill_manual(values = c("#FC4E07", "steelblue")) + 
-  ggtitle('Looking Time Differences across Speech Styles') + 
+  scale_fill_brewer(palette = 'Dark2') +
+  ggtitle('Individual Subject Looking Times across Speech Styles') + 
   xlab("Speech Style") + 
   ylab('Looking Time (ms)') + 
   scale_color_manual(values = viridis(n = 27)) +
   plot_theme
 ```
 
-
-Wonderful, so now we have simulated the dataset with relevant properties that we can use to in sophisticated linear mixed effects models! To make it easier to try out different parameters or to generate many datasets for the purpose of power analysis, we can put all of the code above into a custom function. Set up the function to take all of the parameters we set above as arguments. We’ll set the defaults to the values we used, but you can choose your own defaults. The code below is just all of the code above, condensed a bit. It returns one dataset with the parameters we specified.
+## With the Initial Setup Done, Let's Automatise!
+Now that we've simulated a dataset with the necessary properties, suitable for sophisticated linear mixed effects models, we can streamline the process by encapsulating all the preceding code into a custom function. This function will accept the parameters we defined earlier as arguments, with default values set to our chosen parameters. By doing so, we are empowered to effortlessly experiment with different parameters or generate multiple datasets for power analysis purposes. The following code condenses all the preceding steps into a single function, returning a dataset with the specified parameters.
 
 ```{r}
 # set up the custom data simulation function
-SimulateData <- function(
+SimulateLTData <- function(
   n_subj = 24,   # number of subjects
   n_ADS  = 8,   # number of ingroup stimuli
   n_IDS =  8,   # number of outgroup stimuli
-  beta_0 = 9000,   # grand mean
-  beta_1 =  3000,   # effect of category
-  item_sd =  1000,   # by-item random intercept sd
+  beta_0 = 7000,   # grand mean
+  beta_1 =  2000,   # effect of category
+  item_sd =  200,   # by-item random intercept sd
   tau_0 = 2000,   # by-subject random intercept sd
-  tau_1 =  2500,   # by-subject random slope sd
-  rho = 0.5,   # correlation between intercept and slope
-  sigma = 200) { # residual (standard deviation)
+  tau_1 =  1000,   # by-subject random slope sd
+  rho = 0.2,   # correlation between intercept and slope
+  sigma = 500) { # residual (standard deviation)
 
   items <- data.frame(
   #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = omega_0)) %>% 
+  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I")) %>%
   mutate(SpeechStyle = recode(Register, "ADS" = -0.5, "IDS" = +0.5))
 
@@ -251,16 +275,15 @@ SimulateData <- function(
 }
 ```
 
-Now we can generate a dataset with the default parameters using my_sim_data() or, for example, a dataset with 500 subjects and no effect of category using my_sim_data(n_subj = 500, beta_1 = 0).
+Now we can generate a dataset with the default parameters using SimulateLTData() or, for example, a dataset with 500 subjects and no effect of category using my_sim_data(n_subj = 500, beta_1 = 0).
 
 ```{r}
-data <- SimulateData(n_subj = 500, beta_1 = 2000)
+LTDataSimulated <- SimulateLTData(n_subj = 500, beta_1 = 5000)
 
-dat_sim_plot <- data %>%
+LTDataSimulated %>%
   group_by(subj_id, Register) %>%
-  dplyr::summarise(medLT = mean(LT))
-
-ggplot(aes(x = Register, y = medLT, fill = Register), data = dat_sim_plot) + 
+  dplyr::summarise(medLT = mean(LT)) %>%
+  ggplot(aes(x = Register, y = medLT, fill = Register)) + 
   geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
   scale_fill_manual(values = c("#FC4E07", "steelblue")) + 
   ggtitle('Looking Time Differences across Speech Styles') + 
@@ -270,82 +293,6 @@ ggplot(aes(x = Register, y = medLT, fill = Register), data = dat_sim_plot) +
   plot_theme
 ```
 
-## Modelling the Simulated Data
-
-Let's think about how we want to run a generalised linear mixed-effects model of the data. For a varying intercepts, varying slopes model for each subject, we could run the following model with the lmer syntax as follows:
-
-* LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id)
-
-In this model, LT is the response variable; 1 corresponds to the grand intercept (beta_0); SpeechStyle is the predictor for the ADS/IDS manipulation for item i; (1 | item_id) specifies a by-subject random intercept (O_0i); (1 + SpeechStyle | subj_id) specifies a subject-specific random intercept (T_0s) plus the subject-specific random slope of SpeechStyle (T_1s). The error term (e_si) is automatically included in all models, so is left implicit. 
-
-The terms in parentheses with the “pipe” separator (|) define the random effects structure. For each of these bracketed terms, the left-hand side of the pipe names the effects you wish to allow to vary and the right hand side names the variable identifying the levels of the random factor over which the terms vary (e.g., subjects or items). The first term, (1 | item_id) allows the intercept (1) to vary over the random factor of items (item_id). This is an instruction to estimate the parameter underlying the O_0i values, namely omega_0. The second term, (1 + X_i | subj_id), allows both the intercept and the effect of category (coded by X_i) to vary over the random factor of subjects (subj_id). It is an instruction to estimate the three parameters that underlie the T_0s and T_1s values, namely tau_0, tau_1, and rho.
-
-Given that looking time data tends to be right-skewed, we can model the data using a logarithmic link function to take this into account. The GLMM would look as follows. We will use the summary() function to view the results.
-
-```{r}
-dataSimulated <- SimulateData()
-
-model <- glmer(LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id), 
-               data = dataSimulated,
-               family = Gamma(link = "log"))
-
-summary(model)
-```
-
-Great, so now we have a way of generating data for our research question, and we have a clear idea of how we want to model the data. Now it's time to run the actual power analysis. The way we do this is to specify an effect, run a model and count how many of the models show significant effects (i.e., the ground truth).
-
-```{r}
-# simulate, analyze, and return a table of parameter estimates
-single_run <- function(...) {
-  # ... is a shortcut that forwards any arguments to 
-  # my_sim_data(), the function created above
-  dataSimulated <- SimulateData()
-  
-  model <- lmer(LT ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id),
-                data = dataSimulated) 
-                #family = gaussian(link = "log"))
-  
-  broom.mixed::tidy(model)
-}
-single_run()
-```
-
-Now we have a function to generate data, run our model and spit out the results! Now it's time to repeat a few hundred times, so that we can calculate how much power we have with our given parameters!
-
-```{r}
-# run simulations and save to a file
-n_runs <- 100 # use at least 100 to get stable estimates
-sims <- purrr::map_df(1:n_runs, ~ single_run())
-write_csv(sims, "sims.csv")
-
-# read saved simulation data
-sims <- read_csv("sims.csv", col_types = cols(
-  # makes sure plots display in this order
-  group = col_factor(ordered = TRUE),
-  term = col_factor(ordered = TRUE)
-  ))
-
-sims %>%
-  filter(effect == "fixed") %>%
-  dplyr::select(term, estimate, p.value)
-
-# calculate mean estimates and power for specified alpha
-alpha <- 0.05
-
-sims %>% 
-  filter(effect == "fixed") %>%
-  group_by(term) %>%
-  dplyr::summarize(
-    mean_estimate = mean(estimate),
-    mean_se = mean(std.error),
-    power = mean(p.value < alpha),
-    .groups = "drop"
-  )
-```
-
-After running this model a couple of hundred times, we can converge on values for power that are > .80 - perfect for our little study on the IDS preference effect. However, we should note the limitations in this approach. There are a bunch of assumptions that went into specifying the different parameters, and we need a way to grid search through values to put the power results into perspective. We turn to this problem in the second exercise sheet, but first, let's make sure that we've understood the principles behind data simulation and power analysis.
-
-
 Exercise 1: Let's explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items and another power analysis with each subject receiving 15 items. What happens to the estimate of statistical power?
 
 Write your answer here:
@@ -353,9 +300,12 @@ Write your answer here:
 ______________________________________________________________________________________________________________
 
 
-
 Exercise 2: We might expect the IDS preference effect to change with infant age, such that older infants listen longer to IDS over ADS than younger infants. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)?
 
 _______________________________________________________________________________________________________________
+
+
+
+
 
 

@@ -34,9 +34,11 @@ website:
       - href: index.qmd
         text: Home
       - href: content/ExerciseDataSimulation.qmd
-        text: Data Simulation
+        text: Part I, Data Simulation
+      - href: content/ModellingTheData.qmd
+        text: Part II, ModellingTheData
       - href: content/SimulatingEffectSizes.qmd
-        text: Simulating Effect Sizes
+        text: Part III, Simulating Effect Sizes
         
 format:
   html:
