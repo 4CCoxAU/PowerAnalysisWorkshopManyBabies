@@ -252,28 +252,26 @@ window.Quarto = {
 
 <section id="a-description-of-the-example-and-aim-of-the-simulation" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="a-description-of-the-example-and-aim-of-the-simulation"><span class="header-section-number">1</span> A Description of the Example and Aim of the Simulation</h2>
-<p>In this first task, we will deal with a domain that should be familiar to many developmental science researchers: infant looking times to adult-directed speech (ADS) and infant-directed speech (IDS). In this study, infant participants are exposed to recordings of ADS and IDS, and infants’ looking times to an unrelated visual stimulus is recorded as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli (i.e., ADS vs.&nbsp;IDS) within each participant. In this section, we will simulate data on the scale of looking times (i.e., 0-20,000ms) to gain fammiliarity with the simulation process. In later sections, we will extend the process to simulate data on the scale of effect sizes.</p>
-<p>To give an overview of this first simulation task, we will simulate data with crossed random factors of subjects and stimuli and visualise the simulated data along the way to gain familiarity with the process. We will end up with a simulation function that can help us when performing the power analysis in Part II.</p>
+<p>In this first task, we will deal with a dependent variable that should be familiar to many researchers within developmental science: infant looking times. In our hypothetical study (modelled on ManyBabies1), infant participants are exposed to recordings of adult-directed speech (ADS) and infant-directed speech (IDS), and infants’ looking times to an unrelated visual stimulus is recorded as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli (i.e., ADS vs.&nbsp;IDS) within each participant. To gain familiarity with the simulation process and to build up the structure for a simulation function that will help us when performing the power analysis in Part II, we will simulate data on the scale of looking times (i.e., 0-20,000ms). In the next section, we will extend this process to simulate effect size data.</p>
 </section>
 <section id="determining-the-experimental-parameters" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="determining-the-experimental-parameters"><span class="header-section-number">2</span> Determining the Experimental Parameters</h2>
-<p>Before we can start to simulate data, we need to be very clear about the study design. This clarity is important because we need to define the parameters that govern the process we assume can give rise to the data. If we are building on ManyBabies1, then we are dealing with a within-subjects, between-items study; that is, each and every subject receives both ADS and IDS stimuli (within-subject), but each stimulus is either ADS or IDS (between-items).</p>
-<p>Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 8 recordings of ADS and 8 recordings of IDS. And let’s say that a realistic sample size our laboratory would be around 25 participants. This implies a total of 400 obsevations in this study (i.e., 8 + 8 recording stimuli for each of the 25 children). Let’s set these experimental parameters now already</p>
+<p>Before we can start to simulate data, we need to be very clear about the study design. This clarity is important because we need to explicitly define the parameters that we assume govern the process of data generation. If we are designing a similar study to that of ManyBabies1, then we are dealing with a within-subjects, between-items study; that is, each and every subject receives both ADS and IDS stimuli (within-subject), but each stimulus is either ADS or IDS (between-items).</p>
+<p>Because infants are not the most patient of participants, perhaps a realistic study design would allow researchers to expose infants to 6 recordings of ADS and 6 recordings of IDS. And let’s say that a realistic sample size in our imaginary laboratory would be around 25 participants. This would imply a total of 300 observations in this study (i.e., 6 + 6 recording stimuli for each of the 25 children). Let’s set start by setting these experimental parameters.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set number of subjects and items</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n_subj     <span class="ot">&lt;-</span> <span class="dv">25</span> <span class="co"># number of subjects</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>n_ADS  <span class="ot">&lt;-</span>  <span class="dv">8</span> <span class="co"># number of ADS stimuli</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n_IDS <span class="ot">&lt;-</span>  <span class="dv">8</span> <span class="co"># number of IDS stimuli</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n_subj <span class="ot">&lt;-</span> <span class="dv">25</span> <span class="co"># number of infant participants</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>n_ADS  <span class="ot">&lt;-</span>  <span class="dv">6</span> <span class="co"># number of ADS stimuli</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n_IDS  <span class="ot">&lt;-</span>  <span class="dv">6</span> <span class="co"># number of IDS stimuli</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="data-generating-parameters" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="data-generating-parameters"><span class="header-section-number">3</span> Data Generating Parameters</h2>
-<p>Now that we have an overview of the experimental design, we can start to consider a reasonable statistical model of the data. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:</p>
+<p>Now that we have an overview of the experimental design, we can start to consider a reasonable model of a potential data generating process. In the following sections, we will gradually build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:</p>
 <p><span class="math display">\[
 Looking Time = \beta_0 + \beta_1 \cdot \text{SpeechStyle} + u_{0j}^{(item)} + u_{0i}^{(subj)} + (u_{1i}^{(subj)} \cdot \text{SpeechStyle}) + \varepsilon
-\]</span></p>
-<p>According to this formula, the looking time for subject, s, on item, i, is decomposed into linear combination of fixed effects (i.e., the population grand mean, β₀, and the effect of SpeechStyle, β₁) and a variety of random effects, such as a by-subject random intercept, u₀ᵢ^{(subj)}, a by-item random intercept u₀ⱼ^{(item)}, a by-subject random slope, (u₁ᵢ^{(subj)} * SpeechStyle), and a trial-level residual error, ε.</p>
-<p>This formula paves a clear way forward for our data simulation. In the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for parameters.</p>
+\]</span> According to this formula, the looking time for subject, s, on item, i, is decomposed into linear combination of fixed effects (i.e., the population grand mean, β₀, and the effect of SpeechStyle, β₁) and a variety of random effects, such as a by-subject random intercept, u₀ᵢ^{(subj)}, a by-item random intercept u₀ⱼ^{(item)}, a by-subject random slope, (u₁ᵢ^{(subj)} * SpeechStyle), and a trial-level residual error, ε.</p>
+<p>This formula paves a clear way forward for our process of data simulation. In the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for the different parameters.</p>
 </section>
 <section id="choosing-values-for-fixed-effect-parameters" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="choosing-values-for-fixed-effect-parameters"><span class="header-section-number">4</span> Choosing Values for Fixed Effect Parameters</h2>
@@ -319,12 +317,12 @@ Looking Time = \beta_0 + \beta_1 \cdot \text{SpeechStyle} + u_{0j}^{(item)} + u_
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(items)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 16
+<pre><code>Rows: 12
 Columns: 4
-$ Register    &lt;chr&gt; "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "A…
-$ O_0i        &lt;dbl&gt; -1207.06575, 277.42924, 1084.44118, -2345.69770, 429.12469…
+$ Register    &lt;chr&gt; "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "ADS", "ADS", "A…
+$ O_0i        &lt;dbl&gt; -1207.0657, 277.4292, 1084.4412, -2345.6977, 429.1247, 506…
 $ item_id     &lt;chr&gt; "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I08", "I…
-$ SpeechStyle &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, …</code></pre>
+$ SpeechStyle &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(items, <span class="fu">aes</span>(<span class="dv">1</span>, O_0i, <span class="at">fill =</span> Register, <span class="at">color =</span> Register)) <span class="sc">+</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_rain</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>, <span class="at">boxplot.args =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">"black"</span>,</span>
@@ -363,8 +361,8 @@ $ SpeechStyle &lt;dbl&gt; 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 25
 Columns: 3
-$ T_0s    &lt;dbl&gt; 884.80961, 1710.55508, 1635.49818, -4947.76450, -390.13885, 83…
-$ T_1s    &lt;dbl&gt; 1165.1005, 1063.9211, 489.8264, 327.8312, 899.7244, 1197.1137,…
+$ T_0s    &lt;dbl&gt; 1379.78919, -165.88233, -1974.07433, 403.46405, 884.80961, 171…
+$ T_1s    &lt;dbl&gt; 1497.3476, 267.1884, 198.7101, -1370.1876, 1165.1005, 1063.921…
 $ subj_id &lt;chr&gt; "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09",…</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>subjects <span class="sc">%&gt;%</span></span>
@@ -395,16 +393,16 @@ $ subj_id &lt;chr&gt; "S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(ParameterValues)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 400
+<pre><code>Rows: 300
 Columns: 8
 $ T_0s        &lt;dbl&gt; -4947.764, -4947.764, -4947.764, -4947.764, -4947.764, -49…
 $ T_1s        &lt;dbl&gt; 327.8312, 327.8312, 327.8312, 327.8312, 327.8312, 327.8312…
-$ subj_id     &lt;chr&gt; "S04", "S04", "S04", "S04", "S04", "S04", "S04", "S04", "S…
-$ Register    &lt;chr&gt; "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "I…
-$ O_0i        &lt;dbl&gt; -998.38644, -890.03783, -776.25389, -564.45200, -477.19270…
-$ item_id     &lt;chr&gt; "I12", "I10", "I13", "I09", "I11", "I16", "I14", "I15", "I…
-$ SpeechStyle &lt;dbl&gt; -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, …
-$ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446419,…</code></pre>
+$ subj_id     &lt;chr&gt; "S08", "S08", "S08", "S08", "S08", "S08", "S08", "S08", "S…
+$ Register    &lt;chr&gt; "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "IDS", "IDS", "I…
+$ O_0i        &lt;dbl&gt; -998.3864, -890.0378, -574.7400, -564.4520, -546.6319, -47…
+$ item_id     &lt;chr&gt; "I12", "I10", "I07", "I09", "I08", "I11", "I04", "I01", "I…
+$ SpeechStyle &lt;dbl&gt; -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.…
+$ e_si        &lt;dbl&gt; -17.380195, -334.816790, -3.802378, 888.542224, -569.30386…</code></pre>
 </div>
 </div>
 <p>Now we have specified the parameters in ParameterValues, we are ready to add up everything together to create the response variable (i.e., infant looking times in milliseconds). To be more specific, we calculate the response variable, looking time, by adding together:</p>
@@ -521,7 +519,7 @@ $ e_si        &lt;dbl&gt; -569.303868, 683.913590, 664.782395, 168.236399, 3.446
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># want to simulate 500 subjects and want a mean slope of 0,</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># like so: SimulateLTData(n_subj = 500, mean_slope = 0).</span></span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>LTDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateLTData</span>(<span class="at">n_subj =</span> <span class="dv">500</span>, <span class="at">mean_slope =</span> <span class="dv">0</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>LTDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateLTData</span>(<span class="at">n_subj =</span> <span class="dv">25</span>, <span class="at">mean_slope =</span> <span class="dv">2000</span>)</span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>LTDataSimulated <span class="sc">%&gt;%</span></span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subj_id, Register) <span class="sc">%&gt;%</span></span>
