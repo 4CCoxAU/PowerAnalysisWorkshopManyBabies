@@ -1,5 +1,5 @@
 ---
-title: Part II, Modelling the Simulated Data
+title: Part II, Simulation-Based Power Analysis
 editor_options: 
   chunk_output_type: console
 ---
@@ -162,7 +162,7 @@ SimulateAndModelEFData <- function(...) {
 
 Now we have a function that generates data, runs a model and spits out the results! Now it's time to repeat a few hundred times, so that we can calculate how much power we have with our given parameters. We are going to use map_df() to run the simulation and modelling function 500 times and write it to a .csv file.
 
-```{r, echo=FALSE, message=FALSE, results='hide',warning = FALSE}
+```{r, message=FALSE, results='hide',warning = FALSE}
 # run simulations and save to a file
 n_runs <- 500 # use at least 500 to get stable estimates
 simulations <- purrr::map_df(1:n_runs, ~ SimulateAndModelEFData())
@@ -192,7 +192,7 @@ sims %>%
 
 Now that we have this pipeline set up, it becomes easy to adapt the code to try out different parameter values. Let's explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items in each speech style. What happens to the estimate of statistical power?
 
-```{r, echo=FALSE, message=FALSE, results='hide', warning = FALSE}
+```{r, message=FALSE, results='hide', warning = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  
@@ -301,7 +301,7 @@ ggplot() +
   plot_theme
 ```
 
-```{r, warning = FALSE, echo=FALSE, message=FALSE, results='hide', warning = FALSE}
+```{r, warning = FALSE, message=FALSE, results='hide', warning = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  
@@ -341,4 +341,4 @@ sims %>%
   )
 ```
 
-Now we have a pretty great pipeline set up that allows us to explore the effects of different parameter values on our ability to detect effects. However, instead of manually varying the parameters one by one, it would be nice if we could set up a grid search to explore values and put the power results into perspective. We will explore how to do this in the next exercise sheet. The code gets slightly more complepx, so make sure that you have understood the code that we have written so far before venturing further. 
+Now we have a pretty useful pipeline set up that allows us to explore the effects of different parameter values on our ability to detect effects. However, instead of manually varying the parameters one by one, it would be nice if we could set up a grid search to explore values and put the power results into perspective. We will explore how to do this in the next exercise sheet. The code gets slightly more complex, so make sure that you have understood the code that we have written so far before venturing further.

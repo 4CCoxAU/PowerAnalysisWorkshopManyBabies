@@ -31,11 +31,11 @@ website:
     contents:
       - href: index.qmd
         text: Introduction
-      - href: content/ExerciseDataSimulation.qmd
+      - href: content/DataSimulation_01.qmd
         text: Part I, Data Simulation
-      - href: content/ModellingTheData.qmd
-        text: Part II, ModellingTheData
-      - href: content/GridSearch.qmd
+      - href: content/SimulationBasedPowerAnalysis_02.qmd
+        text: Part II, Simulation-Based Power Analysis
+      - href: content/GridSearch_03.qmd
         text: Part III, Grid Searches and Sensitivity Analyses
       - href: content/FurtherResources.qmd
         text: Further Resources

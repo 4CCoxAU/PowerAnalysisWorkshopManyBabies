@@ -1,0 +1,15 @@
+effect,group,term,estimate,std.error,statistic,df,p.value
+fixed,NA,(Intercept),-0.04092934003521599,0.09373627200810805,-0.4366435655951376,9.999801529338752,0.6716472780576448
+fixed,NA,SpeechStyle,0.642235460367475,0.14051925574620813,4.570444505679824,12.495367104886496,5.803370337947023e-4
+ran_pars,subj_id,sd__(Intercept),0,NA,NA,NA,NA
+ran_pars,subj_id,cor__(Intercept).SpeechStyle,NA,NA,NA,NA,NA
+ran_pars,subj_id,sd__SpeechStyle,0.23767578808814183,NA,NA,NA,NA
+ran_pars,item_id,sd__(Intercept),0.22162306653758748,NA,NA,NA,NA
+ran_pars,Residual,sd__Observation,0.30603245167293625,NA,NA,NA,NA
+fixed,NA,(Intercept),0.0763809334732369,0.09109691160890006,0.8384579907731425,10.618888048193542,0.4202467219901749
+fixed,NA,SpeechStyle,0.46824746425623287,0.1301548564494344,3.5976180761118863,11.037921599929003,0.004164957690640434
+ran_pars,subj_id,sd__(Intercept),0.08162703232860542,NA,NA,NA,NA
+ran_pars,subj_id,cor__(Intercept).SpeechStyle,1,NA,NA,NA,NA
+ran_pars,subj_id,sd__SpeechStyle,0.14914334736047646,NA,NA,NA,NA
+ran_pars,item_id,sd__(Intercept),0.21141068970983123,NA,NA,NA,NA
+ran_pars,Residual,sd__Observation,0.30422799390618505,NA,NA,NA,NA
