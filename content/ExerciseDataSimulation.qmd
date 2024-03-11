@@ -272,7 +272,7 @@ SimulateLTData <- function(
     mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
   
   # calculate the response variable
-  SimulatedLT <- ParameterValues %>%
+  ParameterValues %>%
     mutate(LT = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
   mutate(LT = LT + rexp(nrow(.), rate = 0.01)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
   dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
@@ -376,9 +376,8 @@ SimulateLTDataWithAge <- function(
     mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
   
   # calculate the response variable
-  SimulatedLT <- ParameterValues %>%
+  ParameterValues %>%
     mutate(LT = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + ((beta_age + age_slope_sd) * age_subj * SpeechStyle) + e_si) %>%
-    
   mutate(LT = LT + rexp(nrow(.), rate = 0.01)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
   dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, LT)
 }
@@ -395,130 +394,3 @@ ggplot() +
   plot_theme
 ```
 
-### Exercise III
-
-* We made the simplifying assumption that each and every stimulus item evokes exactly the same response in participants; however, certain items might elicit stronger or weaker responses depending on individual differences or contextual factors. Including varying slopes for stimulus items may help us capture this variation more accurately (if the model can converge). How could we modify the above code to include varying slopes according stimulus items? Again, try to think through the problem, get inspiration from the below plot, code up a solution, and only then click on "Show the code" to check how you might approach this.
-
-```{r, warning = FALSE}
-#| code-fold: true
-#| code-summary: "Show the code"
-
-SimulateLTData <- function(
-  item_varyingslope =  100,   # by-subject random slope sd
-  n_subj = 24,   # number of subjects
-  n_ADS  = 6,   # number of ingroup stimuli
-  n_IDS =  6,   # number of outgroup stimuli
-  mean_intercept = 6000,   # grand mean
-  mean_slope =  1000,   # effect of category
-  item_varyingintercept =  250,   # by-item random intercept sd
-  subject_varyingintercept = 500,   # by-subject random intercept sd
-  subject_varyingslope =  100,   # by-subject random slope sd
-  rho = 0.2,   # correlation between intercept and slope
-  sigma = 500) { # residual (standard deviation)
-
-  
-  items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
-  Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  faux::rnorm_multi(
-  n = n_ADS + n_IDS, 
-  mu = 0, # means for random effects are always 0
-  sd = c(item_varyingintercept, item_varyingslope),
-  r = rho,
-  varnames = c("item_varyingintercept", "item_slope_sd"))) %>%
-    mutate(item_id = faux::make_id(n_ADS + n_IDS, "I")) %>%
-    mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
-
-  # simulate a sample of subjects
-
-# sample from a multivariate random distribution 
-  subjects <- faux::rnorm_multi(
-  n = n_subj, 
-  mu = 0, 
-  sd = c(subject_varyingintercept, subject_varyingslope), 
-  r = rho,
-  varnames = c("subject_intercept_sd", "subject_slope_sd")
-) %>%
-  mutate(subj_id = faux::make_id(nrow(.), "S"))
-
-  ParameterValues <- crossing(subjects, items)  %>%
-    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
-  
-  # calculate the response variable
-  SimulatedLT <- ParameterValues %>%
-    mutate(LT = mean_intercept + subject_intercept_sd + item_varyingintercept + (mean_slope + subject_slope_sd + item_slope_sd) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
-  mutate(LT = LT + rexp(nrow(.), rate = 0.01)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
-  dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
-}
-
-
-DataWithAgeSimulated <- SimulateLTData()
-LTDataSimulated %>%
-  group_by(item_id, Register) %>%
-  dplyr::summarise(medLT = mean(LT), .groups = 'drop') %>%
-  ggplot(aes(x = Register, y = medLT, fill = Register)) + 
-  geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "item_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
-  scale_fill_brewer(palette = 'Dark2') +
-  ggtitle('Looking Time Differences across Speech Styles') + 
-  xlab("Speech Style") + 
-  ylab('Looking Time (ms)') + 
-  scale_color_manual(values = viridis(n = 27)) +
-  plot_theme
-
-
-
-
-
-# set up the custom data simulation function
-SimulateLTDataWithAge <- function(
-  n_subj = 24,   # number of subjects
-  n_ADS  = 8,   # number of ingroup stimuli
-  n_IDS =  8,   # number of outgroup stimuli
-  beta_0 = 7000,   # grand mean
-  beta_1 =  2000,   # effect of category
-  beta_as = 5000,
-  S_as = 200,
-  item_sd =  200,   # by-item random intercept sd
-  item_slope_sd =  200,   # by-item random slope sd
-  tau_0 = 2000,   # by-subject random intercept sd
-  tau_1 =  1000,   # by-subject random slope sd
-  rho = 0.2,   # correlation between intercept and slope
-  sigma = 500) { # residual (standard deviation)
-
-  items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
-  Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  faux::rnorm_multi(
-  n = n_ADS + n_IDS, 
-  mu = 0, # means for random effects are always 0
-  sd = c(item_sd, item_slope_sd),
-  r = rho,
-  varnames = c("item_sd", "item_slope_sd"))) %>%
-    mutate(item_id = faux::make_id(n_ADS + n_IDS, "I")) %>%
-    mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
-
-  # simulate a sample of subjects
-
-# sample from a multivariate random distribution 
-  subjects <- faux::rnorm_multi(
-  n = n_subj, 
-  mu = 0, # means for random effects are always 0
-  sd = c(tau_0, tau_1, S_as), # set SDs
-  r = rho, # set correlation, see ?faux::rnorm_multi
-  varnames = c("T_0s", "T_1s", "S_as")
-) %>%
-  mutate(subj_id = faux::make_id(nrow(.), "S")) %>%
-  mutate(age_subj = runif(n_subj, min = -0.5, max = 0.5))
-
-  ParameterValues <- crossing(subjects, items)  %>%
-    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
-    dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, S_as, everything())
-  
-  ParameterValues %>%
-    mutate(LT = beta_0 + T_0s + item_sd + (beta_1 + T_1s) * SpeechStyle + ((beta_as + S_as) * age_subj * SpeechStyle) + (beta_1 + item_slope_sd) * SpeechStyle + e_si) %>%
-    mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>%
-    dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, LT)
-}
-
-
-```
