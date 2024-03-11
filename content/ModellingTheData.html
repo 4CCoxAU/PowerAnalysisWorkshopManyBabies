@@ -299,17 +299,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="sc">%&gt;%</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subj_id, Register) <span class="sc">%&gt;%</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">medLT =</span> <span class="fu">mean</span>(EF)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">medLT =</span> <span class="fu">mean</span>(EF), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Register, <span class="at">y =</span> medLT, <span class="at">fill =</span> Register)) <span class="sc">+</span> <span class="fu">geom_rain</span>(<span class="at">alpha =</span> <span class="fl">0.8</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">rain.side =</span> <span class="st">"f1x1"</span>, <span class="at">id.long.var =</span> <span class="st">"subj_id"</span>, <span class="at">point.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>)), <span class="at">line.args.pos =</span> <span class="fu">list</span>(<span class="at">position =</span> <span class="fu">position_jitter</span>(<span class="at">width =</span> <span class="fl">0.04</span>,</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">height =</span> <span class="dv">0</span>, <span class="at">seed =</span> <span class="dv">42</span>))) <span class="sc">+</span> <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Subject-Level Differences across Speech Styles"</span>) <span class="sc">+</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Speech Style"</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Effect Size"</span>) <span class="sc">+</span> plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`summarise()` has grouped output by 'subj_id'. You can override using the
-`.groups` argument.</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -327,12 +323,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>In this model, EF is the effect size response variable; 1 corresponds to the average intercept; SpeechStyle is the predictor for the ADS/IDS manipulation for item i; (1 | item_id) specifies a by-subject random intercept (O_0i); (1 + SpeechStyle | subj_id) specifies a subject-specific random intercept (T_0s) plus the subject-specific random slope of SpeechStyle (T_1s). The error term (e_si) is automatically included in all models, so is left implicit in the above formula. The terms in parentheses with the “pipe” separator (|) define the random effects structure. For each of these bracketed terms, the left-hand side of the pipe names the effects you wish to allow to vary and the right hand side names the variable identifying the levels of the random factor over which the terms vary (e.g., subjects or items). The first term, (1 | item_id) allows the intercept (1) to vary over the random factor of items (item_id). This is an instruction to estimate the parameter underlying the O_0i values, namely omega_0. The second term, (1 + X_i | subj_id), allows both the intercept and the effect of category (coded by X_i) to vary over the random factor of subjects (subj_id). It is an instruction to estimate the three parameters that underlie the T_0s and T_1s values, namely tau_0, tau_1, and rho.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    subj_id), <span class="at">data =</span> dataSimulated)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -371,213 +367,33 @@ SpeechStyle -0.385</code></pre>
 <h2 data-number="1.4" class="anchored" data-anchor-id="time-to-power-up-the-analysis"><span class="header-section-number">1.4</span> Time to Power-Up the Analysis</h2>
 <p>Now we have two essential components to perform a simulation-based power analysis: i) a code pipeline to generate data for our research question and ii) a clear idea of how we want to model the data. Now it’s time to run the actual power analysis. The way we do this is to specify an effect, run 100s of models and count how many of the models show significant effects. To accomplish this, we can write a new function that combines a modelling component into our previous SimulateEffectSizeData() function. That is, if we include both the simulation and modelling of the data in one function, we can simplify the process of performing a power analysis. We will call this function SimulateAndModelEFData(), and we will use broom.mixed::tidy(model) to obtain a dataframe with relevant results from the model and write them to a .csv-file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="running-the-power-analysis" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="running-the-power-analysis"><span class="header-section-number">1.5</span> Running the Power Analysis</h2>
 <p>Now we have a function to generate data, run our model and spit out the results! Now it’s time to repeat a few hundred times, so that we can calculate how much power we have with our given parameters. We are going to use map_df() to run the simulation and modelling function 500 times and write it to a .csv file.</p>
-<div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.0e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.7e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.0e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.3e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.3e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.8e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.0e-03</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.8e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.3e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -8.9e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.9e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.9e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.6e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -8.5e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.0e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.8e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -7.4e-03</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.9e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.5e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.6e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.0e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.6e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.2e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.6e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.1e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
-Model failed to converge with max|grad| = 0.00425845 (tol = 0.002, component 1)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.8e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.2e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.5e-03</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -7.1e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.1e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.2e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.7e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.7e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.5e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -7.4e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.9e-03</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.0e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.4e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.5e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.1e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.9e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.5e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.1e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.3e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -7.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.5e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.7e+02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.2e+00</code></pre>
-</div>
-</div>
 <p>If it ran correctly, it should have produced a .csv file with model results from each new simulation of data. Let’s read in the results and have a look at what they say!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulations.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 3500 Columns: 8
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (3): effect, group, term
-dbl (5): estimate, std.error, statistic, df, p.value
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
-<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
-<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulations.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
   term                         mean_estimate mean_se  power
@@ -597,292 +413,16 @@ dbl (5): estimate, std.error, statistic, df, p.value
 <h3 data-number="1.6.1" class="anchored" data-anchor-id="exercise-iv"><span class="header-section-number">1.6.1</span> Exercise IV</h3>
 <p>Now that we have this pipeline set up, it becomes easy to adapt the code to try out different parameter values. Let’s explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items in each speech style. What happens to the estimate of statistical power?</p>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
-Model failed to converge with max|grad| = 0.0097582 (tol = 0.002, component 1)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.4e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.4e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.5e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.5e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.3e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.3e-03</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -7.4e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.6e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.4e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.3e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.5e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.1e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.5e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.8e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.5e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
-Model failed to converge with max|grad| = 0.00299868 (tol = 0.002, component 1)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.4e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.9e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
-unable to evaluate scaled gradient</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
-Model failed to converge: degenerate Hessian with 1 negative eigenvalues</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.7e-03</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.9e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.3e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.9e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.6e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.8e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.7e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.3e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.4e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.5e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -8.7e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.1e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.1e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.7e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.8e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.8e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.9e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.3e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.9e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.2e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.3e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.4e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.0e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.4e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.2e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -8.9e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.4e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.0e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.3e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.0e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -6.9e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.5e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.7e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.9e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -9.1e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.6e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.6e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.8e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.4e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.2e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.9e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.9e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.6e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.4e-02</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.2e+00</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -1.5e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -2.2e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -5.1e-01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -3.8e+01</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Model failed to converge with 1 negative eigenvalue: -4.4e+00</code></pre>
-</div>
-</div>
-<div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
-<span id="cb154-2"><a href="#cb154-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulations2Stimuli.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb154-3"><a href="#cb154-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 3500 Columns: 8
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (3): effect, group, term
-dbl (5): estimate, std.error, statistic, df, p.value
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb156"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
-<span id="cb156-2"><a href="#cb156-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
-<span id="cb156-3"><a href="#cb156-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
-<span id="cb156-4"><a href="#cb156-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulations2Stimuli.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
@@ -903,62 +443,65 @@ dbl (5): estimate, std.error, statistic, df, p.value
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
-<span id="cb158-2"><a href="#cb158-2" aria-hidden="true" tabindex="-1"></a>SimulateEFDataWithAge <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb158-3"><a href="#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
-<span id="cb158-4"><a href="#cb158-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">8</span>,   <span class="co"># number of ingroup stimuli</span></span>
-<span id="cb158-5"><a href="#cb158-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">8</span>,   <span class="co"># number of outgroup stimuli</span></span>
-<span id="cb158-6"><a href="#cb158-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_0 =</span> <span class="dv">0</span>,   <span class="co"># grand mean</span></span>
-<span id="cb158-7"><a href="#cb158-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_1 =</span>  <span class="fl">0.1</span>,   <span class="co"># effect of category</span></span>
-<span id="cb158-8"><a href="#cb158-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_as =</span> <span class="fl">0.4</span>,</span>
-<span id="cb158-9"><a href="#cb158-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">S_as =</span> <span class="fl">0.2</span>,</span>
-<span id="cb158-10"><a href="#cb158-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_sd =</span>  <span class="fl">0.2</span>,   <span class="co"># by-item random intercept sd</span></span>
-<span id="cb158-11"><a href="#cb158-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_0 =</span> <span class="fl">0.1</span>,   <span class="co"># by-subject random intercept sd</span></span>
-<span id="cb158-12"><a href="#cb158-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_1 =</span>  <span class="fl">0.1</span>,   <span class="co"># by-subject random slope sd</span></span>
-<span id="cb158-13"><a href="#cb158-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.2</span>,   <span class="co"># correlation between intercept and slope</span></span>
-<span id="cb158-14"><a href="#cb158-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fl">0.3</span>) { <span class="co"># residual (standard deviation)</span></span>
-<span id="cb158-15"><a href="#cb158-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-16"><a href="#cb158-16" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb158-17"><a href="#cb158-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
-<span id="cb158-18"><a href="#cb158-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
-<span id="cb158-19"><a href="#cb158-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_sd)) <span class="sc">%&gt;%</span> </span>
-<span id="cb158-20"><a href="#cb158-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb158-21"><a href="#cb158-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="dv">1</span>))</span>
-<span id="cb158-22"><a href="#cb158-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-23"><a href="#cb158-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate a sample of subjects</span></span>
-<span id="cb158-24"><a href="#cb158-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-25"><a href="#cb158-25" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
-<span id="cb158-26"><a href="#cb158-26" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
-<span id="cb158-27"><a href="#cb158-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
-<span id="cb158-28"><a href="#cb158-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
-<span id="cb158-29"><a href="#cb158-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1, S_as), <span class="co"># set SDs</span></span>
-<span id="cb158-30"><a href="#cb158-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
-<span id="cb158-31"><a href="#cb158-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>, <span class="st">"S_as"</span>)</span>
-<span id="cb158-32"><a href="#cb158-32" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb158-33"><a href="#cb158-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb158-34"><a href="#cb158-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_subj =</span> <span class="fu">runif</span>(n_subj, <span class="at">min =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">max =</span> <span class="fl">0.5</span>))</span>
-<span id="cb158-35"><a href="#cb158-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-36"><a href="#cb158-36" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
-<span id="cb158-37"><a href="#cb158-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span></span>
-<span id="cb158-38"><a href="#cb158-38" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, age_subj, S_as, <span class="fu">everything</span>())</span>
-<span id="cb158-39"><a href="#cb158-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb158-40"><a href="#cb158-40" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="sc">%&gt;%</span></span>
-<span id="cb158-41"><a href="#cb158-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">EF =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> ((beta_as <span class="sc">+</span> S_as) <span class="sc">*</span> age_subj <span class="sc">*</span> SpeechStyle) <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
-<span id="cb158-42"><a href="#cb158-42" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, age_subj, EF)</span>
-<span id="cb158-43"><a href="#cb158-43" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb158-44"><a href="#cb158-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb158-45"><a href="#cb158-45" aria-hidden="true" tabindex="-1"></a>EFDataWithAgeSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>SimulateEFDataWithAge <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">8</span>,   <span class="co"># number of ingroup stimuli</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">8</span>,   <span class="co"># number of outgroup stimuli</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_0 =</span> <span class="dv">0</span>,   <span class="co"># grand mean</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_1 =</span>  <span class="fl">0.1</span>,   <span class="co"># effect of category</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_as =</span> <span class="fl">0.4</span>,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">S_as =</span> <span class="fl">0.2</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_sd =</span>  <span class="fl">0.2</span>,   <span class="co"># by-item random intercept sd</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_0 =</span> <span class="fl">0.1</span>,   <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">tau_1 =</span>  <span class="fl">0.1</span>,   <span class="co"># by-subject random slope sd</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.2</span>,   <span class="co"># correlation between intercept and slope</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fl">0.3</span>) { <span class="co"># residual (standard deviation)</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">O_0i =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_sd)) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="dv">1</span>))</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate a sample of subjects</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(tau_0, tau_1, S_as), <span class="co"># set SDs</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"T_0s"</span>, <span class="st">"T_1s"</span>, <span class="st">"S_as"</span>)</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_subj =</span> <span class="fu">runif</span>(n_subj, <span class="at">min =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">max =</span> <span class="fl">0.5</span>))</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, age_subj, S_as, <span class="fu">everything</span>())</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="sc">%&gt;%</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">EF =</span> beta_0 <span class="sc">+</span> T_0s <span class="sc">+</span> O_0i <span class="sc">+</span> (beta_1 <span class="sc">+</span> T_1s) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> ((beta_as <span class="sc">+</span> S_as) <span class="sc">*</span> age_subj <span class="sc">*</span> SpeechStyle) <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, age_subj, EF)</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>EFDataWithAgeSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a>EFDataWithAgeSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>()</span>
-<span id="cb159-2"><a href="#cb159-2" aria-hidden="true" tabindex="-1"></a>EFDataWithAgeSimulated <span class="sc">%&gt;%</span></span>
-<span id="cb159-3"><a href="#cb159-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj, <span class="at">color =</span> subj_id),</span>
-<span id="cb159-4"><a href="#cb159-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">show.legend =</span> F) <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
-<span id="cb159-5"><a href="#cb159-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj)) <span class="sc">+</span></span>
-<span id="cb159-6"><a href="#cb159-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Age as Positive Interaction Effect"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age (standardised age)"</span>) <span class="sc">+</span></span>
-<span id="cb159-7"><a href="#cb159-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Register) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
-<span id="cb159-8"><a href="#cb159-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>EFDataWithAgeSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>EFDataWithAgeSimulated <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj, <span class="at">color =</span> subj_id),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">show.legend =</span> F) <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj)) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Age as Positive Interaction Effect"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age (standardised age)"</span>) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Register) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -970,300 +513,14 @@ dbl (5): estimate, std.error, statistic, df, p.value
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
-<span id="cb160-2"><a href="#cb160-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
-<span id="cb160-3"><a href="#cb160-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFAgeData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb160-4"><a href="#cb160-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
-<span id="cb160-5"><a href="#cb160-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>(<span class="at">n_ADS =</span> <span class="dv">4</span>, <span class="at">n_IDS =</span> <span class="dv">4</span>)</span>
-<span id="cb160-6"><a href="#cb160-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb160-7"><a href="#cb160-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
-<span id="cb160-8"><a href="#cb160-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle<span class="sc">:</span>age_subj <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span></span>
-<span id="cb160-9"><a href="#cb160-9" aria-hidden="true" tabindex="-1"></a>        (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
-<span id="cb160-10"><a href="#cb160-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
-<span id="cb160-11"><a href="#cb160-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
-<span id="cb160-12"><a href="#cb160-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb160-13"><a href="#cb160-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb160-14"><a href="#cb160-14" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
-<span id="cb160-15"><a href="#cb160-15" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># use at least 500 to get stable estimates</span></span>
-<span id="cb160-16"><a href="#cb160-16" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFAgeData</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')
-boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="st">"EFsimulationsAge.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb163"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb163-1"><a href="#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
-<span id="cb163-2"><a href="#cb163-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulationsAge.csv"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb163-3"><a href="#cb163-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 3500 Columns: 8
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (3): effect, group, term
-dbl (5): estimate, std.error, statistic, df, p.value
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb165"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb165-1"><a href="#cb165-1" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
-<span id="cb165-2"><a href="#cb165-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
-<span id="cb165-3"><a href="#cb165-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
-<span id="cb165-4"><a href="#cb165-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulationsAge.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
