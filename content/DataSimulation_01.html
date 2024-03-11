@@ -291,8 +291,8 @@ Looking Time = \beta^{ADS} + VaryingIntercept^{subj} + VaryingIntercept^{item} +
 <p>To address this, we introduce random intercept values for subjects and items by code the standard deviation of the random intercepts and sampling from a normal distribution. This reflects the range of differences we might observe among subjects’ reactions and the effects of different stimulus items.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set random effect parameters</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>subject_varyingintercept <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># by-subject random intercept sd</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>item_varyingintercept <span class="ot">&lt;-</span> <span class="dv">250</span>  <span class="co"># by-item random intercept sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>subject_varyingintercept <span class="ot">&lt;-</span> <span class="dv">750</span>  <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>item_varyingintercept <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># by-item random intercept sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="choosing-value-for-varying-slope-parameter" class="level2" data-number="6">
@@ -300,7 +300,7 @@ Looking Time = \beta^{ADS} + VaryingIntercept^{subj} + VaryingIntercept^{item} +
 <p>We also need to acknowledge that the magnitude of the effect of IDS stimuli may vary across individual infants. Some infants might be more responsive to IDS stimuli than others, leading to variation in the differences in looking times across speech styles. We therefore introduce a slope parameter that varies by subject. When we introduce random slopes to a model, we need to consider potential correlations between these varying slopes and the varying intercepts. This is because if there is a correlation between the way individuals (infants, in this case) respond to the IDS stimuli (reflected in the varying slopes) and their baseline behaviors (reflected in the varying intercepts), it can affect our model’s predictions. For instance, if infants who naturally have longer attention spans (reflected in higher random intercepts) also tend to show stronger responses to IDS stimuli (reflected in steeper random slopes), ignoring this correlation might lead to biased estimates. Including a correlation matrix allows us to explicitly account for these potential correlations, ensuring that our model accurately captures the relationships between different sources of variability in the data and produces more reliable results. Hence, in the following code, we include a correlation matrix, specifying a weak correlation between the varying intercepts and varying slopes of infant participants. Lastly, we incorporate a residual error term to account for any unexplained sources of variability in the model.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set more random effect and error parameters</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>subject_varyingslope <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># by-subject random slope sd</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>subject_varyingslope <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># by-subject random slope sd</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.2</span>  <span class="co"># correlation between intercept and slope</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># residual (error) sd</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -326,7 +326,7 @@ Looking Time = \beta^{ADS} + VaryingIntercept^{subj} + VaryingIntercept^{item} +
 <pre><code>Rows: 12
 Columns: 4
 $ Register          &lt;chr&gt; "IDS", "IDS", "IDS", "IDS", "IDS", "IDS", "ADS", "AD…
-$ item_intercept_sd &lt;dbl&gt; -301.76644, 69.35731, 271.11029, -586.42443, 107.281…
+$ item_intercept_sd &lt;dbl&gt; -603.5329, 138.7146, 542.2206, -1172.8489, 214.5623,…
 $ SpeechStyle       &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0
 $ item_id           &lt;chr&gt; "I01", "I02", "I03", "I04", "I05", "I06", "I07", "I0…</code></pre>
 </div>
@@ -367,18 +367,19 @@ $ item_id           &lt;chr&gt; "I01", "I02", "I03", "I04", "I05", "I06", "I07",
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 25
 Columns: 3
-$ subject_intercept_sd &lt;dbl&gt; 382.658246, -33.425681, -481.626658, 61.038220, 2…
-$ subject_slope_sd     &lt;dbl&gt; 147.31082, 27.44542, 25.61690, -139.48689, 115.15…
+$ subject_intercept_sd &lt;dbl&gt; 432.61155, -79.36596, -762.14137, 237.09955, 264.…
+$ subject_slope_sd     &lt;dbl&gt; 762.20127, 127.60529, 57.16425, -663.50037, 589.2…
 $ subj_id              &lt;chr&gt; "S01", "S02", "S03", "S04", "S05", "S06", "S07", …</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>subjects <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"subject"</span>), <span class="at">names_to =</span> <span class="st">"parameters"</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">starts_with</span>(<span class="st">"subject"</span>), <span class="at">names_to =</span> <span class="st">"Parameters"</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(value, <span class="at">fill =</span> parameters), <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(value, <span class="at">fill =</span> Parameters), <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span> <span class="sc">*</span> subject_varyingintercept, <span class="dv">4</span> <span class="sc">*</span> subject_varyingintercept)) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>parameters) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Varying Intercept and Slope Terms for Subjects"</span>) <span class="sc">+</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    plot_theme <span class="sc">+</span> <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Parameters) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Varying Intercept and Slope Terms for Subjects"</span>) <span class="sc">+</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Looking Times (ms)"</span>) <span class="sc">+</span> plot_theme <span class="sc">+</span> <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -400,11 +401,11 @@ $ subj_id              &lt;chr&gt; "S01", "S02", "S03", "S04", "S05", "S06", "S0
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 300
 Columns: 8
-$ subject_intercept_sd &lt;dbl&gt; -1211.9231, -1211.9231, -1211.9231, -1211.9231, -…
-$ subject_slope_sd     &lt;dbl&gt; 47.01883, 47.01883, 47.01883, 47.01883, 47.01883,…
+$ subject_intercept_sd &lt;dbl&gt; -1899.7977, -1899.7977, -1899.7977, -1899.7977, -…
+$ subject_slope_sd     &lt;dbl&gt; 59.83016, 59.83016, 59.83016, 59.83016, 59.83016,…
 $ subj_id              &lt;chr&gt; "S08", "S08", "S08", "S08", "S08", "S08", "S08", …
 $ Register             &lt;chr&gt; "ADS", "ADS", "ADS", "ADS", "ADS", "ADS", "IDS", …
-$ item_intercept_sd    &lt;dbl&gt; -249.59661, -222.50946, -143.68499, -141.11300, -…
+$ item_intercept_sd    &lt;dbl&gt; -499.1932, -445.0189, -287.3700, -282.2260, -273.…
 $ SpeechStyle          &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0…
 $ item_id              &lt;chr&gt; "I12", "I10", "I07", "I09", "I08", "I11", "I04", …
 $ e_si                 &lt;dbl&gt; -17.380195, -334.816790, -3.802378, 888.542224, -…</code></pre>
@@ -424,7 +425,7 @@ $ e_si                 &lt;dbl&gt; -17.380195, -334.816790, -3.802378, 888.54222
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># across ADS and IDS</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>SimulatedLT <span class="sc">%&gt;%</span></span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(LT, <span class="at">fill =</span> Register), <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="dv">2400</span>, <span class="dv">18000</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Varying Intercept and Slope Terms for Subjects"</span>) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="dv">2400</span>, <span class="dv">18000</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Simulated Distributions for ADS and IDS"</span>) <span class="sc">+</span></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    plot_theme <span class="sc">+</span> <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(), <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -468,7 +469,7 @@ $ e_si                 &lt;dbl&gt; -17.380195, -334.816790, -3.802378, 888.54222
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_slope =</span>  <span class="dv">1000</span>,   <span class="co"># effect of category</span></span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_varyingintercept =</span>  <span class="dv">250</span>,   <span class="co"># by-item random intercept sd</span></span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingintercept =</span> <span class="dv">500</span>,   <span class="co"># by-subject random intercept sd</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingslope =</span>  <span class="dv">100</span>,   <span class="co"># by-subject random slope sd</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingslope =</span>  <span class="dv">500</span>,   <span class="co"># by-subject random slope sd</span></span>
 <span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.2</span>,   <span class="co"># correlation between intercept and slope</span></span>
 <span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="dv">500</span>) { <span class="co"># residual (standard deviation)</span></span>
 <span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
@@ -503,7 +504,7 @@ $ e_si                 &lt;dbl&gt; -17.380195, -334.816790, -3.802378, 888.54222
 <span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Having condense all the preceding steps into a single function and returning a dataset with the specified parameters, we are now empowered to effortlessly experiment with different parameters or generate multiple datasets for power analysis purposes.</p>
-<p>For example, we can easily generate a dataset with the effect of IDS being 5000ms instead of only 1000ms by specifying the following</p>
+<p>For example, we can easily generate a dataset with the effect of IDS being 3000ms instead of only 1000ms by specifying the following</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>SimulatedDataWithIDSslopeOf3000 <span class="ot">&lt;-</span> <span class="fu">SimulateLTData</span>(<span class="at">mean_slope =</span> <span class="dv">3000</span>)</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -628,11 +629,12 @@ $ e_si                 &lt;dbl&gt; -17.380195, -334.816790, -3.802378, 888.54222
 <span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> </span>
 <span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> LT, <span class="at">x =</span> age_subj, <span class="at">color =</span> subj_id), <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">show.legend =</span> F) <span class="sc">+</span> </span>
 <span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="fu">aes</span>(<span class="at">y =</span> LT, <span class="at">x =</span> age_subj)) <span class="sc">+</span></span>
-<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Interaction Effect with Age"</span>) <span class="sc">+</span></span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Interaction Effect Between Age and SpeechStyle"</span>) <span class="sc">+</span></span>
 <span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age (standardised age)"</span>) <span class="sc">+</span> </span>
-<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Register) <span class="sc">+</span></span>
-<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
-<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>  plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">'Looking Time (ms)'</span>) <span class="sc">+</span></span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Register) <span class="sc">+</span></span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a>  plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
