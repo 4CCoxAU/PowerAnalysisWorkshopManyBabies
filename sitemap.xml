@@ -2,30 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/index.html</loc>
-    <lastmod>2024-03-11T15:20:16.124Z</lastmod>
+    <lastmod>2024-03-11T19:16:52.341Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/FurtherResources.html</loc>
     <lastmod>2024-03-11T13:08:04.426Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/ModellingTheData.html</loc>
-    <lastmod>2024-03-11T18:16:08.202Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/publishing.html</loc>
-    <lastmod>2024-03-08T12:33:11.763Z</lastmod>
-  </url>
-  <url>
-    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/ExerciseDataSimulation.html</loc>
-    <lastmod>2024-03-11T18:15:43.747Z</lastmod>
+    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/SimulationBasedPowerAnalysis_02.html</loc>
+    <lastmod>2024-03-11T18:54:42.688Z</lastmod>
   </url>
   <url>
     <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/rmarkdown.html</loc>
     <lastmod>2024-03-08T12:33:11.765Z</lastmod>
   </url>
   <url>
-    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/GridSearch.html</loc>
-    <lastmod>2024-03-11T15:20:23.972Z</lastmod>
+    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/01_ExerciseDataSimulation.html</loc>
+    <lastmod>2024-03-11T18:15:43.747Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/publishing.html</loc>
+    <lastmod>2024-03-08T12:33:11.763Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/02_SimulationBasedPowerAnalysis.html</loc>
+    <lastmod>2024-03-11T18:54:42.688Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/GridSearch_03.html</loc>
+    <lastmod>2024-03-11T19:12:38.041Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/03_GridSearch.html</loc>
+    <lastmod>2024-03-11T19:12:38.041Z</lastmod>
+  </url>
+  <url>
+    <loc>https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/content/DataSimulation_01.html</loc>
+    <lastmod>2024-03-11T18:15:43.747Z</lastmod>
   </url>
 </urlset>
