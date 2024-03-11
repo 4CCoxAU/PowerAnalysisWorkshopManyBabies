@@ -6,13 +6,11 @@ editor_options:
 
 ## A Description of the Example and Aim of the Simulation
 
-In this first task, we will deal with a domain that should be familiar to many developmental science researchers: infant looking times to 
+In this first task, we will deal with a domain that should be familiar to many developmental science researchers: infant looking times to adult-directed speech (ADS) and infant-directed speech (IDS). In this study, infant participants are exposed to recordings of ADS and IDS, and infants' looking times to an unrelated visual stimulus is recorded as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli (i.e., ADS vs. IDS) within each participant. In this section, we will simulate data on the scale of looking times (i.e., 0-20,000ms) to gain fammiliarity with the simulation process. In later sections, we will extend the process to simulate data on the scale of effect sizes.
 
-Let's take inspiration from ManyBabies1 (https://doi.org/10.1177/2515245919900809) and think about how we would simulate data for a new experimmental study on the IDS preference effect. In this study, infant participants are exposed to recordings of adult-directed speech (ADS) and infant-directed speech (IDS), and we use infants' looking times as the primary dependent variable. The key question is whether there are any behavioural differences according to the set of stimuli within each participant. To gain fammiliarity with the simulation process in an intuitive way, we will simulate data on the scale of looking times (i.e., 0-20,000ms). In later sections, we will extend the process to simulate data on the scale of effect sizes.
+To give an overview of this first simulation task, we will simulate data with crossed random factors of subjects and stimuli and visualise the simulated data along the way to gain familiarity with the process. We will end up with a simulation function that can help us when performing the power analysis in Part II.
 
-To give an overview of this first simulation task, we will simulate data with crossed random factors of subjects and stimuli, fit a model to the simulated data, and then see whether the resulting sample estimates are similar to the population values we specified when simulating the data.
-
-## Setting the Experimental Parameters?
+## Determining the Experimental Parameters
 
 Before we can start to simulate data, we need to be very clear about the study design. This clarity is important because we need to define the parameters that govern the process we assume can give rise to the data. If we are building on ManyBabies1, then we are dealing with a within-subjects, between-items study; that is, each and every subject receives both ADS and IDS stimuli (within-subject), but each stimulus is either ADS or IDS (between-items).
 
@@ -280,7 +278,7 @@ SimulateLTData <- function(
 
 ## Exercises to Check Understanding
 
-## Exercise I
+### Exercise I
 
 * How would you adapt the above code to generate a dataset with 500 participants and no effect of SpeechStyle (i.e., distributions similar to the below plot)?
 
@@ -305,7 +303,7 @@ LTDataSimulated %>%
   plot_theme
 ```
 
-## Exercise II:
+### Exercise II
 
 * We might expect the IDS preference effect to change with infant age, such that older infants display longer looking times to IDS over ADS. How would you add a positive interaction effect of (cross-sectional) age as a predictor to the model (hint: it involves randomly sampling age for each child and adding an effect to the simulation code and model)? Try to think through the problem, get inspiration from the below plot, code up a solution, and only then click on "Show the code" to check how you might approach this.
 
@@ -372,7 +370,7 @@ ggplot() +
   plot_theme
 ```
 
-## Exercise III:
+### Exercise III
 
 * As mentioned above, we made the simplifying assumption that each and every stimulus item evokes exactly the same response in participants; however, certain items might elicit stronger or weaker responses depending on individual differences or contextual factors, so including varying slopes for stimulus items can help capture this heterogeneity more accurately. How could we modify the above code to include varying slopes according stimulus items? Again, try to think through the problem, get inspiration from the below plot, code up a solution, and only then click on "Show the code" to check how you might approach this.
 
@@ -390,6 +388,7 @@ SimulateLTDataWithAge <- function(
   beta_as = 5000,
   S_as = 200,
   item_sd =  200,   # by-item random intercept sd
+  item_slope_sd =  200,   # by-item random slope sd
   tau_0 = 2000,   # by-subject random intercept sd
   tau_1 =  1000,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
@@ -398,9 +397,14 @@ SimulateLTDataWithAge <- function(
   items <- data.frame(
   #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  O_0i = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_sd)) %>% 
-  mutate(item_id = faux::make_id(nrow(.), "I")) %>%
-  mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
+  faux::rnorm_multi(
+  n = n_ADS + n_IDS, 
+  mu = 0, # means for random effects are always 0
+  sd = c(item_sd, item_slope_sd),
+  r = rho,
+  varnames = c("item_sd", "item_slope_sd"))) %>%
+    mutate(item_id = faux::make_id(n_ADS + n_IDS, "I")) %>%
+    mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
 
   # simulate a sample of subjects
 
@@ -420,7 +424,7 @@ SimulateLTDataWithAge <- function(
     dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, S_as, everything())
   
   ParameterValues %>%
-    mutate(LT = beta_0 + T_0s + O_0i + (beta_1 + T_1s) * SpeechStyle + ((beta_as + S_as) * age_subj * SpeechStyle) + e_si) %>%
+    mutate(LT = beta_0 + T_0s + item_sd + (beta_1 + T_1s) * SpeechStyle + ((beta_as + S_as) * age_subj * SpeechStyle) + (beta_1 + item_slope_sd) * SpeechStyle + e_si) %>%
     mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>%
     dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, LT)
 }

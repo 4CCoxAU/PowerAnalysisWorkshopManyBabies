@@ -6,7 +6,8 @@ Thank you so much to the Teaching, Training and Open Science Committee at ManyBa
 
 * DeBruine, L. M., & Barr, D. J. (2021). Understanding mixed-effects models through data simulation. Advances in Methods and Practices in Psychological Science, 4(1), 2515245920965119.
 
-Koch, T., Pargent, F., Kleine, A. K., Lermer, E., & Gaube, S. (2023). A Tutorial on Tailored Simulation-Based Power Analysis for Experimental Designs with Generalized Linear Mixed Models. PsyArxiv: https://osf.io/preprints/psyarxiv/rpjem/.
+* Koch, T., Pargent, F., Kleine, A. K., Lermer, E., & Gaube, S. (2023). A Tutorial on Tailored Simulation-Based Power Analysis for Experimental Designs with Generalized Linear Mixed Models. PsyArxiv: https://osf.io/preprints/psyarxiv/rpjem/.
 
 * Lakens, D., & Caldwell, A. R. (2021). Simulation-based power analysis for factorial analysis of variance designs. Advances in Methods and Practices in Psychological Science, 4(1), 2515245920951503.
 
+* https://rpsychologist.com/cohend/

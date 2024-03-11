@@ -35,8 +35,8 @@ website:
         text: Part I, Data Simulation
       - href: content/ModellingTheData.qmd
         text: Part II, ModellingTheData
-      - href: content/SimulatingEffectSizes.qmd
-        text: Part III, Simulating Effect Sizes
+      - href: content/GridSearch.qmd
+        text: Part III, Grid Searches and Sensitivity Analyses
       - href: content/FurtherResources.qmd
         text: Further Resources
         
