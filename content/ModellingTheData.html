@@ -186,15 +186,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul class="collapse">
-  <li><a href="#cumulative-science-and-prior-knowledge" id="toc-cumulative-science-and-prior-knowledge" class="nav-link active" data-scroll-target="#cumulative-science-and-prior-knowledge"><span class="header-section-number">1</span> Cumulative Science and Prior Knowledge</a>
-  <ul class="collapse">
-  <li><a href="#simulating-effect-size-data-and-making-informed-choices" id="toc-simulating-effect-size-data-and-making-informed-choices" class="nav-link" data-scroll-target="#simulating-effect-size-data-and-making-informed-choices"><span class="header-section-number">1.1</span> Simulating Effect Size Data and Making Informed Choices</a></li>
-  <li><a href="#adapting-our-simulation-function" id="toc-adapting-our-simulation-function" class="nav-link" data-scroll-target="#adapting-our-simulation-function"><span class="header-section-number">1.2</span> Adapting our Simulation Function</a></li>
-  <li><a href="#a-linear-mixed-effects-model-of-simulated-effect-size-data" id="toc-a-linear-mixed-effects-model-of-simulated-effect-size-data" class="nav-link" data-scroll-target="#a-linear-mixed-effects-model-of-simulated-effect-size-data"><span class="header-section-number">1.3</span> A Linear Mixed Effects Model of Simulated Effect Size Data</a></li>
-  <li><a href="#time-to-power-up-the-analysis" id="toc-time-to-power-up-the-analysis" class="nav-link" data-scroll-target="#time-to-power-up-the-analysis"><span class="header-section-number">1.4</span> Time to Power-Up the Analysis</a></li>
-  <li><a href="#running-the-power-analysis" id="toc-running-the-power-analysis" class="nav-link" data-scroll-target="#running-the-power-analysis"><span class="header-section-number">1.5</span> Running the Power Analysis</a></li>
-  <li><a href="#exercises-to-check-understanding" id="toc-exercises-to-check-understanding" class="nav-link" data-scroll-target="#exercises-to-check-understanding"><span class="header-section-number">1.6</span> Exercises to Check Understanding</a></li>
-  </ul></li>
+  <li><a href="#cumulative-science-and-prior-knowledge" id="toc-cumulative-science-and-prior-knowledge" class="nav-link active" data-scroll-target="#cumulative-science-and-prior-knowledge"><span class="header-section-number">1</span> Cumulative Science and Prior Knowledge</a></li>
+  <li><a href="#simulating-effect-size-data-and-making-informed-choices" id="toc-simulating-effect-size-data-and-making-informed-choices" class="nav-link" data-scroll-target="#simulating-effect-size-data-and-making-informed-choices"><span class="header-section-number">2</span> Simulating Effect Size Data and Making Informed Choices</a></li>
+  <li><a href="#adapting-our-simulation-function" id="toc-adapting-our-simulation-function" class="nav-link" data-scroll-target="#adapting-our-simulation-function"><span class="header-section-number">3</span> Adapting our Simulation Function</a></li>
+  <li><a href="#a-linear-mixed-effects-model-of-simulated-effect-size-data" id="toc-a-linear-mixed-effects-model-of-simulated-effect-size-data" class="nav-link" data-scroll-target="#a-linear-mixed-effects-model-of-simulated-effect-size-data"><span class="header-section-number">4</span> A Linear Mixed Effects Model of Simulated Effect Size Data</a></li>
+  <li><a href="#time-to-power-up-the-analysis" id="toc-time-to-power-up-the-analysis" class="nav-link" data-scroll-target="#time-to-power-up-the-analysis"><span class="header-section-number">5</span> Time to Power-Up the Analysis</a></li>
+  <li><a href="#running-the-power-analysis" id="toc-running-the-power-analysis" class="nav-link" data-scroll-target="#running-the-power-analysis"><span class="header-section-number">6</span> Running the Power Analysis</a></li>
+  <li><a href="#exercises-to-check-understanding" id="toc-exercises-to-check-understanding" class="nav-link" data-scroll-target="#exercises-to-check-understanding"><span class="header-section-number">7</span> Exercises to Check Understanding</a></li>
   </ul>
 <div class="toc-actions"><ul class="collapse"><li><a href="https://github.com/4CCoxAU/PowerAnalysisWorkshopManyBabies/blob/main/content/ModellingTheData.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></nav>
     </div>
@@ -220,17 +218,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="cumulative-science-and-prior-knowledge" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Cumulative Science and Prior Knowledge</h1>
+<section id="cumulative-science-and-prior-knowledge" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="cumulative-science-and-prior-knowledge"><span class="header-section-number">1</span> Cumulative Science and Prior Knowledge</h2>
 <p>We know that science stands on the shoulder of – not giants – but normal human beings who are as susceptible to confirmation and selection biases as everyone else. And up until now, we have relied on our intuitions about infant looking times based solely on our experience with conducting infant experiments. In the first exercise, it quickly became clear that we relied heavily on our own intuitions about what we know about the domain of infant looking times. In this section, we consider how to improve our data simulation process by capitalising on cumulative science efforts, such as meta-analyses and multi-lab replication studies. Seeing scientific advancement as an iterative procedure involving data accumulation and synthesis really empowers us to map out the diversity of samples in earlier research, scrutinise the possibilities for generalisability, and point to future directions of research.</p>
 <p>For the IDS preference effect, for example, we can thank the ManyBabies community for conducting both a multi-lab replication study and a community-augmented meta-analysis on infants’ preference to attend to IDS over ADS (ManyBabies Consortium, 2020; Zettersten, Cox, et al., 2023). By synthesising data across such a wide variety of experimental designs, participants and stimuli, we now have a fairly good estimate of the overall magnitude of the IDS preference effect. Both sources of evidence converge on an effect size of 0.35 with 95% CI of [0.16; 0.47].</p>
 <p>When calculating power, we need to leverage results from these cumulative science efforts so that we can engage in iterative development of our estimates and theories. This section delves into the realm of effect sizes and teaches you how to implement a power analysis based on an effect size estimate.</p>
-<section id="simulating-effect-size-data-and-making-informed-choices" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="simulating-effect-size-data-and-making-informed-choices"><span class="header-section-number">1.1</span> Simulating Effect Size Data and Making Informed Choices</h2>
+</section>
+<section id="simulating-effect-size-data-and-making-informed-choices" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="simulating-effect-size-data-and-making-informed-choices"><span class="header-section-number">2</span> Simulating Effect Size Data and Making Informed Choices</h2>
 <p>Let’s continue with our IDS preference example and take inspiration from the ManyBabies1 estimate (https://doi.org/10.1177/2515245919900809) to think about how we would simulate data for a new experimental study on the IDS preference effect. Because we are still interested in a within-subjects, between-items study, we can rely on the simulation function from the previous page. All we have to do is to adapt the simulation function so that it suits the new scale of effect sizes. Effect size is a simple way of quantifying the size of the difference between two groups. It allows us to move beyond the “Does it work?” question to “How well does it work in a range of contexts?”. In short, the effect size is based on the standardised mean difference, and quantifies the difference between two means in terms of standard deviation units; an effect size of 0.35 thus implies a difference between the two groups of 0.35 standard deviations.</p>
 </section>
-<section id="adapting-our-simulation-function" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="adapting-our-simulation-function"><span class="header-section-number">1.2</span> Adapting our Simulation Function</h2>
+<section id="adapting-our-simulation-function" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="adapting-our-simulation-function"><span class="header-section-number">3</span> Adapting our Simulation Function</h2>
 <p>Let’s adapt our simulation function from previous pages to the new scale of effect sizes and call it SimulateEffectSizeData(). Following ManyBabies Consortium (2020), a positive effect size denotes longer looking times to IDS stimuli over ADS stimuli, and an effect size of 0 denotes no preference for either speech style (i.e., similar looking times to ADS and IDS stimuli).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
@@ -315,8 +314,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="a-linear-mixed-effects-model-of-simulated-effect-size-data" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="a-linear-mixed-effects-model-of-simulated-effect-size-data"><span class="header-section-number">1.3</span> A Linear Mixed Effects Model of Simulated Effect Size Data</h2>
+<section id="a-linear-mixed-effects-model-of-simulated-effect-size-data" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="a-linear-mixed-effects-model-of-simulated-effect-size-data"><span class="header-section-number">4</span> A Linear Mixed Effects Model of Simulated Effect Size Data</h2>
 <p>Let’s think about how we want to run a linear mixed-effects model of the data. For a varying-intercepts, varying-slopes model for each subject, we could run the following model with the lmer syntax as follows:</p>
 <ul>
 <li>EF ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id)</li>
@@ -363,8 +362,8 @@ SpeechStyle -0.385</code></pre>
 </div>
 <p>Try to run this a couple of times with new simulated data and see how the estimates and significance measures change. In the following code blocks, we will automatise this process and run the power analysis proper!</p>
 </section>
-<section id="time-to-power-up-the-analysis" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="time-to-power-up-the-analysis"><span class="header-section-number">1.4</span> Time to Power-Up the Analysis</h2>
+<section id="time-to-power-up-the-analysis" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="time-to-power-up-the-analysis"><span class="header-section-number">5</span> Time to Power-Up the Analysis</h2>
 <p>Now we have two essential components to perform a simulation-based power analysis: i) a code pipeline to generate data for our research question and ii) a clear idea of how we want to model the data. Now it’s time to run the actual power analysis. The way we do this is to specify an effect, run 100s of models and count how many of the models show significant effects. To accomplish this, we can write a new function that combines a modelling component into our previous SimulateEffectSizeData() function. That is, if we include both the simulation and modelling of the data in one function, we can simplify the process of performing a power analysis. We will call this function SimulateAndModelEFData(), and we will use broom.mixed::tidy(model) to obtain a dataframe with relevant results from the model and write them to a .csv-file.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
@@ -381,8 +380,8 @@ SpeechStyle -0.385</code></pre>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="running-the-power-analysis" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="running-the-power-analysis"><span class="header-section-number">1.5</span> Running the Power Analysis</h2>
+<section id="running-the-power-analysis" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="running-the-power-analysis"><span class="header-section-number">6</span> Running the Power Analysis</h2>
 <p>Now we have a function to generate data, run our model and spit out the results! Now it’s time to repeat a few hundred times, so that we can calculate how much power we have with our given parameters. We are going to use map_df() to run the simulation and modelling function 500 times and write it to a .csv file.</p>
 <p>If it ran correctly, it should have produced a .csv file with model results from each new simulation of data. Let’s read in the results and have a look at what they say!</p>
 <div class="cell">
@@ -407,10 +406,10 @@ SpeechStyle -0.385</code></pre>
 </div>
 </div>
 </section>
-<section id="exercises-to-check-understanding" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="exercises-to-check-understanding"><span class="header-section-number">1.6</span> Exercises to Check Understanding</h2>
-<section id="exercise-iv" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="exercise-iv"><span class="header-section-number">1.6.1</span> Exercise IV</h3>
+<section id="exercises-to-check-understanding" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="exercises-to-check-understanding"><span class="header-section-number">7</span> Exercises to Check Understanding</h2>
+<section id="exercise-iv" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="exercise-iv"><span class="header-section-number">7.1</span> Exercise IV</h3>
 <p>Now that we have this pipeline set up, it becomes easy to adapt the code to try out different parameter values. Let’s explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items in each speech style. What happens to the estimate of statistical power?</p>
 <div class="cell">
 <details class="code-fold">
@@ -437,8 +436,8 @@ SpeechStyle -0.385</code></pre>
 </div>
 </div>
 </section>
-<section id="exercise-v" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="exercise-v"><span class="header-section-number">1.6.2</span> Exercise V</h3>
+<section id="exercise-v" class="level3" data-number="7.2">
+<h3 data-number="7.2" class="anchored" data-anchor-id="exercise-v"><span class="header-section-number">7.2</span> Exercise V</h3>
 <p>Let’s imagine a scenario where we are interested in the effect of age on IDS preference. We would like to explore the extent to which we can detect a cross-sectional age effect given only two stimulus items per participant. How would adapt the above code to explore this experimental design?</p>
 <div class="cell">
 <details class="code-fold">
@@ -537,7 +536,6 @@ SpeechStyle -0.385</code></pre>
 <p>Now we have a pretty great pipeline set up that allows us to explore the effects of different parameter values on our ability to detect effects. However, instead of manually varying the parameters one by one, it would be nice if we could set up a grid search to explore values and put the power results into perspective. We will explore how to do this in the next exercise sheet. The code gets slightly more complepx, so make sure that you have understood the code that we have written so far before venturing further.</p>
 
 
-</section>
 </section>
 </section>
 
