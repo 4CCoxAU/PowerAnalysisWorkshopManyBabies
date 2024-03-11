@@ -93,7 +93,7 @@ It should be clear from the previous sections that the data simulation process i
 ```{r}
 subj_n <- seq(2, 50, by = 3)
 trial_n <- seq(4, 8, by = 2)
-NumberOfModels <- 100
+NumberOfModels <- 500
 
 param_combinations <- expand.grid(subj_n = subj_n, 
                                   trial_n = trial_n)

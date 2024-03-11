@@ -2,6 +2,8 @@
 title: Part I, Data Simulation
 editor_options: 
   chunk_output_type: console
+html-math-method: 
+  method: mathjax
 ---
 
 ## A Description of the Example and Aim of the Simulation
@@ -27,7 +29,9 @@ n_IDS <-  8 # number of IDS stimuli
 
 Now that we have an overview of the experimental design, we can start to consider a reasonable statistical model of the data. In the following sections, we will build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:
 
-Looking Time = β₀ + β₁ * SpeechStyle + u₀ⱼ^{(item)} + u₀ᵢ^{(subj)} + (u₁ᵢ^{(subj)} * SpeechStyle) + ε
+$$
+Looking Time = \beta_0 + \beta_1 \cdot \text{SpeechStyle} + u_{0j}^{(item)} + u_{0i}^{(subj)} + (u_{1i}^{(subj)} \cdot \text{SpeechStyle}) + \varepsilon
+$$
 
 According to this formula, the looking time for subject, s, on item, i, is decomposed into linear combination of fixed effects (i.e., the population grand mean, β₀, and the effect of SpeechStyle, β₁) and a variety of random effects, such as a by-subject random intercept, u₀ᵢ^{(subj)}, a by-item random intercept u₀ⱼ^{(item)}, a by-subject random slope, (u₁ᵢ^{(subj)} * SpeechStyle), and a trial-level residual error, ε.
 
@@ -194,7 +198,7 @@ Now we have specified the parameters in ParameterValues, we are ready to add up 
 
 ```{r}
 # calculate the response variable
-SimulatedRT <- ParameterValues %>%
+SimulatedLT <- ParameterValues %>%
   mutate(LT = mean_intercept + T_0s + O_0i + (mean_slope + T_1s) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
   mutate(LT = LT + rexp(nrow(.), rate = 0.0003)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
   dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
@@ -202,9 +206,9 @@ SimulatedRT <- ParameterValues %>%
 
 Let's have a look at what the data we have generated looks like:
 
-```{r}
+```{r, warning = FALSE}
 # Plot of how overall looking time distributions differ across ADS and IDS
-SimulatedRT %>%
+SimulatedLT %>%
   ggplot() + 
   geom_density(aes(LT, fill = Register), alpha = 0.8) +
   ggtitle('Varying Intercept and Slope Terms for Subjects') +
@@ -215,9 +219,9 @@ SimulatedRT %>%
         axis.ticks.y=element_blank())
 
 # Plot of how looking times of indvidual subjects differ across the two speech style
-SimulatedRT %>%
+SimulatedLT %>%
   group_by(subj_id, Register) %>%
-  dplyr::summarise(medLT = mean(LT)) %>%
+  dplyr::summarise(medLT = mean(LT), .groups = 'drop') %>%
   ggplot(aes(x = Register, y = medLT, fill = Register)) + 
   geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
   scale_fill_brewer(palette = 'Dark2') +
@@ -292,7 +296,7 @@ LTDataSimulated <- SimulateLTData(n_subj = 500, mean_slope = 0)
 
 LTDataSimulated %>%
   group_by(subj_id, Register) %>%
-  dplyr::summarise(medLT = mean(LT)) %>%
+  dplyr::summarise(medLT = mean(LT), .groups = 'drop') %>%
   ggplot(aes(x = Register, y = medLT, fill = Register)) + 
   geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
   scale_fill_brewer(palette = 'Dark2') +

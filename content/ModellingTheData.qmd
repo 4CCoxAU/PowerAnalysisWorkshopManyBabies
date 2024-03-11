@@ -112,7 +112,7 @@ EffectSizeDataSimulated %>%
   geom_density(aes(EF, fill = Register), alpha = 0.8) +
   geom_vline(xintercept = 0.35, linetype = 3) +
   geom_vline(xintercept = 0, linetype = 3) +
-  xlim(c(-5*mean_slope, 5*mean_slope)) +
+  xlim(c(-5*0.35, 5*0.35)) +
   ggtitle("IDS Preference Effect in Effect Sizes") +
   plot_theme + 
   scale_fill_brewer(palette = "Dark2") + 
@@ -124,7 +124,7 @@ EffectSizeDataSimulated %>%
 ```{r, warning = FALSE}
 EffectSizeDataSimulated %>%
   group_by(subj_id, Register) %>%
-  dplyr::summarise(medLT = mean(EF)) %>%
+  dplyr::summarise(medLT = mean(EF), .groups = 'drop') %>%
 ggplot(aes(x = Register, y = medLT, fill = Register)) + 
   geom_rain(alpha = 0.8, rain.side = "f1x1", id.long.var = "subj_id", point.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42)), line.args.pos = list(position = position_jitter(width = 0.04, height = 0, seed = 42))) + 
   scale_fill_brewer(palette = 'Dark2') +
@@ -175,7 +175,7 @@ SimulateAndModelEFData <- function(...) {
 
 Now we have a function to generate data, run our model and spit out the results! Now it's time to repeat a few hundred times, so that we can calculate how much power we have with our given parameters. We are going to use map_df() to run the simulation and modelling function 500 times and write it to a .csv file.
 
-```{r, warning = FALSE}
+```{r, echo=FALSE, message=FALSE, results='hide',warning = FALSE}
 # run simulations and save to a file
 n_runs <- 500 # use at least 500 to get stable estimates
 simulations <- purrr::map_df(1:n_runs, ~ SimulateAndModelEFData())
@@ -186,7 +186,7 @@ If it ran correctly, it should have produced a .csv file with model results from
 
 ```{r, warning = FALSE}
 # read saved simulation data
-sims <- read_csv("EFsimulations.csv") %>%
+sims <- read_csv("EFsimulations.csv", show_col_types = FALSE) %>%
   dplyr::select(term, estimate, std.error, p.value)
 
 sims %>% 
@@ -205,7 +205,7 @@ sims %>%
 
 Now that we have this pipeline set up, it becomes easy to adapt the code to try out different parameter values. Let's explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items in each speech style. What happens to the estimate of statistical power?
 
-```{r, warning = FALSE}
+```{r, echo=FALSE, message=FALSE, results='hide', warning = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  
@@ -231,7 +231,7 @@ write_csv(simulations, "EFsimulations2Stimuli.csv")
 #| code-summary: "Show the code"
 
 # read saved simulation data
-sims <- read_csv("EFsimulations2Stimuli.csv") %>%
+sims <- read_csv("EFsimulations2Stimuli.csv", show_col_types = FALSE) %>%
   dplyr::select(term, estimate, std.error, p.value)
 
 sims %>% 
@@ -300,6 +300,9 @@ EFDataWithAgeSimulated <- SimulateEFDataWithAge()
 ```
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+#| 
 EFDataWithAgeSimulated <- SimulateEFDataWithAge()
 EFDataWithAgeSimulated %>%
 ggplot() + 
@@ -312,7 +315,7 @@ ggplot() +
   plot_theme
 ```
 
-```{r, warning = FALSE}
+```{r, warning = FALSE, echo=FALSE, message=FALSE, results='hide', warning = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  
@@ -339,7 +342,7 @@ write_csv(simulations, "EFsimulationsAge.csv")
 #| code-summary: "Show the code"
 
 # read saved simulation data
-sims <- read_csv("EFsimulationsAge.csv") %>%
+sims <- read_csv("EFsimulationsAge.csv", show_col_types = FALSE) %>%
   dplyr::select(term, estimate, std.error, p.value)
 
 sims %>% 
@@ -353,5 +356,3 @@ sims %>%
 ```
 
 Now we have a pretty great pipeline set up that allows us to explore the effects of different parameter values on our ability to detect effects. However, instead of manually varying the parameters one by one, it would be nice if we could set up a grid search to explore values and put the power results into perspective. We will explore how to do this in the next exercise sheet. The code gets slightly more complepx, so make sure that you have understood the code that we have written so far before venturing further. 
-
-
