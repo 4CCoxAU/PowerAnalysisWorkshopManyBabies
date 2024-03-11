@@ -40,7 +40,7 @@ plot_theme <-
 
 ```
 
-# Cumulative Science and Prior Knowledge
+## Cumulative Science and Prior Knowledge
 
 We know that science stands on the shoulder of – not giants – but normal human beings who are as susceptible to confirmation and selection biases as everyone else. And up until now, we have relied on our intuitions about infant looking times based solely on our experience with conducting infant experiments. In the first exercise, it quickly became clear that we relied heavily on our own intuitions about what we know about the domain of infant looking times. In this section, we consider how to improve our data simulation process by capitalising on cumulative science efforts, such as meta-analyses and multi-lab replication studies. Seeing scientific advancement as an iterative procedure involving data accumulation and synthesis really empowers us to map out the diversity of samples in earlier research, scrutinise the possibilities for generalisability, and point to future directions of research.
 

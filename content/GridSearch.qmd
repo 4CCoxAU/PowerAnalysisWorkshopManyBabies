@@ -177,3 +177,13 @@ ggplot(PowerGridData) +
   plot_theme
 ```
 
+## Exercises to Check Understanding
+
+### Exercise VI 
+
+How would you adapt the above grid search code to investigate the effect of varying 
+
+```{r}
+
+```
+

@@ -6,6 +6,7 @@ editor_options:
   chunk_output_type: console
 ---
 ```{r, include = FALSE}
+options(repos = "https://cran.r-project.org/")
 install.packages('xfun')
 library('xfun')
 ```
@@ -17,7 +18,7 @@ For example, how do predictors with two or three levels impact the power to dete
 This workshop assumes a little literacy in R and linear mixed-effects models, but I have attempted to make these subjects as accessible as possible, even without knowledge of these topics. If you are interested in gaining hands-on pracical experience with the code, then feel free to download the following .Rmd files with the code, so that you can get a better idea of what each code snippet does and can manipulate them according to your own needs and studies.
 
 ```{r, echo = FALSE}
-xfun::embed_file('ExerciseDataSimulation.qmd')
+xfun::embed_file('/Users/au620441/Desktop/PowerAnalysisWorkshopManyBabies/content/ExerciseDataSimulation.qmd')
 ```
 
 *LINK TO EXERCISE SHEET, PART 1
