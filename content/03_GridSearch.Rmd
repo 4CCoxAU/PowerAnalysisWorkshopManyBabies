@@ -1,0 +1,262 @@
+---
+title: Grid Searches and Sensitivity Analyses
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+#if you don't have the pacman package loaded on your computer, uncomment the next line, install pacman, and load in the required packages
+#install.packages('pacman')
+#load the required packages:
+pacman::p_load(knitr, # rendering of .Rmd file
+               lme4, # model specification / estimation
+               afex, # anova and deriving p-values from lmer
+               broom.mixed, # extracting data from model fits
+               faux, # generate correlated values
+               tidyverse, # data wrangling and visualisation
+               ggridges, #visualisation
+               viridis, # color schemes for visualisation
+               kableExtra, #helps with knitting the .Rmd file
+               cowplot, #visualisation tool to include multiple plots
+               ggrain,
+               dplyr,
+               here,
+               tidyr,
+               readr)
+set.seed(1234)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.width=12, fig.height=11, fig.fullwidth=TRUE)
+
+plot_theme <- 
+  theme_bw() +
+  theme(plot.title = element_text(hjust = 0.5, size = 18), 
+        legend.position = "none", 
+        axis.text.x = element_text(size = 13), 
+        axis.title.x = element_text(size = 13), 
+        axis.text.y = element_text(size = 12), 
+        axis.title.y = element_text(size = 13))
+```
+
+```{r, include = FALSE}
+# set up the custom data simulation function
+SimulateEffectSizeData <- function(
+  n_subj = 24,   # number of subjects
+  n_ADS  = 8,   # number of ingroup stimuli
+  n_IDS =  8,   # number of outgroup stimuli
+  mean_intercept = 0,   # grand mean
+  mean_slope =  0.35,   # effect of category
+  item_varyingintercept =  0.05,   # by-item random intercept sd
+  item_varyingslope =  0.05,   # by-item random intercept sd
+  subject_varyingintercept = 0.1,   # by-subject random intercept sd
+  subject_varyingslope =  0.1,   # by-subject random slope sd
+  rho = 0.2,   # correlation between intercept and slope
+  sigma = 0.3) { # residual (standard deviation)
+
+    items <- data.frame(
+  #item_id = seq_len(n_ADS + n_IDS),
+  Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
+  faux::rnorm_multi(
+  n = n_ADS + n_IDS, 
+  mu = 0, # means for random effects are always 0
+  sd = c(item_varyingintercept, item_varyingslope),
+  r = rho,
+  varnames = c("item_sd", "item_slope_sd"))) %>%
+    mutate(item_id = faux::make_id(n_ADS + n_IDS, "I")) %>%
+    mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
+
+  # simulate a sample of subjects
+
+# sample from a multivariate random distribution 
+  subjects <- faux::rnorm_multi(
+  n = n_subj, 
+  mu = 0, # means for random effects are always 0
+  sd = c(subject_varyingintercept, subject_varyingslope), # set SDs
+  r = rho, # set correlation, see ?faux::rnorm_multi
+  varnames = c("subject_sd", "subject_slope_sd")
+) %>%
+  mutate(subj_id = faux::make_id(nrow(.), "S"))
+
+  ParameterValues <- crossing(subjects, items)  %>%
+    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, everything())
+  
+  ParameterValues %>%
+    mutate(EF = mean_intercept + subject_sd + item_sd + (mean_slope + subject_slope_sd + item_varyingslope) * SpeechStyle + e_si) %>%
+    dplyr::select(subj_id, item_id, Register, SpeechStyle, EF)
+}
+```
+
+## Using Grid Searches to Explore the Multiverse
+
+It should be clear from the previous sections that the data simulation process involves a multiverse of experimenter choices. One way to explore (and calm our fears about) the respective importance of these individual choices and their interactions would be to conduct a sensitivity analysis with a grid search of all available combinations among parameter values of interest. To do this, we can wrap our Simulation and Modelling function with a higher-level function that inputs a series of parameter combinations that we are interested in exploring further. Here is a suggestion for a function of this type. We can start by creating a matrix of parameter combinations that we are interested in.
+
+```{r}
+subj_n <- seq(2, 50, by = 3)
+trial_n <- seq(4, 8, by = 2)
+NumberOfModels <- 500
+
+param_combinations <- expand.grid(subj_n = subj_n, 
+                                  trial_n = trial_n)
+```
+
+
+```{r}
+run_sims_grid_point <- function(filename_full, trial_n, subj_n) {
+  ADS_n = trial_n / 2
+  IDS_n = trial_n / 2
+  n_subj = subj_n
+  
+  dataSimulated <- SimulateEffectSizeData(
+                        n_subj = n_subj,
+                        n_ADS = ADS_n, 
+                        n_IDS = IDS_n)
+    
+  model <- lmer(EF ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id),
+                data = dataSimulated)
+
+  sim_results <- broom.mixed::tidy(model)
+  
+  # append the results to a file
+  append <- file.exists(filename_full)
+  write_csv(sim_results, filename_full, append = append)
+  
+  # return the tidy table
+  sim_results
+}
+```
+
+
+```{r, warning = FALSE, eval = FALSE}
+for (i in seq_len(nrow(param_combinations))) {
+  sim_params <- param_combinations[i, ]
+  filename_full <- paste0(here('sims_grid_search/test_grid_search_'),
+                          sim_params$subj_n, '_',
+                          sim_params$trial_n, '.csv')
+  start_time <- Sys.time() # Start time
+  sims <- purrr::map_df(1:NumberOfModels, ~run_sims_grid_point(filename_full = filename_full,
+                                                         subj_n = sim_params$subj_n,
+                                                         trial_n = sim_params$trial_n))
+  end_time <- Sys.time() # End time
+  cat("Simulation", i, "Time elapsed:", end_time - start_time, "\n")
+}
+```
+
+
+```{r, warning = FALSE}
+setwd(here("sims_grid_search"))
+file_names <- list.files(pattern = "*.csv")
+
+# read in all CSV files into a list of dataframes
+df_list <- purrr::map(file_names, ~{
+  df <- read.csv(.x) 
+  df$filename <- .x 
+  df
+  })
+
+df <- purrr::reduce(df_list, dplyr::bind_rows)
+
+df_per_sim <- df %>%
+  filter(effect == "fixed") %>%
+  filter(term == "SpeechStyle") %>%
+  group_by(filename) %>%
+  summarise(median_estimate = median(estimate), median_se = median(std.error),
+            power = mean(p.value < 0.05))
+
+PowerGridData <- df_per_sim %>%
+  mutate(n_subj = as.numeric(sapply(strsplit(filename, "_"), `[`,4)),
+         n_trial = as.factor(str_replace(sapply(strsplit(filename, "_"), `[`, 5), pattern = ".csv","")))
+
+ggplot(PowerGridData) +
+  geom_point(aes(x = n_subj, y = power, color = n_trial)) +
+  geom_line(aes(x = n_subj, y = power, color = n_trial)) +
+  geom_hline(yintercept = 0.80, linetype = 3) +
+  xlab('Sample Size') +
+  ylab('Statistical Power') +
+  ggtitle('Interaction among Number of Subjects & Repeated Measures') +
+  scale_color_brewer(palette = 'Dark2') +
+  plot_theme
+```
+
+## Exercises to Check Understanding
+
+### Exercise VI 
+
+How would you adapt the above grid search code to investigate the effect of varying the number of subjects and different effect sizes?
+
+```{r, warning = FALSE, eval = FALSE}
+#| code-fold: true
+#| code-summary: "Show the code"
+
+subj_n <- seq(2, 50, by = 3)
+effectsize <- seq(0.3, 0.9, by = 0.3)
+NumberOfModels <- 2
+
+param_combinations <- expand.grid(subj_n = subj_n, effectsize = effectsize)
+
+run_sims_grid_point <- function(filename_full, ef, subj_n) {
+    ef = effectsize
+    n_subj = subj_n
+
+    dataSimulated <- SimulateEffectSizeData(
+      n_subj = n_subj,
+      mean_slope = ef)
+
+    model <- lmer(EF ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id), data = dataSimulated)
+
+    sim_results <- broom.mixed::tidy(model)
+
+    # append the results to a file
+    append <- file.exists(filename_full)
+    write_csv(sim_results, filename_full, append = append)
+
+    # return the tidy table
+    sim_results
+}
+
+for (i in seq_len(nrow(param_combinations))) {
+    sim_params <- param_combinations[i, ]
+    filename_full <- paste0(here("sims_grid_search_exercise_6/test_grid_search_"),
+        sim_params$subj_n, "_", sim_params$ef, ".csv")
+    start_time <- Sys.time()  # Start time
+    sims <- purrr::map_df(1:NumberOfModels, ~run_sims_grid_point(filename_full = filename_full, 
+                                                                 subj_n = sim_params$subj_n, 
+                                                                 ef = sim_params$effectsize))
+    end_time <- Sys.time()  # End time
+    cat("Simulation", i, "Time elapsed:", end_time - start_time,
+        "\n")
+}
+```
+
+
+```{r}
+setwd(here("sims_grid_search_exercise_6"))
+file_names <- list.files(pattern = "*.csv")
+
+# read in all CSV files into a list of dataframes
+df_list <- purrr::map(file_names, ~{
+    df <- read.csv(.x)
+    df$filename <- .x
+    df
+})
+
+df <- purrr::reduce(df_list, dplyr::bind_rows)
+
+df_per_sim <- df %>%
+    filter(effect == "fixed") %>%
+    filter(term == "SpeechStyle") %>%
+    group_by(filename) %>%
+    summarise(median_estimate = median(estimate), median_se = median(std.error),
+        power = mean(p.value < 0.05))
+
+PowerGridData <- df_per_sim %>%
+    mutate(n_subj = as.numeric(sapply(strsplit(filename, "_"),
+        `[`, 4)), ef = as.factor(str_replace(sapply(strsplit(filename,
+        "_"), `[`, 5), pattern = ".csv", "")))
+
+ggplot(PowerGridData) + geom_point(aes(x = n_subj, y = power,
+    color = ef)) + geom_line(aes(x = n_subj, y = power,
+    color = ef)) + geom_hline(yintercept = 0.8, linetype = 3) +
+    xlab("Sample Size") + ylab("Statistical Power") + ggtitle("Interaction among Number of Subjects & Repeated Measures") +
+    scale_color_brewer(palette = "Dark2") + plot_theme
+```
+

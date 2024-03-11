@@ -11,3 +11,7 @@ Thank you so much to the Teaching, Training and Open Science Committee at ManyBa
 * Lakens, D., & Caldwell, A. R. (2021). Simulation-based power analysis for factorial analysis of variance designs. Advances in Methods and Practices in Psychological Science, 4(1), 2515245920951503.
 
 * https://rpsychologist.com/cohend/
+
+* Mani, N., Schreiner, M. S., Brase, J., Köhler, K., Strassen, K., Postin, D., & Schultze, T. (2021). Sequential Bayes Factor designs in developmental research: studies on early word learning. Developmental Science, e13097.
+
+* Zhang, Z. (2014). Monte Carlo based statistical power analysis for mediation models: Methods and software. Behavior research methods, 46, 1184-1198.

@@ -104,7 +104,6 @@ EffectSizeDataSimulated %>%
   geom_vline(xintercept = 0, linetype = 3) +
   xlim(c(-5*0.35, 5*0.35)) +
   ggtitle("IDS Preference Effect in Effect Sizes") +
-  xlab('Effect Size (d)') +
   plot_theme + 
   scale_fill_brewer(palette = "Dark2") + 
   theme(axis.title.y = element_blank(), 
@@ -121,7 +120,7 @@ ggplot(aes(x = Register, y = medLT, fill = Register)) +
   scale_fill_brewer(palette = 'Dark2') +
   ggtitle('Subject-Level Differences across Speech Styles') + 
   xlab("Speech Style") + 
-  ylab('Effect Size (d)') + 
+  ylab('Effect Size') + 
   plot_theme
 ```
 
@@ -141,7 +140,7 @@ In the following code blocks, we will automatise this process and run the power 
 
 ## Time to Power-Up the Analysis
 
-Now we have two essential components to perform our simulation-based power analysis: i) a code pipeline to generate data for our research question and ii) a clear idea of how we want to model the data. Now it's time to run the actual power analysis. The way we do this is to specify an effect, run hundreds of models and calculate the proportion of models that reject the null hypothesis. This proportion is an estimate of statistical power for those particular parameter values. 
+Now we have two essential components to perform our simulation-based power analysis: i) a code pipeline to generate data for our research question and ii) a clear idea of how we want to model the data. Now it's time to run the actual power analysis. The way we do this is to specify an effect, run hundreds of models and count the proportion of models that reject the nulle hypothesis. This proportion is an estimate of statistical power for those particular parameter values. 
 
 To simplify the process, we can write a new function that combines a modelling component into our previous SimulateEffectSizeData() function. We will call this function SimulateAndModelEFData(), and we will use broom.mixed::tidy(model) to obtain a dataframe with relevant results from the model and write each model result to a .csv-file.
 

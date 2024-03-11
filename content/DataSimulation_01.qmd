@@ -96,8 +96,8 @@ To address this, we introduce random intercept values for subjects and items by 
 
 ```{r}
 # set random effect parameters
-subject_varyingintercept   <- 500 # by-subject random intercept sd
-item_varyingintercept <- 250   # by-item random intercept sd
+subject_varyingintercept   <- 750 # by-subject random intercept sd
+item_varyingintercept <- 500   # by-item random intercept sd
 ```
 
 ## Choosing Value for Varying Slope Parameter
@@ -105,7 +105,7 @@ We also need to acknowledge that the magnitude of the effect of IDS stimuli may 
 
 ```{r}
 # set more random effect and error parameters
-subject_varyingslope  <-  100 # by-subject random slope sd
+subject_varyingslope  <-  500 # by-subject random slope sd
 rho    <-  0.2 # correlation between intercept and slope
 sigma  <- 500 # residual (error) sd
 ```
@@ -167,13 +167,14 @@ glimpse(subjects)
 
 subjects %>%
   pivot_longer(cols = starts_with("subject"),
-               names_to = "parameters",
+               names_to = "Parameters",
                values_to = "value") %>%
   ggplot() + 
-  geom_density(aes(value, fill = parameters), alpha = 0.8) +
+  geom_density(aes(value, fill = Parameters), alpha = 0.8) +
   xlim(c(-4*subject_varyingintercept, 4*subject_varyingintercept)) +
-  facet_wrap(~parameters) +
+  facet_wrap(~Parameters) +
   ggtitle('Varying Intercept and Slope Terms for Subjects') +
+  xlab('Looking Times (ms)') +
   plot_theme +
   scale_fill_brewer(palette = 'Dark2') +
   theme(axis.title.y=element_blank(),
@@ -210,7 +211,7 @@ SimulatedLT %>%
   ggplot() + 
   geom_density(aes(LT, fill = Register), alpha = 0.8) +
   xlim(c(2400, 18000)) +
-  ggtitle('Varying Intercept and Slope Terms for Subjects') +
+  ggtitle('Simulated Distributions for ADS and IDS') +
   plot_theme +
   scale_fill_brewer(palette = 'Dark2') +
   theme(axis.title.y=element_blank(),
@@ -244,7 +245,7 @@ SimulateLTData <- function(
   mean_slope =  1000,   # effect of category
   item_varyingintercept =  250,   # by-item random intercept sd
   subject_varyingintercept = 500,   # by-subject random intercept sd
-  subject_varyingslope =  100,   # by-subject random slope sd
+  subject_varyingslope =  500,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
   sigma = 500) { # residual (standard deviation)
 
@@ -281,7 +282,7 @@ SimulateLTData <- function(
 
 Having condense all the preceding steps into a single function and returning a dataset with the specified parameters, we are now empowered to effortlessly experiment with different parameters or generate multiple datasets for power analysis purposes.
 
-For example, we can easily generate a dataset with the effect of IDS being 5000ms instead of only 1000ms by specifying the following
+For example, we can easily generate a dataset with the effect of IDS being 3000ms instead of only 1000ms by specifying the following
 
 ```{r}
 SimulatedDataWithIDSslopeOf3000<- SimulateLTData(mean_slope = 3000)
@@ -387,8 +388,9 @@ DataWithAgeSimulated %>%
 ggplot() + 
   geom_point(aes(y = LT, x = age_subj, color = subj_id), alpha = 0.6, size = 1, show.legend = F) + 
   geom_smooth(method = "lm", se = TRUE, formula = y ~ x, aes(y = LT, x = age_subj)) +
-  ggtitle("Interaction Effect with Age") +
+  ggtitle("Interaction Effect Between Age and SpeechStyle") +
   xlab("Age (standardised age)") + 
+  ylab('Looking Time (ms)') +
   facet_wrap(~Register) +
   scale_color_manual(values = viridis(n = 27)) +
   plot_theme
