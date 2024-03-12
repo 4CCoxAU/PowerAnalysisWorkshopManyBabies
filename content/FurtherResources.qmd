@@ -2,7 +2,9 @@
 title: Further Resources
 ---
 
-Thank you so much to the Teaching, Training and Open Science Committee at ManyBabies for supporting the creation of this workshop! I take full responsibility for all mistakes. I have taken inspiration from the following ressources and would recommend them for everyone who is interested in this topic:
+Thank you so much to the Teaching, Training and Open Science Committee at ManyBabies for supporting the creation of this workshop! I take full responsibility for all mistakes. I have taken inspiration from the following resources and would recommend them for everyone who is interested in this topic:
+
+* Workshop on Bayesian modelling and priors: https://4ccoxau.github.io/PriorsWorkshop/
 
 * DeBruine, L. M., & Barr, D. J. (2021). Understanding mixed-effects models through data simulation. Advances in Methods and Practices in Psychological Science, 4(1), 2515245920965119.
 

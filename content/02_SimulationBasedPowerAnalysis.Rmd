@@ -55,32 +55,28 @@ Let's adapt our simulation function from previous pages to the new scale of effe
 # set up the custom data simulation function
 SimulateEffectSizeData <- function(
   n_subj = 24,   # number of subjects
-  n_ADS  = 6,   # number of ingroup stimuli
-  n_IDS =  6,   # number of outgroup stimuli
-  mean_intercept = 0,   # grand mean
-  mean_slope =  0.35,   # effect of category
+  n_ADS  = 6,   # number of ADS stimuli
+  n_IDS =  6,   # number of IDS stimuli
+  mean_intercept = 0,   # ADS intercept
+  mean_slope =  0.35,   # effect of IDS
   item_varyingintercept =  0.1,   # by-item random intercept sd
-  subject_varyingintercept = 0.1,   # by-subject random intercept sd
+  subject_varyingintercept = 0.2,   # by-subject random intercept sd
   subject_varyingslope =  0.2,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
-  sigma = 0.3) { # residual (standard deviation)
+  sigma = 1) { # residual (standard deviation)
 
   items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
   item_intercept_sd = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)
 ) %>% 
   mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1)) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I"))
 
-  # simulate a sample of subjects
-
-# sample from a multivariate random distribution 
   subjects <- faux::rnorm_multi(
   n = n_subj, 
-  mu = 0, # means for random effects are always 0
-  sd = c(subject_varyingintercept, subject_varyingslope), # set SDs
-  r = rho, # set correlation, see ?faux::rnorm_multi
+  mu = 0, 
+  sd = c(subject_varyingintercept, subject_varyingslope),
+  r = rho, 
   varnames = c("subject_intercept_sd", "subject_slope_sd")
 ) %>%
   mutate(subj_id = faux::make_id(nrow(.), "S"))
@@ -88,7 +84,6 @@ SimulateEffectSizeData <- function(
    ParameterValues <- crossing(subjects, items)  %>%
     mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
   
-  # calculate the response variable
   ParameterValues %>%
     mutate(EF = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
   dplyr::select(subj_id, item_id, Register, SpeechStyle, EF)
@@ -102,8 +97,9 @@ EffectSizeDataSimulated %>%
   geom_density(aes(EF, fill = Register), alpha = 0.8) +
   geom_vline(xintercept = 0.35, linetype = 3) +
   geom_vline(xintercept = 0, linetype = 3) +
-  xlim(c(-5*0.35, 5*0.35)) +
+  xlim(c(-4, 4)) +
   ggtitle("IDS Preference Effect in Effect Sizes") +
+  xlab('Effect Size (d)') +
   plot_theme + 
   scale_fill_brewer(palette = "Dark2") + 
   theme(axis.title.y = element_blank(), 
@@ -120,7 +116,7 @@ ggplot(aes(x = Register, y = medLT, fill = Register)) +
   scale_fill_brewer(palette = 'Dark2') +
   ggtitle('Subject-Level Differences across Speech Styles') + 
   xlab("Speech Style") + 
-  ylab('Effect Size') + 
+  ylab('Effect Size (d)') + 
   plot_theme
 ```
 
@@ -131,7 +127,7 @@ Let's think about how we want to run a linear mixed-effects model of the data. F
 ```{r}
 EffectSizeDataSimulated <- SimulateEffectSizeData()
 
-model <- lmer(EF ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id), data = EffectSizeDataSimulated)
+model <- lmer(EF ~ 1 + SpeechStyle + (1 + SpeechStyle | subj_id) + (1 | item_id), data = EffectSizeDataSimulated)
 
 summary(model)
 ```
@@ -140,7 +136,7 @@ In the following code blocks, we will automatise this process and run the power 
 
 ## Time to Power-Up the Analysis
 
-Now we have two essential components to perform our simulation-based power analysis: i) a code pipeline to generate data for our research question and ii) a clear idea of how we want to model the data. Now it's time to run the actual power analysis. The way we do this is to specify an effect, run hundreds of models and count the proportion of models that reject the nulle hypothesis. This proportion is an estimate of statistical power for those particular parameter values. 
+Now we have two essential components to perform our simulation-based power analysis: i) a code pipeline to generate data for our research question and ii) a clear idea of how we want to model the data. Now it's time to run the actual power analysis. The way we do this is to specify an effect, run hundreds of models and calculate the proportion of models that reject the null hypothesis. This proportion is an estimate of statistical power for those particular parameter values. 
 
 To simplify the process, we can write a new function that combines a modelling component into our previous SimulateEffectSizeData() function. We will call this function SimulateAndModelEFData(), and we will use broom.mixed::tidy(model) to obtain a dataframe with relevant results from the model and write each model result to a .csv-file.
 
@@ -166,14 +162,14 @@ Now we have a function that generates data, runs a model and spits out the resul
 # run simulations and save to a file
 n_runs <- 500 # use at least 500 to get stable estimates
 simulations <- purrr::map_df(1:n_runs, ~ SimulateAndModelEFData())
-write_csv(simulations, "EFsimulations.csv")
+write_csv(simulations, here("EFsimulations.csv"))
 ```
 
 If it ran correctly, it should have produced a .csv file with model results from each new simulation of data. Let's read in the results and have a look at what they say!
 
 ```{r, warning = FALSE}
 # read saved simulation data
-sims <- read_csv("EFsimulations.csv", show_col_types = FALSE) %>%
+sims <- read_csv(here("EFsimulations.csv"), show_col_types = FALSE) %>%
   dplyr::select(term, estimate, std.error, p.value)
 
 sims %>% 
@@ -192,7 +188,7 @@ sims %>%
 
 Now that we have this pipeline set up, it becomes easy to adapt the code to try out different parameter values. Let's explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items in each speech style. What happens to the estimate of statistical power?
 
-```{r, message=FALSE, results='hide', warning = FALSE}
+```{r, message=FALSE, results='hide', warning = FALSE, eval = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  
@@ -211,7 +207,7 @@ SimulateAndModelEFData <- function(...) {
 # run simulations and save to a file
 n_runs <- 500 # use at least 500 to get stable estimates
 simulations <- purrr::map_df(1:n_runs, ~ SimulateAndModelEFData())
-write_csv(simulations, "EFsimulations2Stimuli.csv")
+write_csv(simulations, here("EFsimulations2Stimuli.csv"))
 ```
 
 ```{r}
@@ -219,7 +215,7 @@ write_csv(simulations, "EFsimulations2Stimuli.csv")
 #| code-summary: "Show the code"
 
 # read saved simulation data
-sims <- read_csv("EFsimulations2Stimuli.csv", show_col_types = FALSE) %>%
+sims <- read_csv(here("EFsimulations2Stimuli.csv"), show_col_types = FALSE) %>%
   dplyr::select(term, estimate, std.error, p.value)
 
 sims %>% 
@@ -242,29 +238,25 @@ Let's imagine a scenario where we are interested in the effect of age on IDS pre
  
 SimulateEFDataWithAge <- function(
   beta_age = 0.3, #add effect of age
-  age_interaction_sd = 0.1, #add some standard deviation to aage effect
+  age_interaction_sd = 0.1, #add some standard deviation to age effect
   n_subj = 24,   # number of subjects
-  n_ADS  = 6,   # number of ingroup stimuli
-  n_IDS =  6,   # number of outgroup stimuli
-  mean_intercept = 0,   # grand mean
-  mean_slope =  0.35,   # effect of category
+  n_ADS  = 6,   # number of ADS stimuli
+  n_IDS =  6,   # number of IDS stimuli
+  mean_intercept = 0,   # ADS intercept
+  mean_slope =  0.35,   # effect of IDS
   item_varyingintercept =  0.1,   # by-item random intercept sd
-  subject_varyingintercept = 0.1,   # by-subject random intercept sd
+  subject_varyingintercept = 0.2,   # by-subject random intercept sd
   subject_varyingslope =  0.2,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
-  sigma = 0.3) { # residual (standard deviation)
+  sigma = 1) { # residual (standard deviation)
 
   items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
   item_intercept_sd = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)
 ) %>% 
   mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1)) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I"))
 
-  # simulate a sample of subjects
-
-# sample from a multivariate random distribution 
   subjects <- faux::rnorm_multi(
   n = n_subj, 
   mu = 0, 
@@ -278,7 +270,6 @@ SimulateEFDataWithAge <- function(
   ParameterValues <- crossing(subjects, items)  %>%
     mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
   
-  # calculate the response variable
   ParameterValues %>%
     mutate(EF = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + ((beta_age + age_slope_sd) * age_subj * SpeechStyle) + e_si) %>%
   dplyr::select(subj_id, item_id, Register, SpeechStyle, age_subj, EF)
@@ -301,7 +292,7 @@ ggplot() +
   plot_theme
 ```
 
-```{r, warning = FALSE, message=FALSE, results='hide', warning = FALSE}
+```{r, warning = FALSE, message=FALSE, results='hide', warning = FALSE, eval = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  
@@ -311,7 +302,7 @@ SimulateAndModelEFAgeData <- function(...) {
   dataSimulated <- SimulateEFDataWithAge(n_ADS = 4, n_IDS = 4)
   
   #model EF data
-  model <- lmer(EF ~ 1 + SpeechStyle:age_subj + (1 | item_id) + (1 + SpeechStyle | subj_id),
+  model <- lmer(EF ~ 1 + SpeechStyle + SpeechStyle:age_subj + (1 | item_id) + (1 + SpeechStyle | subj_id),
                 data = dataSimulated)
   #write to a dataframee
   broom.mixed::tidy(model)
@@ -320,7 +311,7 @@ SimulateAndModelEFAgeData <- function(...) {
 # run simulations and save to a file
 n_runs <- 500 # use at least 500 to get stable estimates
 simulations <- purrr::map_df(1:n_runs, ~ SimulateAndModelEFAgeData())
-write_csv(simulations, "EFsimulationsAge.csv")
+write_csv(simulations, here("EFsimulationsAge.csv"))
 ```
 
 ```{r}
@@ -328,7 +319,7 @@ write_csv(simulations, "EFsimulationsAge.csv")
 #| code-summary: "Show the code"
 
 # read saved simulation data
-sims <- read_csv("EFsimulationsAge.csv", show_col_types = FALSE) %>%
+sims <- read_csv(here("EFsimulationsAge.csv"), show_col_types = FALSE) %>%
   dplyr::select(term, estimate, std.error, p.value)
 
 sims %>% 

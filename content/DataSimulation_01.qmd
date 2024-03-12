@@ -25,22 +25,25 @@ n_IDS  <-  6 # number of IDS stimuli
 
 ## Data Generating Parameters
 
-Now that we have an overview of the experimental design, we can start to consider a reasonable underlying statistical model. In the following sections, we will gradually build up the parameters for a mixed-effects statistical model of the following type, as described in the lecture:
+Now that we have an overview of the experimental design, we can start to consider a reasonable underlying statistical model. In the following sections, we will gradually build up the parameters for a linear mixed-effects model of the following type, as described in the lecture:
 
 $$
 Looking Time = \beta^{ADS} + VaryingIntercept^{subj} + VaryingIntercept^{item} + (\beta^{IDS} + VaryingSlope^{subj}) \cdot SpeechStyle + \varepsilon
 $$
 According to this formula, the process of data generation means that our dependent variable of looking time is composed of a linear combination of the following fixed parameters:
-* the average ADS intercept capturing the mean baseline tendency to attend to ADS, \beta^{ADS}
-* the average influence of IDS on this baseline attention, \beta^{IDS}
+
+* the average ADS intercept capturing the mean baseline tendency to attend to ADS, β(ADS)
+* the average influence of IDS on this baseline attention, β(IDS)
 
 There are also three varying effects:
-* a by-subject random intercept, VaryingIntercept^{subj}
-* a by-item random intercept, VaryingIntercept^{item}
-* a by-subject random slope, VaryingSlope^{subj}
+
+* a by-subject random intercept, VaryingIntercept(subj),
+* a by-item random intercept, VaryingIntercept(item)
+* a by-subject random slope, VaryingSlope(subj)
 
 And lastly:
-* a trial-level residual error \varepsilon
+
+* a trial-level residual error, ε
 
 This formula paves a clear way forward for our process of data simulation. In the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for the different parameters.
 
@@ -49,7 +52,7 @@ This formula paves a clear way forward for our process of data simulation. In th
 ```{r setup, include=FALSE}
 #if you don't have the pacman package loaded on your computer, uncomment the next line, install pacman, and load in the required packages
 options(repos = "https://cran.r-project.org/")
-install.packages('pacman')
+#install.packages('pacman')
 #load the required packages:
 pacman::p_load(knitr, # rendering of .Rmd file
                lme4, # model specification / estimation
@@ -62,13 +65,13 @@ pacman::p_load(knitr, # rendering of .Rmd file
                kableExtra, #helps with knitting the .Rmd file
                cowplot, #visualisation tool to include multiple plots
                ggrain, #visualisation tool for raincloud plots
-               dplyr,
-               here,
-               tidyr
+               dplyr, #data manipulation tools
+               here, #useful to control directories
+               tidyr #formatting package
                )
 
 set.seed(1234)
-opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.width=12, fig.height=11, fig.fullwidth=TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.width=10, fig.height=8, fig.fullwidth=TRUE)
 
 plot_theme <- 
   theme_bw() +
@@ -77,7 +80,7 @@ plot_theme <-
         axis.title.x = element_text(size = 13), 
         axis.text.y = element_text(size = 12), 
         axis.title.y = element_text(size = 13),
-        strip.background = element_rect(color="white", fill="white", size=1.5, linetype="solid"))
+        strip.background = element_rect(color="white", fill="white", linewidth = 1.5, linetype="solid"))
 
 ```
 
@@ -85,19 +88,19 @@ Let's start by setting the fixed-effect parameters of SpeechStyle (β₀ + β₁
 
 ```{r}
 # set fixed effect parameters
-mean_intercept <- 6000 # intercept; i.e., the grand mean, β₀
+mean_intercept <- 6000 # ADS intercept; i.e., the grand mean, β₀
 mean_slope <- 1000 # slope; i.e, effect of IDS, β₁
 ```
 
 ## Choosing Values for Varying Intercept Parameters
-When we're modelling data from experiments involving individuals (like infants in this case), it's essential to account for the fact that each individual may have unique baseline reactions to the speech stimuli. Similarly, the effect of the stimuli on infant looking times might vary across different instances of the stimulus. 
+When we're modelling data from experiments involving individuals (like infants in this case), it's essential to account for the fact that each individual may have unique baseline reactions to the speech stimuli. Similarly, the effect of the stimuli on infant looking times might vary across different instances of the stimulus items. 
 
-To address this, we introduce random intercept values for subjects and items by code the standard deviation of the random intercepts and sampling from a normal distribution. This reflects the range of differences we might observe among subjects' reactions and the effects of different stimulus items.
+To address this, we introduce random intercept values for subjects and items by coding the standard deviation of the random intercepts and sampling from a normal distribution. This reflects the range of differences we might observe among subjects' reactions and the effects of different stimulus items.
 
 ```{r}
 # set random effect parameters
-subject_varyingintercept   <- 750 # by-subject random intercept sd
-item_varyingintercept <- 500   # by-item random intercept sd
+subject_varyingintercept   <- 500 # by-subject random intercept sd
+item_varyingintercept <- 250   # by-item random intercept sd
 ```
 
 ## Choosing Value for Varying Slope Parameter
@@ -105,23 +108,22 @@ We also need to acknowledge that the magnitude of the effect of IDS stimuli may 
 
 ```{r}
 # set more random effect and error parameters
-subject_varyingslope  <-  500 # by-subject random slope sd
+subject_varyingslope  <-  300 # by-subject random slope sd
 rho    <-  0.2 # correlation between intercept and slope
 sigma  <- 500 # residual (error) sd
 ```
 
 ## Simulate Stimulus Items
-Now it's time to create a dataset that lists, for each stimulus item, the speech style it is in and its varying properties on infants' looking times. To set the parameter for varying item intercept, we are going to specify the standard deviation that we expect items to exhibit in the parameter, item_varyingintercept, in the below code. That is, we sample values from a normal distribution using the rnorm() function, with a meaan of 0 and standard deviation of item_varyingintercept. For the varying item variable, we also need to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We are going to use the faux package to carry this out.
+Now it's time to create a dataset that lists, for each stimulus item, the speech style it is in and its varying properties on infants' looking times. To set the parameter for varying item intercept, we are going to specify the standard deviation that we expect items to exhibit in the parameter, item_varyingintercept, in the below code. That is, we sample values from a normal distribution using the rnorm() function, with a mean of 0 and standard deviation of item_varyingintercept. For the varying item variable, we also need to assign a unique identifer to each of the 16 speech stimuli and designate whether the stimuli are ADS or IDS, with the first 8 being ADS and the next 8 being IDS. We are going to use the faux package to carry this out.
 
 ```{r}
 # simulate a sample of items
 # total number of items = n_ADS + n_IDS
 items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
-  Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
+  Register = rep(c("ADS", "IDS"), c(n_ADS, n_IDS)),
   item_intercept_sd = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)
 ) %>% 
-  mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1)) %>% 
+  mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1)) %>% #add so that we have numeric predictors
   mutate(item_id = faux::make_id(nrow(.), "I"))
 ```
 
@@ -145,7 +147,7 @@ ggplot(items, aes(1, item_intercept_sd, fill = Register, color = Register)) +
 
 ## Simulate the sampling of subjects
 
-The process of simulating varying intercepts varying slopes data for subjects is slightly more complex than that of items.  This process is slightly more complex than before because we cannot simply sample the intercept values independently from the slope values using rnorm(). Instead, we need to sample pairs of values for each subject from a bivariate normal distribution. We will use the rnorm_multi() function from the faux package (DeBruine 2020) to carry this out. This function allows us to specify the means, and standard deviations (sd) for each variable, along with the correlations (r), which in this case will be a single value applied to all pairs.
+The process of simulating varying intercepts varying slopes data for subjects is slightly more complex than that of items.  This process is slightly more complex than before because we cannot simply sample the intercept values independently from the slope values using rnorm(). Instead, we need to sample pairs of values for each subject from a bivariate normal distribution because we need to account for patterns in the data among those infants who have a high looking time baseline in ADS and the effects of IDS. We will use the rnorm_multi() function from the faux package (DeBruine 2020) to carry this out. This function allows us to specify the means, and standard deviations (sd) for each variable, along with the correlations (rho), which in this case will be a single value applied to all pairs.
 
 ```{r}
 # simulate a sample of subjects
@@ -193,7 +195,7 @@ ParameterValues <- crossing(subjects, items)  %>%
 glimpse(ParameterValues)
 ```
 
-Now we have specified the parameters in ParameterValues, we are ready to add up everything together to create the response variable (i.e., infant looking times in milliseconds). To be more specific, we calculate the response variable, looking time, by adding together the variables.
+Now we have specified the parameters in ParameterValues, we are ready to add up everything together to create the response variable (i.e., infant looking times in milliseconds).
 
 ```{r}
 # calculate the response variable
@@ -210,7 +212,7 @@ Let's have a look at what the data we have generated looks like:
 SimulatedLT %>%
   ggplot() + 
   geom_density(aes(LT, fill = Register), alpha = 0.8) +
-  xlim(c(2400, 18000)) +
+  xlim(c(2400, 15000)) +
   ggtitle('Simulated Distributions for ADS and IDS') +
   plot_theme +
   scale_fill_brewer(palette = 'Dark2') +
@@ -239,27 +241,23 @@ Now that we've simulated a dataset with the necessary properties, suitable for s
 # set up the custom data simulation function
 SimulateLTData <- function(
   n_subj = 24,   # number of subjects
-  n_ADS  = 6,   # number of ingroup stimuli
-  n_IDS =  6,   # number of outgroup stimuli
-  mean_intercept = 6000,   # grand mean
-  mean_slope =  1000,   # effect of category
+  n_ADS  = 6,   # number of ADS stimuli
+  n_IDS =  6,   # number of IDS stimuli
+  mean_intercept = 6000,   # ADS intercept
+  mean_slope =  1000,   # effect of IDS
   item_varyingintercept =  250,   # by-item random intercept sd
   subject_varyingintercept = 500,   # by-subject random intercept sd
-  subject_varyingslope =  500,   # by-subject random slope sd
+  subject_varyingslope =  300,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
   sigma = 500) { # residual (standard deviation)
 
   items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
   item_intercept_sd = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)
 ) %>% 
   mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1)) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I"))
 
-  # simulate a sample of subjects
-
-# sample from a multivariate random distribution 
   subjects <- faux::rnorm_multi(
   n = n_subj, 
   mu = 0, 
@@ -311,7 +309,7 @@ SimulatedDataWithIDSslopeOf3000 %>%
 #| code-fold: true
 #| code-summary: "Show the code"
 
-#With our new SimulateLTData() function, the answer here is fairly straightforward! We can simply specify that we want to simulate 500 subjects and want a mean slope of 0, like so: SimulateLTData(n_subj = 500, mean_slope = 0).
+#With our new SimulateLTData() function, the answer here is fairly straightforward! We can simply specify that we want to simulate 500 subjects and want a mean slope of 0, like so:
 
 LTDataSimulated <- SimulateLTData(n_subj = 500, mean_slope = 0)
 
@@ -340,29 +338,25 @@ LTDataSimulated %>%
 
 SimulateLTDataWithAge <- function(
   beta_age = 1000, #add effect of age
-  age_interaction_sd = 150, #add some standard deviation to aage effect
+  age_interaction_sd = 150, #add some jitter to age effect
   n_subj = 24,   # number of subjects
-  n_ADS  = 6,   # number of ingroup stimuli
-  n_IDS =  6,   # number of outgroup stimuli
-  mean_intercept = 6000,   # grand mean
-  mean_slope =  1000,   # effect of category
+  n_ADS  = 6,   # number of ADS stimuli
+  n_IDS =  6,   # number of IDS stimuli
+  mean_intercept = 6000,   # ADS intercept
+  mean_slope =  1000,   # effect of IDS
   item_varyingintercept =  250,   # by-item random intercept sd
   subject_varyingintercept = 500,   # by-subject random intercept sd
-  subject_varyingslope =  100,   # by-subject random slope sd
+  subject_varyingslope =  300,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
   sigma = 500) { # residual (standard deviation)
 
   items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
   item_intercept_sd = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)
 ) %>% 
   mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1)) %>% 
   mutate(item_id = faux::make_id(nrow(.), "I"))
 
-  # simulate a sample of subjects
-
-# sample from a multivariate random distribution 
   subjects <- faux::rnorm_multi(
   n = n_subj, 
   mu = 0, 
@@ -376,7 +370,6 @@ SimulateLTDataWithAge <- function(
   ParameterValues <- crossing(subjects, items)  %>%
     mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
   
-  # calculate the response variable
   ParameterValues %>%
     mutate(LT = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + ((beta_age + age_slope_sd) * age_subj * SpeechStyle) + e_si) %>%
   mutate(LT = LT + rexp(nrow(.), rate = 0.01)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times

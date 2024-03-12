@@ -38,51 +38,40 @@ plot_theme <-
 ```
 
 ```{r, include = FALSE}
-# set up the custom data simulation function
 SimulateEffectSizeData <- function(
   n_subj = 24,   # number of subjects
-  n_ADS  = 8,   # number of ingroup stimuli
-  n_IDS =  8,   # number of outgroup stimuli
-  mean_intercept = 0,   # grand mean
-  mean_slope =  0.35,   # effect of category
-  item_varyingintercept =  0.05,   # by-item random intercept sd
-  item_varyingslope =  0.05,   # by-item random intercept sd
-  subject_varyingintercept = 0.1,   # by-subject random intercept sd
+  n_ADS  = 6,   # number of ADS stimuli
+  n_IDS =  6,   # number of IDS stimuli
+  mean_intercept = 0,   # ADS intercept
+  mean_slope =  0.35,   # effect of IDS
+  item_varyingintercept =  0.1,   # by-item random intercept sd
+  subject_varyingintercept = 0.2,   # by-subject random intercept sd
   subject_varyingslope =  0.1,   # by-subject random slope sd
   rho = 0.2,   # correlation between intercept and slope
-  sigma = 0.3) { # residual (standard deviation)
+  sigma = 0.4) { # residual (standard deviation)
 
-    items <- data.frame(
-  #item_id = seq_len(n_ADS + n_IDS),
+  items <- data.frame(
   Register = rep(c("IDS", "ADS"), c(n_ADS, n_IDS)),
-  faux::rnorm_multi(
-  n = n_ADS + n_IDS, 
-  mu = 0, # means for random effects are always 0
-  sd = c(item_varyingintercept, item_varyingslope),
-  r = rho,
-  varnames = c("item_sd", "item_slope_sd"))) %>%
-    mutate(item_id = faux::make_id(n_ADS + n_IDS, "I")) %>%
-    mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1))
+  item_intercept_sd = rnorm(n = n_ADS + n_IDS, mean = 0, sd = item_varyingintercept)
+) %>% 
+  mutate(SpeechStyle = recode(Register, "ADS" = 0, "IDS" = 1)) %>% 
+  mutate(item_id = faux::make_id(nrow(.), "I"))
 
-  # simulate a sample of subjects
-
-# sample from a multivariate random distribution 
   subjects <- faux::rnorm_multi(
   n = n_subj, 
-  mu = 0, # means for random effects are always 0
-  sd = c(subject_varyingintercept, subject_varyingslope), # set SDs
-  r = rho, # set correlation, see ?faux::rnorm_multi
-  varnames = c("subject_sd", "subject_slope_sd")
+  mu = 0, 
+  sd = c(subject_varyingintercept, subject_varyingslope),
+  r = rho, 
+  varnames = c("subject_intercept_sd", "subject_slope_sd")
 ) %>%
   mutate(subj_id = faux::make_id(nrow(.), "S"))
 
-  ParameterValues <- crossing(subjects, items)  %>%
-    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma)) %>%
-    dplyr::select(subj_id, item_id, Register, SpeechStyle, everything())
+   ParameterValues <- crossing(subjects, items)  %>%
+    mutate(e_si = rnorm(nrow(.), mean = 0, sd = sigma))
   
   ParameterValues %>%
-    mutate(EF = mean_intercept + subject_sd + item_sd + (mean_slope + subject_slope_sd + item_varyingslope) * SpeechStyle + e_si) %>%
-    dplyr::select(subj_id, item_id, Register, SpeechStyle, EF)
+    mutate(EF = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
+  dplyr::select(subj_id, item_id, Register, SpeechStyle, EF)
 }
 ```
 
@@ -91,9 +80,9 @@ SimulateEffectSizeData <- function(
 It should be clear from the previous sections that the data simulation process involves a multiverse of experimenter choices. One way to explore (and calm our fears about) the respective importance of these individual choices and their interactions would be to conduct a sensitivity analysis with a grid search of all available combinations among parameter values of interest. To do this, we can wrap our Simulation and Modelling function with a higher-level function that inputs a series of parameter combinations that we are interested in exploring further. Here is a suggestion for a function of this type. We can start by creating a matrix of parameter combinations that we are interested in.
 
 ```{r}
-subj_n <- seq(2, 50, by = 3)
-trial_n <- seq(4, 8, by = 2)
-NumberOfModels <- 500
+subj_n <- seq(15, 80, by = 3)
+trial_n <- seq(4, 12, by = 2)
+NumberOfModels <- 30
 
 param_combinations <- expand.grid(subj_n = subj_n, 
                                   trial_n = trial_n)
@@ -127,6 +116,14 @@ run_sims_grid_point <- function(filename_full, trial_n, subj_n) {
 
 
 ```{r, warning = FALSE, eval = FALSE}
+#let's make a new folder to store the output of the simulation function:
+if(file.exists(here("sims_grid_search"))){
+  setwd(here("sims_grid_search"))
+} else {
+  dir.create(here("sims_grid_search"))
+  setwd(here("sims_grid_search"))
+}
+
 for (i in seq_len(nrow(param_combinations))) {
   sim_params <- param_combinations[i, ]
   filename_full <- paste0(here('sims_grid_search/test_grid_search_'),
@@ -143,7 +140,6 @@ for (i in seq_len(nrow(param_combinations))) {
 
 
 ```{r, warning = FALSE}
-setwd(here("sims_grid_search"))
 file_names <- list.files(pattern = "*.csv")
 
 # read in all CSV files into a list of dataframes
@@ -187,9 +183,16 @@ How would you adapt the above grid search code to investigate the effect of vary
 #| code-fold: true
 #| code-summary: "Show the code"
 
+if(file.exists(here("sims_grid_search_exercise_6"))){
+  setwd(here("sims_grid_search_exercise_6"))
+} else {
+  dir.create(here("sims_grid_search_exercise_6"))
+  setwd(here("sims_grid_search_exercise_6"))
+}
+
 subj_n <- seq(2, 50, by = 3)
 effectsize <- seq(0.3, 0.9, by = 0.3)
-NumberOfModels <- 2
+NumberOfModels <- 400
 
 param_combinations <- expand.grid(subj_n = subj_n, effectsize = effectsize)
 
@@ -228,7 +231,10 @@ for (i in seq_len(nrow(param_combinations))) {
 ```
 
 
-```{r}
+```{r, eval = FALSE}
+#| code-fold: true
+#| code-summary: "Show the code"
+
 setwd(here("sims_grid_search_exercise_6"))
 file_names <- list.files(pattern = "*.csv")
 
@@ -253,10 +259,13 @@ PowerGridData <- df_per_sim %>%
         `[`, 4)), ef = as.factor(str_replace(sapply(strsplit(filename,
         "_"), `[`, 5), pattern = ".csv", "")))
 
-ggplot(PowerGridData) + geom_point(aes(x = n_subj, y = power,
-    color = ef)) + geom_line(aes(x = n_subj, y = power,
-    color = ef)) + geom_hline(yintercept = 0.8, linetype = 3) +
-    xlab("Sample Size") + ylab("Statistical Power") + ggtitle("Interaction among Number of Subjects & Repeated Measures") +
-    scale_color_brewer(palette = "Dark2") + plot_theme
+ggplot(PowerGridData) + geom_point(aes(x = n_subj, y = power, color = ef)) + 
+  geom_line(aes(x = n_subj, y = power, color = ef)) + 
+  geom_hline(yintercept = 0.8, linetype = 3) + 
+  xlab("Sample Size") + 
+  ylab("Statistical Power") + 
+  ggtitle("Interaction among Number of Subjects & Effect Size") + 
+  scale_color_brewer(palette = "Dark2") +
+  plot_theme
 ```
 
