@@ -436,12 +436,12 @@ SpeechStyle -0.670</code></pre>
 <pre><code># A tibble: 6 × 4
   term                         mean_estimate mean_se  power
   &lt;chr&gt;                                &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1 (Intercept)                       -0.00924   0.185  0.016
-2 SpeechStyle                        0.367     0.259  0.204
-3 cor__(Intercept).SpeechStyle      NA        NA     NA    
-4 sd__(Intercept)                    0.180    NA     NA    
-5 sd__Observation                    0.955    NA     NA    
-6 sd__SpeechStyle                    0.384    NA     NA    </code></pre>
+1 (Intercept)                         0.0144   0.184  0.04 
+2 SpeechStyle                         0.350    0.258  0.202
+3 cor__(Intercept).SpeechStyle       NA       NA     NA    
+4 sd__(Intercept)                     0.181   NA     NA    
+5 sd__Observation                     0.959   NA     NA    
+6 sd__SpeechStyle                     0.386   NA     NA    </code></pre>
 </div>
 </div>
 </section>
@@ -549,13 +549,13 @@ SpeechStyle -0.670</code></pre>
 <pre><code># A tibble: 7 × 4
   term                         mean_estimate mean_se  power
   &lt;chr&gt;                                &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1 (Intercept)                        0.00195   0.128  0.032
-2 SpeechStyle                        0.344     0.184  0.37 
-3 SpeechStyle:age_subj               0.312     0.428  0.1  
+1 (Intercept)                        0.00200   0.130  0.044
+2 SpeechStyle                        0.347     0.188  0.356
+3 SpeechStyle:age_subj               0.286     0.435  0.094
 4 cor__(Intercept).SpeechStyle      NA        NA     NA    
-5 sd__(Intercept)                    0.138    NA     NA    
-6 sd__Observation                    0.986    NA     NA    
-7 sd__SpeechStyle                    0.301    NA     NA    </code></pre>
+5 sd__(Intercept)                    0.141    NA     NA    
+6 sd__Observation                    0.989    NA     NA    
+7 sd__SpeechStyle                    0.313    NA     NA    </code></pre>
 </div>
 </div>
 <p>Now we have a pretty useful pipeline set up that allows us to explore the effects of different parameter values on our ability to detect effects. However, instead of manually varying the parameters one by one, it would be nice if we could set up a grid search to explore values and put the power results into perspective. We will explore how to do this in the next exercise sheet. The code gets slightly more complex, so make sure that you have understood the code that we have written so far before venturing further.</p>

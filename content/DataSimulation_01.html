@@ -276,8 +276,16 @@ Looking Time = \beta^{ADS} + VaryingIntercept^{subj} + VaryingIntercept^{item} +
 <li>the average ADS intercept capturing the mean baseline tendency to attend to ADS, β(ADS)</li>
 <li>the average influence of IDS on this baseline attention, β(IDS)</li>
 </ul>
-<p>There are also three varying effects: * a by-subject random intercept, VaryingIntercept(subj), * a by-item random intercept, VaryingIntercept(item) * a by-subject random slope, VaryingSlope(subj)</p>
-<p>And lastly: * a trial-level residual error, ε</p>
+<p>There are also three varying effects:</p>
+<ul>
+<li>a by-subject random intercept, VaryingIntercept(subj),</li>
+<li>a by-item random intercept, VaryingIntercept(item)</li>
+<li>a by-subject random slope, VaryingSlope(subj)</li>
+</ul>
+<p>And lastly:</p>
+<ul>
+<li>a trial-level residual error, ε</li>
+</ul>
 <p>This formula paves a clear way forward for our process of data simulation. In the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for the different parameters.</p>
 </section>
 <section id="choosing-values-for-fixed-effect-parameters" class="level2" data-number="4">
