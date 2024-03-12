@@ -230,51 +230,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up the custom data simulation function</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>SimulateEffectSizeData <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">6</span>,   <span class="co"># number of ingroup stimuli</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">6</span>,   <span class="co"># number of outgroup stimuli</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_intercept =</span> <span class="dv">0</span>,   <span class="co"># grand mean</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_slope =</span>  <span class="fl">0.35</span>,   <span class="co"># effect of category</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">6</span>,   <span class="co"># number of ADS stimuli</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">6</span>,   <span class="co"># number of IDS stimuli</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_intercept =</span> <span class="dv">0</span>,   <span class="co"># ADS intercept</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_slope =</span>  <span class="fl">0.35</span>,   <span class="co"># effect of IDS</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_varyingintercept =</span>  <span class="fl">0.1</span>,   <span class="co"># by-item random intercept sd</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingintercept =</span> <span class="fl">0.1</span>,   <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingintercept =</span> <span class="fl">0.2</span>,   <span class="co"># by-subject random intercept sd</span></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingslope =</span>  <span class="fl">0.2</span>,   <span class="co"># by-subject random slope sd</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.2</span>,   <span class="co"># correlation between intercept and slope</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fl">0.3</span>) { <span class="co"># residual (standard deviation)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="dv">1</span>) { <span class="co"># residual (standard deviation)</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_intercept_sd =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_varyingintercept)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>))</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate a sample of subjects</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, <span class="co"># means for random effects are always 0</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(subject_varyingintercept, subject_varyingslope), <span class="co"># set SDs</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, <span class="co"># set correlation, see ?faux::rnorm_multi</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"subject_intercept_sd"</span>, <span class="st">"subject_slope_sd"</span>)</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>))</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>   ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma))</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the response variable</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="sc">%&gt;%</span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">EF =</span> mean_intercept <span class="sc">+</span> subject_intercept_sd <span class="sc">+</span> item_intercept_sd <span class="sc">+</span> (mean_slope <span class="sc">+</span> subject_slope_sd) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span> <span class="co">#sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, EF)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_intercept_sd =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_varyingintercept)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(subject_varyingintercept, subject_varyingslope),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho, </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"subject_intercept_sd"</span>, <span class="st">"subject_slope_sd"</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>   ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma))</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="sc">%&gt;%</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">EF =</span> mean_intercept <span class="sc">+</span> subject_intercept_sd <span class="sc">+</span> item_intercept_sd <span class="sc">+</span> (mean_slope <span class="sc">+</span> subject_slope_sd) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span> <span class="co">#sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, EF)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="sc">%&gt;%</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_density</span>(<span class="fu">aes</span>(EF, <span class="at">fill =</span> Register), <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.35</span>, <span class="at">linetype =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span> <span class="sc">*</span> <span class="fl">0.35</span>, <span class="dv">5</span> <span class="sc">*</span> <span class="fl">0.35</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"IDS Preference Effect in Effect Sizes"</span>) <span class="sc">+</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"IDS Preference Effect in Effect Sizes"</span>) <span class="sc">+</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">xlab</span>(<span class="st">"Effect Size (d)"</span>) <span class="sc">+</span> plot_theme <span class="sc">+</span> <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>) <span class="sc">+</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(), <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks.y =</span> <span class="fu">element_blank</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -311,44 +306,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>EffectSizeDataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    subj_id), <span class="at">data =</span> EffectSizeDataSimulated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>boundary (singular) fit: see help('isSingular')</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span> subj_id) <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    (<span class="dv">1</span> <span class="sc">|</span> item_id), <span class="at">data =</span> EffectSizeDataSimulated)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
-Formula: EF ~ 1 + SpeechStyle + (1 | item_id) + (1 + SpeechStyle | subj_id)
+Formula: EF ~ 1 + SpeechStyle + (1 + SpeechStyle | subj_id) + (1 | item_id)
    Data: EffectSizeDataSimulated
 
-REML criterion at convergence: 186.4
+REML criterion at convergence: 832.8
 
 Scaled residuals: 
-     Min       1Q   Median       3Q      Max 
--2.82227 -0.63876 -0.03495  0.64912  2.85973 
+    Min      1Q  Median      3Q     Max 
+-2.8933 -0.6515  0.0122  0.6594  3.2162 
 
 Random effects:
- Groups   Name        Variance Std.Dev. Corr
- subj_id  (Intercept) 0.007869 0.08871      
-          SpeechStyle 0.033498 0.18302  1.00
- item_id  (Intercept) 0.020891 0.14454      
- Residual             0.087179 0.29526      
+ Groups   Name        Variance Std.Dev. Corr 
+ subj_id  (Intercept) 0.01897  0.1377        
+          SpeechStyle 0.05202  0.2281   -0.07
+ item_id  (Intercept) 0.04921  0.2218        
+ Residual             0.97582  0.9878        
 Number of obs: 288, groups:  subj_id, 24; item_id, 12
 
 Fixed effects:
-            Estimate Std. Error       df t value Pr(&gt;|t|)  
-(Intercept)  0.01128    0.06645 11.49912   0.170   0.8681  
-SpeechStyle  0.21371    0.09783 13.20533   2.185   0.0475 *
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+            Estimate Std. Error       df t value Pr(&gt;|t|)
+(Intercept) -0.03582    0.12557  9.89670  -0.285    0.781
+SpeechStyle  0.15985    0.17923 10.18933   0.892    0.393
 
 Correlation of Fixed Effects:
             (Intr)
-SpeechStyle -0.525
-optimizer (nloptwrap) convergence code: 0 (OK)
-boundary (singular) fit: see help('isSingular')</code></pre>
+SpeechStyle -0.670</code></pre>
 </div>
 </div>
 <p>In the following code blocks, we will automatise this process and run the power analysis proper!</p>
@@ -358,49 +347,49 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <p>Now we have two essential components to perform our simulation-based power analysis: i) a code pipeline to generate data for our research question and ii) a clear idea of how we want to model the data. Now it’s time to run the actual power analysis. The way we do this is to specify an effect, run hundreds of models and calculate the proportion of models that reject the null hypothesis. This proportion is an estimate of statistical power for those particular parameter values.</p>
 <p>To simplify the process, we can write a new function that combines a modelling component into our previous SimulateEffectSizeData() function. We will call this function SimulateAndModelEFData(), and we will use broom.mixed::tidy(model) to obtain a dataframe with relevant results from the model and write each model result to a .csv-file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="running-the-power-analysis" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="running-the-power-analysis"><span class="header-section-number">5</span> Running the Power Analysis</h2>
 <p>Now we have a function that generates data, runs a model and spits out the results! Now it’s time to repeat a few hundred times, so that we can calculate how much power we have with our given parameters. We are going to use map_df() to run the simulation and modelling function 500 times and write it to a .csv file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># use at least 500 to get stable estimates</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFData</span>())</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="st">"EFsimulations.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># use at least 500 to get stable estimates</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFData</span>())</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="fu">here</span>(<span class="st">"EFsimulations.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If it ran correctly, it should have produced a .csv file with model results from each new simulation of data. Let’s read in the results and have a look at what they say!</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulations.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"EFsimulations.csv"</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
   term                         mean_estimate mean_se  power
   &lt;chr&gt;                                &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1 (Intercept)                      -0.000287  0.0516  0.054
-2 SpeechStyle                       0.350     0.0791  0.988
-3 cor__(Intercept).SpeechStyle     NA        NA      NA    
-4 sd__(Intercept)                   0.0925   NA      NA    
-5 sd__Observation                   0.299    NA      NA    
-6 sd__SpeechStyle                   0.200    NA      NA    </code></pre>
+1 (Intercept)                        0.00199   0.106  0.052
+2 SpeechStyle                        0.351     0.148  0.594
+3 cor__(Intercept).SpeechStyle      NA        NA     NA    
+4 sd__(Intercept)                    0.134    NA     NA    
+5 sd__Observation                    0.991    NA     NA    
+6 sd__SpeechStyle                    0.270    NA     NA    </code></pre>
 </div>
 </div>
 </section>
@@ -412,47 +401,47 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>(<span class="at">n_ADS =</span> <span class="dv">2</span>, <span class="at">n_IDS =</span> <span class="dv">2</span>)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># use at least 500 to get stable estimates</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFData</span>())</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="st">"EFsimulations2Stimuli.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEffectSizeData</span>(<span class="at">n_ADS =</span> <span class="dv">2</span>, <span class="at">n_IDS =</span> <span class="dv">2</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># use at least 500 to get stable estimates</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFData</span>())</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="fu">here</span>(<span class="st">"EFsimulations2Stimuli.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulations2Stimuli.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"EFsimulations2Stimuli.csv"</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
   term                         mean_estimate mean_se  power
   &lt;chr&gt;                                &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1 (Intercept)                        0.00548  0.0812  0.056
-2 SpeechStyle                        0.351    0.119   0.466
-3 cor__(Intercept).SpeechStyle      NA       NA      NA    
-4 sd__(Intercept)                    0.0900  NA      NA    
-5 sd__Observation                    0.294   NA      NA    
-6 sd__SpeechStyle                    0.210   NA      NA    </code></pre>
+1 (Intercept)                         0.0144   0.184  0.04 
+2 SpeechStyle                         0.350    0.258  0.202
+3 cor__(Intercept).SpeechStyle       NA       NA     NA    
+4 sd__(Intercept)                     0.181   NA     NA    
+5 sd__Observation                     0.959   NA     NA    
+6 sd__SpeechStyle                     0.386   NA     NA    </code></pre>
 </div>
 </div>
 </section>
@@ -462,62 +451,57 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>SimulateEFDataWithAge <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_age =</span> <span class="fl">0.3</span>, <span class="co">#add effect of age</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_interaction_sd =</span> <span class="fl">0.1</span>, <span class="co">#add some standard deviation to aage effect</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">6</span>,   <span class="co"># number of ingroup stimuli</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">6</span>,   <span class="co"># number of outgroup stimuli</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_intercept =</span> <span class="dv">0</span>,   <span class="co"># grand mean</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_slope =</span>  <span class="fl">0.35</span>,   <span class="co"># effect of category</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_varyingintercept =</span>  <span class="fl">0.1</span>,   <span class="co"># by-item random intercept sd</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingintercept =</span> <span class="fl">0.1</span>,   <span class="co"># by-subject random intercept sd</span></span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingslope =</span>  <span class="fl">0.2</span>,   <span class="co"># by-subject random slope sd</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.2</span>,   <span class="co"># correlation between intercept and slope</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="fl">0.3</span>) { <span class="co"># residual (standard deviation)</span></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">#item_id = seq_len(n_ADS + n_IDS),</span></span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_intercept_sd =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_varyingintercept)</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>))</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># simulate a sample of subjects</span></span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co"># sample from a multivariate random distribution </span></span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, </span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(subject_varyingintercept, subject_varyingslope, age_interaction_sd), </span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho,</span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"subject_intercept_sd"</span>, <span class="st">"subject_slope_sd"</span>, <span class="st">"age_slope_sd"</span>)</span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">age_subj =</span> <span class="fu">runif</span>(n_subj, <span class="at">min =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">max =</span> <span class="fl">0.5</span>))</span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma))</span>
-<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the response variable</span></span>
-<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="sc">%&gt;%</span></span>
-<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">EF =</span> mean_intercept <span class="sc">+</span> subject_intercept_sd <span class="sc">+</span> item_intercept_sd <span class="sc">+</span> (mean_slope <span class="sc">+</span> subject_slope_sd) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> ((beta_age <span class="sc">+</span> age_slope_sd) <span class="sc">*</span> age_subj <span class="sc">*</span> SpeechStyle) <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
-<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, age_subj, EF)</span>
-<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>SimulateEFDataWithAge <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_age =</span> <span class="fl">0.3</span>, <span class="co">#add effect of age</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_interaction_sd =</span> <span class="fl">0.1</span>, <span class="co">#add some standard deviation to age effect</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">6</span>,   <span class="co"># number of ADS stimuli</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_IDS =</span>  <span class="dv">6</span>,   <span class="co"># number of IDS stimuli</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_intercept =</span> <span class="dv">0</span>,   <span class="co"># ADS intercept</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean_slope =</span>  <span class="fl">0.35</span>,   <span class="co"># effect of IDS</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_varyingintercept =</span>  <span class="fl">0.1</span>,   <span class="co"># by-item random intercept sd</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingintercept =</span> <span class="fl">0.2</span>,   <span class="co"># by-subject random intercept sd</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">subject_varyingslope =</span>  <span class="fl">0.2</span>,   <span class="co"># by-subject random slope sd</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">rho =</span> <span class="fl">0.2</span>,   <span class="co"># correlation between intercept and slope</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> <span class="dv">1</span>) { <span class="co"># residual (standard deviation)</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  items <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Register =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"IDS"</span>, <span class="st">"ADS"</span>), <span class="fu">c</span>(n_ADS, n_IDS)),</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">item_intercept_sd =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> n_ADS <span class="sc">+</span> n_IDS, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> item_varyingintercept)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SpeechStyle =</span> <span class="fu">recode</span>(Register, <span class="st">"ADS"</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">"IDS"</span> <span class="ot">=</span> <span class="dv">1</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">item_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"I"</span>))</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  subjects <span class="ot">&lt;-</span> faux<span class="sc">::</span><span class="fu">rnorm_multi</span>(</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n_subj, </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> <span class="dv">0</span>, </span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fu">c</span>(subject_varyingintercept, subject_varyingslope, age_interaction_sd), </span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">r =</span> rho,</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">"subject_intercept_sd"</span>, <span class="st">"subject_slope_sd"</span>, <span class="st">"age_slope_sd"</span>)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">subj_id =</span> faux<span class="sc">::</span><span class="fu">make_id</span>(<span class="fu">nrow</span>(.), <span class="st">"S"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">age_subj =</span> <span class="fu">runif</span>(n_subj, <span class="at">min =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">max =</span> <span class="fl">0.5</span>))</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="ot">&lt;-</span> <span class="fu">crossing</span>(subjects, items)  <span class="sc">%&gt;%</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">e_si =</span> <span class="fu">rnorm</span>(<span class="fu">nrow</span>(.), <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> sigma))</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  ParameterValues <span class="sc">%&gt;%</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">EF =</span> mean_intercept <span class="sc">+</span> subject_intercept_sd <span class="sc">+</span> item_intercept_sd <span class="sc">+</span> (mean_slope <span class="sc">+</span> subject_slope_sd) <span class="sc">*</span> SpeechStyle <span class="sc">+</span> ((beta_age <span class="sc">+</span> age_slope_sd) <span class="sc">*</span> age_subj <span class="sc">*</span> SpeechStyle) <span class="sc">+</span> e_si) <span class="sc">%&gt;%</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(subj_id, item_id, Register, SpeechStyle, age_subj, EF)</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>DataWithAgeSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>()</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>DataWithAgeSimulated <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj, <span class="at">color =</span> subj_id),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">show.legend =</span> F) <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj)) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Interaction Effect with Age"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age (standardised age)"</span>) <span class="sc">+</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Register) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>DataWithAgeSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>()</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>DataWithAgeSimulated <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj, <span class="at">color =</span> subj_id),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">show.legend =</span> F) <span class="sc">+</span> <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">formula =</span> y <span class="sc">~</span> x, <span class="fu">aes</span>(<span class="at">y =</span> EF, <span class="at">x =</span> age_subj)) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">"Interaction Effect with Age"</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">"Age (standardised age)"</span>) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>Register) <span class="sc">+</span> <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">viridis</span>(<span class="at">n =</span> <span class="dv">27</span>)) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    plot_theme</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -530,47 +514,48 @@ boundary (singular) fit: see help('isSingular')</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFAgeData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>(<span class="at">n_ADS =</span> <span class="dv">4</span>, <span class="at">n_IDS =</span> <span class="dv">4</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle<span class="sc">:</span>age_subj <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># use at least 500 to get stable estimates</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFAgeData</span>())</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="st">"EFsimulationsAge.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># simulate, analyze, and return a table of parameter</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># estimates</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>SimulateAndModelEFAgeData <span class="ot">&lt;-</span> <span class="cf">function</span>(...) {</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># simulate EF data function</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    dataSimulated <span class="ot">&lt;-</span> <span class="fu">SimulateEFDataWithAge</span>(<span class="at">n_ADS =</span> <span class="dv">4</span>, <span class="at">n_IDS =</span> <span class="dv">4</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># model EF data</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    model <span class="ot">&lt;-</span> <span class="fu">lmer</span>(EF <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">+</span> SpeechStyle<span class="sc">:</span>age_subj <span class="sc">+</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        (<span class="dv">1</span> <span class="sc">|</span> item_id) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">+</span> SpeechStyle <span class="sc">|</span> subj_id), <span class="at">data =</span> dataSimulated)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># write to a dataframee</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    broom.mixed<span class="sc">::</span><span class="fu">tidy</span>(model)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="co"># run simulations and save to a file</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>n_runs <span class="ot">&lt;-</span> <span class="dv">500</span>  <span class="co"># use at least 500 to get stable estimates</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>simulations <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span>n_runs, <span class="sc">~</span><span class="fu">SimulateAndModelEFAgeData</span>())</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(simulations, <span class="fu">here</span>(<span class="st">"EFsimulationsAge.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"EFsimulationsAge.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read saved simulation data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>sims <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"EFsimulationsAge.csv"</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(term, estimate, std.error, p.value)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>sims <span class="sc">%&gt;%</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(term) <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">mean_estimate =</span> <span class="fu">mean</span>(estimate), <span class="at">mean_se =</span> <span class="fu">mean</span>(std.error),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">power =</span> <span class="fu">mean</span>(p.value <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 4
+<pre><code># A tibble: 7 × 4
   term                         mean_estimate mean_se  power
   &lt;chr&gt;                                &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
-1 (Intercept)                          0.158  0.0789  0.342
-2 SpeechStyle:age_subj                 0.299  0.201   0.314
-3 cor__(Intercept).SpeechStyle        NA     NA      NA    
-4 sd__(Intercept)                      0.141 NA      NA    
-5 sd__Observation                      0.299 NA      NA    
-6 sd__SpeechStyle                      0.213 NA      NA    </code></pre>
+1 (Intercept)                        0.00200   0.130  0.044
+2 SpeechStyle                        0.347     0.188  0.356
+3 SpeechStyle:age_subj               0.286     0.435  0.094
+4 cor__(Intercept).SpeechStyle      NA        NA     NA    
+5 sd__(Intercept)                    0.141    NA     NA    
+6 sd__Observation                    0.989    NA     NA    
+7 sd__SpeechStyle                    0.313    NA     NA    </code></pre>
 </div>
 </div>
 <p>Now we have a pretty useful pipeline set up that allows us to explore the effects of different parameter values on our ability to detect effects. However, instead of manually varying the parameters one by one, it would be nice if we could set up a grid search to explore values and put the power results into perspective. We will explore how to do this in the next exercise sheet. The code gets slightly more complex, so make sure that you have understood the code that we have written so far before venturing further.</p>
