@@ -276,8 +276,16 @@ Looking Time = \beta^{ADS} + VaryingIntercept^{subj} + VaryingIntercept^{item} +
 <li>the average ADS intercept capturing the mean baseline tendency to attend to ADS, β(ADS)</li>
 <li>the average influence of IDS on this baseline attention, β(IDS)</li>
 </ul>
-<p>There are also three varying effects: * a by-subject random intercept, VaryingIntercept(subj), * a by-item random intercept, VaryingIntercept(item) * a by-subject random slope, VaryingSlope(subj)</p>
-<p>And lastly: * a trial-level residual error, ε</p>
+<p>There are also three varying effects:</p>
+<ul>
+<li>a by-subject random intercept, VaryingIntercept(subj),</li>
+<li>a by-item random intercept, VaryingIntercept(item)</li>
+<li>a by-subject random slope, VaryingSlope(subj)</li>
+</ul>
+<p>And lastly:</p>
+<ul>
+<li>a trial-level residual error, ε</li>
+</ul>
 <p>This formula paves a clear way forward for our process of data simulation. In the next section, we will build up a statistical model step by step, defining variables in the code as we go along that reflect our choices for the different parameters.</p>
 </section>
 <section id="choosing-values-for-fixed-effect-parameters" class="level2" data-number="4">
@@ -579,7 +587,7 @@ $ e_si                 &lt;dbl&gt; -17.380195, -334.816790, -3.802378, 888.54222
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#The question here involves adding infant age as an interaction effect with SpeechStyle. We will approach this question by modifying the code that simulates subject-level data. Here, we will sample an age variable and pretend that we have standardised age so that its values fall between -0.5 and 0.5. We thus randomly sample age to assign one age to each subject. We also need to specify a slope value for the influence of subject age and place it in the start of the function; we will add subject_age = 200. Lastly, we need to change how we sum the values together, so that age has an effect on looking times, but also that the influence of age exerts different effects across the two speech styles.</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>SimulateLTDataWithAge <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_age =</span> <span class="dv">1000</span>, <span class="co">#add effect of age</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta_age =</span> <span class="dv">2000</span>, <span class="co">#add effect of age</span></span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age_interaction_sd =</span> <span class="dv">150</span>, <span class="co">#add some jitter to age effect</span></span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_subj =</span> <span class="dv">24</span>,   <span class="co"># number of subjects</span></span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ADS  =</span> <span class="dv">6</span>,   <span class="co"># number of ADS stimuli</span></span>
