@@ -201,7 +201,7 @@ Now we have specified the parameters in ParameterValues, we are ready to add up 
 # calculate the response variable
 SimulatedLT <- ParameterValues %>%
   mutate(LT = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
-  mutate(LT = LT + rexp(nrow(.), rate = 0.01)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
+  mutate(LT = LT + rexp(nrow(.), rate = 0.0001)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
   dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
 ```
 

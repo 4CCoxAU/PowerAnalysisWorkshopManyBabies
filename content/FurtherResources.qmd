@@ -4,7 +4,7 @@ title: Further Resources
 
 Thank you so much to the Teaching, Training and Open Science Committee at ManyBabies for supporting the creation of this workshop! I take full responsibility for all mistakes. I have taken inspiration from the following resources and would recommend them for everyone who is interested in this topic:
 
-* Workshop on Bayesian modelling and priors: https://4ccoxau.github.io/PriorsWorkshop/
+* [Workshop](https://4ccoxau.github.io/PriorsWorkshop/) on Bayesian modelling and priors.
 
 * DeBruine, L. M., & Barr, D. J. (2021). Understanding mixed-effects models through data simulation. Advances in Methods and Practices in Psychological Science, 4(1), 2515245920965119.
 
@@ -12,7 +12,7 @@ Thank you so much to the Teaching, Training and Open Science Committee at ManyBa
 
 * Lakens, D., & Caldwell, A. R. (2021). Simulation-based power analysis for factorial analysis of variance designs. Advances in Methods and Practices in Psychological Science, 4(1), 2515245920951503.
 
-* https://rpsychologist.com/cohend/
+* [RPsychologist Website to explore meaning of effect sizes](https://rpsychologist.com/cohend/).
 
 * Mani, N., Schreiner, M. S., Brase, J., Köhler, K., Strassen, K., Postin, D., & Schultze, T. (2021). Sequential Bayes Factor designs in developmental research: studies on early word learning. Developmental Science, e13097.
 
