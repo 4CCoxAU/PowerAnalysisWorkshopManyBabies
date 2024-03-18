@@ -201,7 +201,7 @@ Now we have specified the parameters in ParameterValues, we are ready to add up 
 # calculate the response variable
 SimulatedLT <- ParameterValues %>%
   mutate(LT = mean_intercept + subject_intercept_sd + item_intercept_sd + (mean_slope + subject_slope_sd) * SpeechStyle + e_si) %>% #sum together overall intercept, varying subject and item intercepts, varying subject slopes, and random error.
-  mutate(LT = LT + rexp(nrow(.), rate = 0.0001)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
+  mutate(LT = LT + rexp(nrow(.), rate = 0.01)) %>% #add a long tail to the distribution to simulate exgaussian distribution of looking times
   dplyr::select(subj_id, item_id, Register, SpeechStyle, LT)
 ```
 
@@ -337,7 +337,7 @@ LTDataSimulated %>%
 #The question here involves adding infant age as an interaction effect with SpeechStyle. We will approach this question by modifying the code that simulates subject-level data. Here, we will sample an age variable and pretend that we have standardised age so that its values fall between -0.5 and 0.5. We thus randomly sample age to assign one age to each subject. We also need to specify a slope value for the influence of subject age and place it in the start of the function; we will add subject_age = 200. Lastly, we need to change how we sum the values together, so that age has an effect on looking times, but also that the influence of age exerts different effects across the two speech styles.
 
 SimulateLTDataWithAge <- function(
-  beta_age = 1000, #add effect of age
+  beta_age = 2000, #add effect of age
   age_interaction_sd = 150, #add some jitter to age effect
   n_subj = 24,   # number of subjects
   n_ADS  = 6,   # number of ADS stimuli

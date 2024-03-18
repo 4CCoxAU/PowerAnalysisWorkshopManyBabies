@@ -188,7 +188,7 @@ sims %>%
 
 Now that we have this pipeline set up, it becomes easy to adapt the code to try out different parameter values. Let's explore the effect of repeated measures on power. Try to run a power analysis with each subject receiving two items in each speech style. What happens to the estimate of statistical power?
 
-```{r, message=FALSE, results='hide', warning = FALSE, eval = FALSE}
+```{r, message=FALSE, results='hide', warning = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  
@@ -292,7 +292,7 @@ ggplot() +
   plot_theme
 ```
 
-```{r, warning = FALSE, message=FALSE, results='hide', warning = FALSE, eval = FALSE}
+```{r, warning = FALSE, message = FALSE, results='hide', warning = FALSE}
 #| code-fold: true
 #| code-summary: "Show the code"
  

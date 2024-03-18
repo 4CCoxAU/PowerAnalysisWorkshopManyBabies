@@ -30,7 +30,6 @@ opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE, fig.width=12, fig.heig
 plot_theme <- 
   theme_bw() +
   theme(plot.title = element_text(hjust = 0.5, size = 18), 
-        legend.position = "none", 
         axis.text.x = element_text(size = 13), 
         axis.title.x = element_text(size = 13), 
         axis.text.y = element_text(size = 12), 
@@ -80,9 +79,9 @@ SimulateEffectSizeData <- function(
 It should be clear from the previous sections that the data simulation process involves a multiverse of experimenter choices. One way to explore (and calm our fears about) the respective importance of these individual choices and their interactions would be to conduct a sensitivity analysis with a grid search of all available combinations among parameter values of interest. To do this, we can wrap our Simulation and Modelling function with a higher-level function that inputs a series of parameter combinations that we are interested in exploring further. Here is a suggestion for a function of this type. We can start by creating a matrix of parameter combinations that we are interested in.
 
 ```{r}
-subj_n <- seq(15, 80, by = 3)
+subj_n <- seq(10, 100, by = 10)
 trial_n <- seq(4, 12, by = 2)
-NumberOfModels <- 30
+NumberOfModels <- 25
 
 param_combinations <- expand.grid(subj_n = subj_n, 
                                   trial_n = trial_n)
@@ -140,6 +139,7 @@ for (i in seq_len(nrow(param_combinations))) {
 
 
 ```{r, warning = FALSE}
+setwd(here("sims_grid_search"))
 file_names <- list.files(pattern = "*.csv")
 
 # read in all CSV files into a list of dataframes
@@ -160,15 +160,17 @@ df_per_sim <- df %>%
 
 PowerGridData <- df_per_sim %>%
   mutate(n_subj = as.numeric(sapply(strsplit(filename, "_"), `[`,4)),
-         n_trial = as.factor(str_replace(sapply(strsplit(filename, "_"), `[`, 5), pattern = ".csv","")))
+         n_trial = as.factor(str_replace(sapply(strsplit(filename, "_"), `[`, 5), pattern = ".csv",""))) %>%
+  mutate(n_trial = factor(n_trial, levels = c("4", "6","8", "10", "12")))
 
 ggplot(PowerGridData) +
   geom_point(aes(x = n_subj, y = power, color = n_trial)) +
   geom_line(aes(x = n_subj, y = power, color = n_trial)) +
   geom_hline(yintercept = 0.80, linetype = 3) +
+  xlim(c(0, 110)) +
   xlab('Sample Size') +
   ylab('Statistical Power') +
-  ggtitle('Interaction among Number of Subjects & Repeated Measures') +
+  ggtitle('Interaction among Sample Size & Repeated Measures') +
   scale_color_brewer(palette = 'Dark2') +
   plot_theme
 ```

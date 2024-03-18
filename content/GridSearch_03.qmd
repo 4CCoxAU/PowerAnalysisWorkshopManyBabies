@@ -138,7 +138,8 @@ for (i in seq_len(nrow(param_combinations))) {
 ```
 
 
-```{r, warning = FALSE, eval = FALSE}
+```{r, warning = FALSE}
+setwd(here("sims_grid_search"))
 file_names <- list.files(pattern = "*.csv")
 
 # read in all CSV files into a list of dataframes
